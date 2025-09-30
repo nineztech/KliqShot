@@ -1,13 +1,12 @@
 # KliqShot™
 <b>KliqShot™</b> - Effortless Booking, Exceptional Photography. 
 </br> <I>AI-Powered Marketplace that instantly book trusted photographers for any event</I>.
-<img width="323" height="1022" alt="image" src="https://github.com/user-attachments/assets/1511086c-d26d-4add-afb1-e8fd20e75cb6" />
 </br>
 </br>
 <img width="3535" height="1044" alt="Logo" src="https://github.com/user-attachments/assets/f830daa1-78a2-4048-aaaa-4fc34eeb3b75" /></br></br>
 <b>Scope:</b> Discovery, pricing, instant booking, UPI payments with escrow, order & deliverables management, disputes & refunds, reviews & ratings, pros (KliqChamp) onboarding/KYC, admin operations, and analytics.
 </br> </br>
-<b>Definitions:</b> </br>
+<b>Definitions:</b> <img width="23" height="722" alt="image" src="https://github.com/user-attachments/assets/1511086c-d26d-4add-afb1-e8fd20e75cb6" /> </br>
 - Customer = End client booking a services; </br>
 - Service Provider/Pros (Also Known as <b>"KliqChamp™"</b>) = photographer/videographer;</br>  
 - Booking = a confirmed order;</br>

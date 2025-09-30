@@ -7,7 +7,8 @@
 </br> </br>
 <b>Definitions:</b> </br>
 - Customer = End client booking a services; </br>
-- Service Provider/Pros (Also Known as <b>"KliqChamp™"</b>) = photographer/videographer;</br>
+- Service Provider/Pros (Also Known as <b>"KliqChamp™"</b>) = photographer/videographer;</br>  <img width="1123" height="1822" alt="image" src="https://github.com/user-attachments/assets/1511086c-d26d-4add-afb1-e8fd20e75cb6" />
+
 - Booking = a confirmed order;</br>
 - Deliverables = edited photos/videos as per package;</br>
 - SLA = Service Level Agreement;</br>
@@ -17,6 +18,5 @@
 </br> </br>
 <b>AI Features:</b>  
 AI Matching & Routing, AI Price Guidance, AI Portfolio Tagging, AI Rejecting & Previews, AI Trust & Safety, AI Support Copilot.
-
+</br></br>
 The <b>KliqScore™ </b> Algorithm: A dynamic, multi-factor trust metric based on verified client ratings, photographer response times, portfolio quality (ML-analyzed), and project completion rates. This is our proprietary validation engine.
-<img width="4698" height="105" alt="image" src="https://github.com/user-attachments/assets/eb5a8528-da51-4e3b-829b-88c67ff83390" />

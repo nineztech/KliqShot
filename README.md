@@ -22,12 +22,12 @@ AI Matching & Routing, AI Price Guidance, AI Portfolio Tagging, AI Rejecting & P
 The <b>KliqScore™ </b> Algorithm: A dynamic, multi-factor trust metric based on verified client ratings, photographer response times, portfolio quality (ML-analyzed), and project completion rates. This is our proprietary validation engine.
 
 ## Core Components </br>
-📱 Frontend (Web/Mobile)
-🔄 API Gateway
-🎯 Booking Engine
-👥 Photographer Management
-📅 Scheduling System
-💰 Payment Gateway
-⚖️ Dispute Management
-📊 Analytics & Reporting
+📱 Frontend (Web/Mobile)</br>
+🔄 API Gateway</br>
+🎯 Booking Engine</br>
+👥 Photographer Management</br>
+📅 Scheduling System</br>
+💰 Payment Gateway</br>
+⚖️ Dispute Management</br>
+📊 Analytics & Reporting</br>
 

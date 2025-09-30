@@ -1,5 +1,5 @@
 # KliqShot™
-<b>KliqShot™</b> - Effortless Booking, Exceptional Photography. 
+### KliqShot™ - Effortless Booking, Exceptional Photography. 
 </br> <I>AI-Powered Marketplace that instantly book trusted photographers for any event</I>.
 </br>
 </br>

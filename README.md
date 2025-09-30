@@ -6,12 +6,12 @@ KliqShot - Effortless Booking, Exceptional Photography. AI-Powered Marketplace t
 <b>Scope:</b> Discovery, pricing, instant booking, UPI payments with escrow, order & deliverables management, disputes & refunds, reviews & ratings, pros (KliqChamp) onboarding/KYC, admin operations, and analytics.
 </br>
 <b>Definitions:</b> 
-- Customer = The End client booking a services;
-- Service Provider/Pros (Also Known as <b>"KliqChamp"</b>) = photographer/videographer;
-- Booking = a confirmed order;
-- Deliverables = edited photos/videos as per package;
-- SLA = Service Level Agreement;
-- KYC = Identity & Experience Verification.
+- Customer = The End client booking a services; </br>
+- Service Provider/Pros (Also Known as <b>"KliqChamp"</b>) = photographer/videographer;</br>
+- Booking = a confirmed order;</br>
+- Deliverables = edited photos/videos as per package;</br>
+- SLA = Service Level Agreement;</br>
+- KYC = Identity & Experience Verification.</br>
 
 **User Classes:** Customers (guest & logged in), Service Providers/Photographers, Admin/Ops, Finance, Support, Moderation.
 </br>

@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { 
-  MagnifyingGlassIcon, 
-  UserCircleIcon, 
-  MapPinIcon, 
-  ChevronDownIcon
+import {
+  MagnifyingGlassIcon,
+  UserCircleIcon,
+  MapPinIcon,
+  ChevronDownIcon,
+  LanguageIcon
 } from '@heroicons/react/24/outline';
 
 export default function MobileNavbar() {
@@ -14,8 +15,11 @@ export default function MobileNavbar() {
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('EN');
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +51,16 @@ export default function MobileNavbar() {
     setShowLocationDropdown(false);
   };
 
+  const handleLanguageClick = () => {
+    setShowLanguageDropdown(!showLanguageDropdown);
+    console.log('Language clicked');
+  };
+
+  const handleLanguageSelect = (language: string) => {
+    setSelectedLanguage(language);
+    setShowLanguageDropdown(false);
+  };
+
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -65,22 +79,25 @@ export default function MobileNavbar() {
     }
   };
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) {
         setShowLocationDropdown(false);
       }
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setShowLanguageDropdown(false);
+      }
     };
 
-    if (showLocationDropdown) {
+    if (showLocationDropdown || showLanguageDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showLocationDropdown]);
+  }, [showLocationDropdown, showLanguageDropdown]);
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -170,6 +187,70 @@ export default function MobileNavbar() {
                 </div>
               )}
             </div>
+
+            {/* Language Icon */}
+            <div className="relative" ref={languageDropdownRef}>
+              <button
+                onClick={handleLanguageClick}
+                className="flex items-center gap-1 px-2 py-1 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200 border border-gray-200 hover:border-gray-300"
+              >
+                <LanguageIcon className="h-3 w-3" />
+                <span className="text-xs font-medium">{selectedLanguage}</span>
+              </button>
+
+              {/* Mobile Language Dropdown */}
+              {showLanguageDropdown && (
+                <div className="absolute top-full right-0 mt-2 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <LanguageIcon className="h-4 w-4 text-blue-600" />
+                      Select Language
+                    </h3>
+                    <div className="space-y-1 max-h-56 overflow-y-auto">
+                      {[
+                        { code: 'EN', name: 'English', flag: '🇺🇸' },
+                        { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
+                        { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
+                        { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
+                        { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
+                        { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
+                        { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
+                        { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+                        { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
+                        { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
+                      ].map((language) => (
+                        <button
+                          key={language.code}
+                          onClick={() => handleLanguageSelect(language.code)}
+                          className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
+                            selectedLanguage === language.code 
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          <span className="text-base">{language.flag}</span>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">{language.name}</div>
+                            <div className="text-xs text-gray-500">{language.code}</div>
+                          </div>
+                          {selectedLanguage === language.code && (
+                            <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Become Seller Button */}
+            <button
+              onClick={() => window.open('http://localhost:3002', '_blank')}
+              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm"
+            >
+              Sell
+            </button>
 
             {/* Profile Icon */}
             <button

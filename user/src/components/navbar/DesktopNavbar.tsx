@@ -2,14 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { MagnifyingGlassIcon, UserCircleIcon, MapPinIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, UserCircleIcon, MapPinIcon, ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
 
 export default function DesktopNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +44,16 @@ export default function DesktopNavbar() {
     setShowLocationDropdown(false);
   };
 
+  const handleLanguageClick = () => {
+    setShowLanguageDropdown(!showLanguageDropdown);
+    console.log('Language clicked');
+  };
+
+  const handleLanguageSelect = (language: string) => {
+    setSelectedLanguage(language);
+    setShowLanguageDropdown(false);
+  };
+
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -65,22 +78,25 @@ export default function DesktopNavbar() {
     }
   };
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) {
         setShowLocationDropdown(false);
       }
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setShowLanguageDropdown(false);
+      }
     };
 
-    if (showLocationDropdown) {
+    if (showLocationDropdown || showLanguageDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showLocationDropdown]);
+  }, [showLocationDropdown, showLanguageDropdown]);
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -173,10 +189,76 @@ export default function DesktopNavbar() {
                 </div>
               )}
             </div>
+
+            {/* Language Selector */}
+            <div className="relative" ref={languageDropdownRef}>
+              <button
+                onClick={handleLanguageClick}
+                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200 border border-gray-200 hover:border-gray-300"
+              >
+                <LanguageIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                <span className="truncate max-w-24 font-medium">{selectedLanguage}</span>
+                <ChevronDownIcon className={`h-4 w-4 text-gray-500 flex-shrink-0 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {/* Language Dropdown */}
+              {showLanguageDropdown && (
+                <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                  <div className="p-4">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <LanguageIcon className="h-4 w-4 text-blue-600" />
+                      Select Language
+                    </h3>
+                    <div className="space-y-1 max-h-64 overflow-y-auto">
+                      {[
+                        { code: 'EN', name: 'English', flag: '🇺🇸' },
+                        { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
+                        { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
+                        { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
+                        { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
+                        { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
+                        { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
+                        { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+                        { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
+                        { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
+                      ].map((language) => (
+                        <button
+                          key={language.code}
+                          onClick={() => handleLanguageSelect(language.name)}
+                          className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
+                            selectedLanguage === language.name 
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          <span className="text-lg">{language.flag}</span>
+                          <div className="flex-1">
+                            <div className="font-medium">{language.name}</div>
+                            <div className="text-xs text-gray-500">{language.code}</div>
+                          </div>
+                          {selectedLanguage === language.name && (
+                            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Profile Icon */}
-          <div className="flex items-center">
+          {/* Become Seller Button & Profile Icon */}
+          <div className="flex items-center gap-3">
+            {/* Become Seller Button */}
+            <button
+              onClick={() => window.open('http://localhost:3002', '_blank')}
+              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              Become Seller
+            </button>
+            
+            {/* Profile Icon */}
             <button
               onClick={handleProfileClick}
               className="bg-white p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"

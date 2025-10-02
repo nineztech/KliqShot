@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 
@@ -30,6 +31,15 @@ export default function PhotographerCard({
   description,
   onClick
 }: PhotographerCardProps) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      router.push(`/photographer/${id}`);
+    }
+  };
   const renderStars = () => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -61,7 +71,7 @@ export default function PhotographerCard({
   return (
     <div 
       className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer overflow-hidden group"
-      onClick={onClick}
+      onClick={handleCardClick}
     >
       {/* Image Section */}
       <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative overflow-hidden">

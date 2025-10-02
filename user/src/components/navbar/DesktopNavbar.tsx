@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { MagnifyingGlassIcon, UserCircleIcon, MapPinIcon, ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import ProfileDropdown from './ProfileDropdown';
 
 export default function DesktopNavbar() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -20,10 +23,6 @@ export default function DesktopNavbar() {
     console.log('Searching for:', searchQuery);
   };
 
-  const handleProfileClick = () => {
-    // TODO: Navigate to profile page or show dropdown
-    console.log('Profile clicked');
-  };
 
   const handleLocationClick = () => {
     setShowLocationDropdown(!showLocationDropdown);
@@ -99,21 +98,24 @@ export default function DesktopNavbar() {
   }, [showLocationDropdown, showLanguageDropdown]);
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-purple-600 to-purple-800 shadow-sm border-b border-purple-300 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div className="relative w-24 h-24">
+              <button
+                onClick={() => router.push('/')}
+                className="relative w-24 h-24 hover:opacity-80 transition-opacity duration-200"
+              >
                 <Image
-                  src="/LOGO.png"
+                  src="/main Logo.png"
                   alt="KliqShot Logo"
                   fill
                   className="object-contain"
                   priority
                 />
-              </div>
+              </button>
             </div>
           </div>
 
@@ -131,7 +133,7 @@ export default function DesktopNavbar() {
                     placeholder="Search products, brands, categories..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    className="block w-full pl-10 pr-3 py-3 border border-white/30 rounded-full leading-5 bg-white/90 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-white/50 focus:border-white text-sm"
                   />
                 </div>
               </form>
@@ -141,11 +143,11 @@ export default function DesktopNavbar() {
             <div className="relative" ref={locationDropdownRef}>
               <button
                 onClick={handleLocationClick}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200 min-w-0"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 min-w-0"
               >
-                <MapPinIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                <MapPinIcon className="h-4 w-4 text-white flex-shrink-0" />
                 <span className="truncate max-w-32">{userLocation}</span>
-                <ChevronDownIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                <ChevronDownIcon className="h-4 w-4 text-white flex-shrink-0" />
               </button>
               
               {/* Location Dropdown */}
@@ -194,11 +196,11 @@ export default function DesktopNavbar() {
             <div className="relative" ref={languageDropdownRef}>
               <button
                 onClick={handleLanguageClick}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200 border border-gray-200 hover:border-gray-300"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 border border-white/30 hover:border-white/50"
               >
-                <LanguageIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                <LanguageIcon className="h-4 w-4 text-white flex-shrink-0" />
                 <span className="truncate max-w-24 font-medium">{selectedLanguage}</span>
-                <ChevronDownIcon className={`h-4 w-4 text-gray-500 flex-shrink-0 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
+                <ChevronDownIcon className={`h-4 w-4 text-white flex-shrink-0 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
               </button>
               
               {/* Language Dropdown */}
@@ -253,19 +255,13 @@ export default function DesktopNavbar() {
             {/* Become Seller Button */}
             <button
               onClick={() => window.open('http://localhost:3002', '_blank')}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md"
+              className="bg-white text-purple-600 px-4 py-2 rounded-md text-sm font-semibold hover:bg-white/90 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               Become Seller
             </button>
             
-            {/* Profile Icon */}
-            <button
-              onClick={handleProfileClick}
-              className="bg-white p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-            >
-              <span className="sr-only">Open user menu</span>
-              <UserCircleIcon className="h-8 w-8" />
-            </button>
+            {/* Profile Dropdown */}
+            <ProfileDropdown isMobile={false} />
           </div>
         </div>
       </div>

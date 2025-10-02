@@ -42,7 +42,7 @@ export default function CategoryCard({
             src={imageUrl}
             alt={title}
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-            style={{ minHeight: '100%', minWidth: '100%' }}
+            loading="lazy"
           />
         ) : (
           <div className="flex items-center justify-center">

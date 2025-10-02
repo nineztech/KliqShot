@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 
 export default function DesktopAdvertisementSection() {
@@ -147,17 +146,9 @@ export default function DesktopAdvertisementSection() {
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Navigation Dots */}
           <div className="bg-gray-50 px-4 py-3">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={prevSlide}
-                className="flex items-center space-x-1 px-2 py-1 rounded-lg bg-white hover:bg-gray-100 transition-colors duration-200 shadow-sm"
-              >
-                <ChevronLeftIcon className="w-3 h-3 text-gray-600" />
-                <span className="text-gray-600 text-xs">Previous</span>
-              </button>
-
+            <div className="flex items-center justify-center">
               <div className="flex space-x-1.5">
                 {photographers.map((_, index) => (
                   <button
@@ -169,14 +160,6 @@ export default function DesktopAdvertisementSection() {
                   />
                 ))}
               </div>
-
-              <button
-                onClick={nextSlide}
-                className="flex items-center space-x-1 px-2 py-1 rounded-lg bg-white hover:bg-gray-100 transition-colors duration-200 shadow-sm"
-              >
-                <span className="text-gray-600 text-xs">Next</span>
-                <ChevronRightIcon className="w-3 h-3 text-gray-600" />
-              </button>
             </div>
           </div>
       </div>

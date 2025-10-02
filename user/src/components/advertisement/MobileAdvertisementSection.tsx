@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, StarIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect, useRef } from 'react';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 
 export default function MobileAdvertisementSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const photographers = [
     {
@@ -51,6 +53,31 @@ export default function MobileAdvertisementSection() {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + photographers.length) % photographers.length);
   };
 
+  // Touch event handlers for swipe functionality
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   // Auto-play carousel
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
@@ -66,7 +93,13 @@ export default function MobileAdvertisementSection() {
         <p className="section-description section-description-mobile">Top-rated professionals in your area</p>
       </div>
 
-      <div className="relative bg-white rounded-lg shadow-md overflow-hidden mt-4">
+      <div 
+        ref={containerRef}
+        className="relative bg-white rounded-lg shadow-md overflow-hidden mt-4"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* Photographer Card */}
         <div className="p-3">
           <div className="flex items-center space-x-3">
@@ -120,33 +153,19 @@ export default function MobileAdvertisementSection() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between px-3 pb-2">
-          <button
-            onClick={prevSlide}
-            className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
-          >
-            <ChevronLeftIcon className="w-3 h-3 text-gray-600" />
-          </button>
-          
+        {/* Navigation Dots */}
+        <div className="flex items-center justify-center px-3 pb-2">
           <div className="flex space-x-1">
             {photographers.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-1 h-1 rounded-full ${
+                className={`w-1 h-1 rounded-full transition-colors duration-200 ${
                   index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
                 }`}
               />
             ))}
           </div>
-
-          <button
-            onClick={nextSlide}
-            className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
-          >
-            <ChevronRightIcon className="w-3 h-3 text-gray-600" />
-          </button>
         </div>
       </div>
     </div>

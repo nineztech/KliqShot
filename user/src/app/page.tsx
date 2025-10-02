@@ -15,7 +15,7 @@ export default function Home() {
       {/* Main Content Container */}
       <div className="max-w-7xl mx-auto">
         {/* Video Section */}
-        <div className="py-4">
+        <div>
           <VideoSection />
         </div>
         

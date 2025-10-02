@@ -17,9 +17,7 @@ export default function CategoryPage() {
   const photographers = categoryName ? getPhotographersByCategory(displayCategoryName) : [];
 
   const handlePhotographerClick = (photographer: Photographer) => {
-    // TODO: Navigate to photographer detail page
-    console.log('Photographer clicked:', photographer);
-    // router.push(`/photographer/${photographer.id}`);
+    router.push(`/photographer/${photographer.id}`);
   };
 
   const handleBackClick = () => {

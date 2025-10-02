@@ -17,52 +17,84 @@ export default function MobileCategorySection() {
 
   const allCategories = [
     {
-      title: "Wedding Photography",
-      description: "Capture your special day with professional wedding photography services",
-      imageUrl: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=400&fit=crop&crop=center",
+      title: "Wedding",
+      description: "Capture your special day",
+      imageUrl: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <HeartIcon className="w-8 h-8 text-pink-600" />,
       category: "Wedding",
-      photographerCount: 45
+      photographerCount: 420
     },
     {
-      title: "Engagement Shoot",
-      description: "Romantic engagement photo sessions for couples in love",
-      imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=400&fit=crop&crop=center",
-      icon: <SparklesIcon className="w-8 h-8 text-purple-600" />,
-      category: "Wedding",
-      photographerCount: 32
-    },
-    {
-      title: "Family Portraits",
-      description: "Beautiful family moments captured by professional photographers",
-      imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=400&fit=crop&crop=center",
-      icon: <UserGroupIcon className="w-8 h-8 text-blue-600" />,
-      category: "Portrait",
-      photographerCount: 28
-    },
-    {
-      title: "Corporate Events",
-      description: "Professional photography for business events and conferences",
-      imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&h=400&fit=crop&crop=center",
-      icon: <BriefcaseIcon className="w-8 h-8 text-green-600" />,
-      category: "Corporate",
-      photographerCount: 15
-    },
-    {
-      title: "Graduation Photos",
-      description: "Celebrate your achievements with graduation photography",
-      imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop&crop=center",
-      icon: <AcademicCapIcon className="w-8 h-8 text-yellow-600" />,
-      category: "Creative",
-      photographerCount: 22
-    },
-    {
-      title: "Portrait Sessions",
-      description: "Professional headshots and personal portrait photography",
-      imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=400&fit=crop&crop=center",
+      title: "Portrait",
+      description: "Professional headshots & portraits",
+      imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <CameraIcon className="w-8 h-8 text-indigo-600" />,
       category: "Portrait",
-      photographerCount: 38
+      photographerCount: 380
+    },
+    {
+      title: "Events",
+      description: "Corporate & social events",
+      imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <BriefcaseIcon className="w-8 h-8 text-green-600" />,
+      category: "Events",
+      photographerCount: 290
+    },
+    {
+      title: "Family",
+      description: "Beautiful family moments",
+      imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <UserGroupIcon className="w-8 h-8 text-blue-600" />,
+      category: "Family",
+      photographerCount: 350
+    },
+    {
+      title: "Product",
+      description: "Professional product shoots",
+      imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <SparklesIcon className="w-8 h-8 text-purple-600" />,
+      category: "Product",
+      photographerCount: 240
+    },
+    {
+      title: "Maternity",
+      description: "Beautiful maternity moments",
+      imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <SparklesIcon className="w-8 h-8 text-pink-500" />,
+      category: "Maternity",
+      photographerCount: 180
+    },
+    {
+      title: "Interior",
+      description: "Property photography",
+      imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <AcademicCapIcon className="w-8 h-8 text-orange-600" />,
+      category: "Interior",
+      photographerCount: 160
+    },
+    {
+      title: "Fashion",
+      description: "Fashion and beauty shoots",
+      imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <SparklesIcon className="w-8 h-8 text-purple-500" />,
+      category: "Fashion",
+      photographerCount: 200
+    },
+    {
+      title: "Sports",
+      description: "Sports and fitness photography",
+      imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <AcademicCapIcon className="w-8 h-8 text-red-600" />,
+      category: "Sports",
+      photographerCount: 120
+    },
+    {
+      title: "Video",
+      description: "Video and cinematography",
+      imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop&crop=center&auto=format",
+      icon: <CameraIcon className="w-8 h-8 text-blue-500" />,
+      category: "Cinematography",
+      photographerCount: 150
     }
   ];
 

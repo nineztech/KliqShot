@@ -1,19 +1,7 @@
 'use client';
 
 import PhotographerCard from './PhotographerCard';
-
-interface Photographer {
-  id: number;
-  name: string;
-  specialty: string;
-  location: string;
-  rating: number;
-  reviews: number;
-  price: string;
-  experience: string;
-  image: string;
-  description: string;
-}
+import type { Photographer } from '@/data/photographers';
 
 interface MobilePhotographerGridProps {
   photographers: Photographer[];
@@ -29,28 +17,33 @@ export default function MobilePhotographerGrid({
   return (
     <div className="px-4">
       {/* Header */}
-      <div className="text-center mb-4">
-        <h1 className="section-title section-title-mobile mb-2">{categoryName} Photographers</h1>
-        <p className="section-description section-description-mobile">
-          {photographers.length} photographer{photographers.length !== 1 ? 's' : ''} available in your area
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">{categoryName} Photographers</h1>
+        <p className="text-gray-600 text-sm">
+          {photographers.length} talented photographer{photographers.length !== 1 ? 's' : ''} available
         </p>
       </div>
 
       {/* Photographer Grid */}
-      <div className="grid grid-cols-1 gap-4">
-        {photographers.map((photographer) => (
-          <PhotographerCard
+      <div className="grid grid-cols-1 gap-6">
+        {photographers.map((photographer, index) => (
+          <div 
             key={photographer.id}
-            {...photographer}
-            onClick={() => onPhotographerClick(photographer)}
-          />
+            className="animate-fade-in-up"
+            style={{ animationDelay: `${index * 150}ms` }}
+          >
+            <PhotographerCard
+              {...photographer}
+              onClick={() => onPhotographerClick(photographer)}
+            />
+          </div>
         ))}
       </div>
 
       {/* Load More Button */}
       {photographers.length > 0 && (
-        <div className="text-center mt-6">
-          <button className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200">
+        <div className="text-center mt-12">
+          <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
             Load More Photographers
           </button>
         </div>

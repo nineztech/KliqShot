@@ -3,19 +3,7 @@
 import { useState, useEffect } from 'react';
 import MobilePhotographerGrid from './MobilePhotographerGrid';
 import DesktopPhotographerGrid from './DesktopPhotographerGrid';
-
-interface Photographer {
-  id: number;
-  name: string;
-  specialty: string;
-  location: string;
-  rating: number;
-  reviews: number;
-  price: string;
-  experience: string;
-  image: string;
-  description: string;
-}
+import type { Photographer } from '@/data/photographers';
 
 interface PhotographerGridProps {
   photographers: Photographer[];

@@ -4,9 +4,14 @@ interface PhotographerDetailPageProps {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{
+    category?: string;
+    subcategory?: string;
+  }>;
 }
 
-export default async function PhotographerDetailPage({ params }: PhotographerDetailPageProps) {
+export default async function PhotographerDetailPage({ params, searchParams }: PhotographerDetailPageProps) {
   const { id } = await params;
-  return <PhotographerDetail photographerId={id} />;
+  const { category, subcategory } = await searchParams;
+  return <PhotographerDetail photographerId={id} category={category} subcategory={subcategory} />;
 }

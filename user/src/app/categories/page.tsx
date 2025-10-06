@@ -88,7 +88,17 @@ export default function CategoriesPage() {
   };
 
   const handlePhotographerClick = (photographer: Photographer) => {
-    router.push(`/photographer/${photographer.id}`);
+    const params = new URLSearchParams();
+    if (selectedCategory) {
+      params.append('category', selectedCategory.id);
+    }
+    if (selectedSubCategory) {
+      params.append('subcategory', selectedSubCategory.id);
+    }
+    
+    const queryString = params.toString();
+    const url = `/photographer/${photographer.id}${queryString ? `?${queryString}` : ''}`;
+    router.push(url);
   };
 
   // If we have a subcategory selected, show photographers for that subcategory

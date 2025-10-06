@@ -24,9 +24,11 @@ interface Photographer {
 
 interface PhotographerDetailProps {
   photographerId: string;
+  category?: string;
+  subcategory?: string;
 }
 
-export default function PhotographerDetail({ photographerId }: PhotographerDetailProps) {
+export default function PhotographerDetail({ photographerId, category, subcategory }: PhotographerDetailProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [photographer, setPhotographer] = useState<Photographer | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,7 +53,7 @@ export default function PhotographerDetail({ photographerId }: PhotographerDetai
       location: "New York, NY",
       rating: 4.8,
       reviews: 127,
-      price: "$299",
+      price: "₹299",
       experience: "8 years",
       image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
       description: "Passionate wedding photographer with 8 years of experience capturing life's most precious moments. Specializing in candid and artistic wedding photography that tells your unique love story.",
@@ -99,8 +101,8 @@ export default function PhotographerDetail({ photographerId }: PhotographerDetai
   }
 
   return isMobile ? (
-    <MobilePhotographerDetail photographer={photographer} />
+    <MobilePhotographerDetail photographer={photographer} category={category} subcategory={subcategory} />
   ) : (
-    <DesktopPhotographerDetail photographer={photographer} />
+    <DesktopPhotographerDetail photographer={photographer} category={category} subcategory={subcategory} />
   );
 }

@@ -292,15 +292,16 @@ export default function PhotographerCard({
              <span className="text-lg font-bold text-blue-600">{price}</span>
              <span className="text-gray-500 text-xs">per session</span>
            </div>
-           <button 
-             className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-             onClick={(e) => {
-               e.stopPropagation();
-               console.log(`Book ${name}`);
-             }}
-           >
-             Book Now
-           </button>
+          <button 
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Navigate to photographer detail page where booking logic will handle category selection
+              router.push(`/photographer/${id}`);
+            }}
+          >
+            Book Now
+          </button>
          </div>
        </div>
     </div>

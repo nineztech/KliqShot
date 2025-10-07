@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @import "tailwindcss";
 
 :root {
@@ -26,4 +27,198 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Custom slider styles */
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: #2563eb;
+  transform: scale(1.1);
+}
+
+.slider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+/* Global Font Size Classes */
+.section-title {
+  @apply font-bold text-gray-900;
+}
+
+.section-title-mobile {
+  @apply text-xl;
+}
+
+.section-title-desktop {
+  @apply text-3xl;
+}
+
+.section-subtitle {
+  @apply text-gray-600;
+}
+
+.section-subtitle-mobile {
+  @apply text-xs;
+}
+
+.section-subtitle-desktop {
+  @apply text-base;
+}
+
+.section-description {
+  @apply text-gray-600;
+}
+
+.section-description-mobile {
+  @apply text-sm;
+}
+
+.section-description-desktop {
+  @apply text-lg;
+}
+
+.card-title {
+  @apply font-semibold text-gray-900;
+}
+
+.card-title-mobile {
+  @apply text-sm;
+}
+
+.card-title-desktop {
+  @apply text-lg;
+}
+
+.card-description {
+  @apply text-gray-600;
+}
+
+.card-description-mobile {
+  @apply text-xs;
+}
+
+.card-description-desktop {
+  @apply text-sm;
+}
+
+.feature-title {
+  @apply font-semibold text-gray-900;
+}
+
+.feature-title-mobile {
+  @apply text-lg;
+}
+
+.feature-title-desktop {
+  @apply text-lg;
+}
+
+.feature-description {
+  @apply text-gray-600;
+}
+
+.feature-description-mobile {
+  @apply text-sm;
+}
+
+.feature-description-desktop {
+  @apply text-sm;
+}
+
+/* Admin Dashboard Specific Styles */
+.admin-sidebar {
+  @apply bg-white border-r border-gray-200;
+}
+
+.admin-main {
+  @apply bg-gray-50 min-h-screen;
+}
+
+.admin-card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+}
+
+.admin-button-primary {
+  @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+}
+
+.admin-button-secondary {
+  @apply bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-200;
+}
+
+.admin-button-danger {
+  @apply bg-red-100 text-red-700 px-4 py-2 rounded-lg font-semibold hover:bg-red-200 transition-colors duration-200;
+}
+
+.admin-input {
+  @apply border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200;
+}
+
+.admin-label {
+  @apply block text-sm font-medium text-gray-700 mb-2;
 }

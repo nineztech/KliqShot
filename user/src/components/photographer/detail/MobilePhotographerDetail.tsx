@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import { categories, type Category, type SubCategory } from '@/data/categories';
 
 interface Photographer {
   id: number;
@@ -27,12 +28,17 @@ interface Photographer {
 
 interface MobilePhotographerDetailProps {
   photographer: Photographer;
+  category?: string;
+  subcategory?: string;
 }
 
-export default function MobilePhotographerDetail({ photographer }: MobilePhotographerDetailProps) {
+export default function MobilePhotographerDetail({ photographer, category, subcategory }: MobilePhotographerDetailProps) {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string>('');
 
   const renderStars = () => {
     const stars = [];
@@ -60,6 +66,46 @@ export default function MobilePhotographerDetail({ photographer }: MobilePhotogr
       }
     }
     return stars;
+  };
+
+  const handleBookNow = () => {
+    // If no category is selected, show the category selection modal
+    if (!category && !selectedCategory) {
+      setShowCategoryModal(true);
+      return;
+    }
+
+    // Create booking URL with category and subcategory information
+    const bookingParams = new URLSearchParams();
+    bookingParams.append('photographerId', photographer.id.toString());
+    bookingParams.append('photographerName', photographer.name);
+    bookingParams.append('price', photographer.price);
+    
+    const finalCategory = category || selectedCategory;
+    const finalSubCategory = subcategory || selectedSubCategory;
+    
+    if (finalCategory) {
+      bookingParams.append('category', finalCategory);
+    }
+    
+    if (finalSubCategory) {
+      bookingParams.append('subcategory', finalSubCategory);
+    }
+    
+    // Navigate to booking page with parameters
+    router.push(`/booking?${bookingParams.toString()}`);
+  };
+
+  const handleCategorySelection = () => {
+    if (selectedCategory && selectedSubCategory) {
+      setShowCategoryModal(false);
+      // Now proceed with booking
+      handleBookNow();
+    }
+  };
+
+  const getSelectedCategoryData = () => {
+    return categories.find(cat => cat.id === selectedCategory);
   };
 
   return (
@@ -226,7 +272,10 @@ export default function MobilePhotographerDetail({ photographer }: MobilePhotogr
             <div className="text-gray-500 text-sm">per session</div>
           </div>
           
-          <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 mb-3">
+          <button 
+            onClick={handleBookNow}
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 mb-3"
+          >
             Book Now
           </button>
           
@@ -252,6 +301,93 @@ export default function MobilePhotographerDetail({ photographer }: MobilePhotogr
           </div>
         </div>
       </div>
+
+      {/* Category Selection Modal */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">Select a Category</h2>
+              <button
+                onClick={() => setShowCategoryModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4">
+              <p className="text-gray-600 text-sm mb-4">Please select a category to continue with your booking:</p>
+              
+              {/* Categories Grid */}
+              <div className="space-y-3 mb-4">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setSelectedCategory(cat.id);
+                      setSelectedSubCategory('');
+                    }}
+                    className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
+                      selectedCategory === cat.id
+                        ? 'border-blue-500 bg-blue-50 shadow-md'
+                        : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                    }`}
+                  >
+                    <h3 className="font-semibold text-gray-900 text-sm mb-1">{cat.name}</h3>
+                    <p className="text-xs text-gray-600">{cat.description}</p>
+                    <p className="text-xs text-blue-600 mt-1">{cat.photographerCount} photographers</p>
+                  </button>
+                ))}
+              </div>
+
+              {/* Subcategories */}
+              {selectedCategory && getSelectedCategoryData()?.subCategories && (
+                <div className="mt-4">
+                  <h3 className="font-semibold text-gray-900 text-sm mb-3">Select a Subcategory (Required):</h3>
+                  <div className="space-y-2">
+                    {getSelectedCategoryData()?.subCategories.map((subCat) => (
+                      <button
+                        key={subCat.id}
+                        onClick={() => setSelectedSubCategory(subCat.id)}
+                        className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
+                          selectedSubCategory === subCat.id
+                            ? 'border-blue-500 bg-blue-50 shadow-sm'
+                            : 'border-gray-200 hover:border-blue-300'
+                        }`}
+                      >
+                        <h4 className="font-medium text-gray-900 text-sm mb-1">{subCat.name}</h4>
+                        <p className="text-xs text-gray-600">{subCat.description}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="mt-4 flex flex-col space-y-2">
+                <button
+                  onClick={handleCategorySelection}
+                  disabled={!selectedCategory || !selectedSubCategory}
+                  className={`w-full py-3 rounded-lg font-medium transition-colors ${
+                    selectedCategory && selectedSubCategory
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  Continue to Booking
+                </button>
+                <button
+                  onClick={() => setShowCategoryModal(false)}
+                  className="w-full py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

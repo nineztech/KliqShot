@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { 
   MdHome, 
   MdDashboard, 
@@ -22,13 +23,13 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: MdHome },
-    { id: 'categories', label: 'Categories', icon: MdDashboard },
-    { id: 'photographers', label: 'Photographers', icon: MdCameraAlt },
-    { id: 'users', label: 'Users', icon: MdPeople },
-    { id: 'analytics', label: 'Analytics', icon: MdBarChart },
-    { id: 'notifications', label: 'Notifications', icon: MdNotifications },
-    { id: 'settings', label: 'Settings', icon: MdSettings },
+    { id: 'dashboard', label: 'Dashboard', icon: MdHome, href: '/' },
+    { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
+    { id: 'photographers', label: 'Photographers', icon: MdCameraAlt, href: '/photographers' },
+    { id: 'users', label: 'Users', icon: MdPeople, href: '/users' },
+    { id: 'analytics', label: 'Analytics', icon: MdBarChart, href: '/analytics' },
+    { id: 'notifications', label: 'Notifications', icon: MdNotifications, href: '/notifications' },
+    { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },
   ];
 
   return (
@@ -83,12 +84,10 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
                   const isActive = activeTab === item.id;
                   
                   return (
-                    <button
+                    <Link
                       key={item.id}
-                      onClick={() => {
-                        onTabChange(item.id);
-                        setIsOpen(false);
-                      }}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
                         isActive
                           ? 'bg-blue-50 text-blue-700'
@@ -97,7 +96,7 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
                     >
                       <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
                       <span className="font-medium text-sm">{item.label}</span>
-                    </button>
+                    </Link>
                   );
                 })}
               </nav>

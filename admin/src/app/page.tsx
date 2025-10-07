@@ -1,16 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import Sidebar from '@/components/sidebar';
 import Dashboard from '@/components/dashboard';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('dashboard');
-
   return (
     <div className="min-h-screen bg-gray-50">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
-      <Dashboard activeTab={activeTab} />
+      <Sidebar activeTab="dashboard" onTabChange={(tab) => window.location.href = `/${tab}`} />
+      <div className="ml-20 transition-all duration-300">
+        <Dashboard activeTab="dashboard" />
+      </div>
     </div>
   );
 }

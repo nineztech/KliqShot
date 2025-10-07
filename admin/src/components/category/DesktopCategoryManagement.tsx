@@ -7,7 +7,7 @@ import {
   MdDelete, 
   MdExpandMore,
   MdChevronRight,
-  MdClose 
+  MdClose
 } from 'react-icons/md';
 
 interface SubCategory {
@@ -24,12 +24,12 @@ interface Category {
   subCategories: SubCategory[];
 }
 
-interface CategoryManagementProps {
+interface DesktopCategoryManagementProps {
   categories: Category[];
   setCategories: (categories: Category[]) => void;
 }
 
-export default function CategoryManagement({ categories, setCategories }: CategoryManagementProps) {
+export default function DesktopCategoryManagement({ categories, setCategories }: DesktopCategoryManagementProps) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);

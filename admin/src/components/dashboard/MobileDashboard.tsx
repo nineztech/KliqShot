@@ -8,7 +8,8 @@ import {
   MdAdd
 } from 'react-icons/md';
 import { useState } from 'react';
-import CategoryManagement from '../category/CategoryManagement';
+import CategoryManagement from '../category';
+import PhotographerManagement from '../photographer';
 
 interface MobileDashboardProps {
   activeTab: string;
@@ -36,6 +37,41 @@ export default function MobileDashboard({ activeTab }: MobileDashboardProps) {
         { id: '2-1', name: 'Headshots', photographerCount: 78 },
         { id: '2-2', name: 'Portfolio', photographerCount: 65 }
       ]
+    }
+  ]);
+
+  const [photographers, setPhotographers] = useState([
+    {
+      id: '1',
+      name: 'Sarah Johnson',
+      email: 'sarah.johnson@email.com',
+      phone: '+1 234 567 8900',
+      location: 'New York, NY',
+      specialty: 'Wedding Photography',
+      rating: 4.9,
+      reviews: 156,
+      price: '₹15,000',
+      experience: '5+ years',
+      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face',
+      status: 'active' as 'active' | 'inactive' | 'pending',
+      joinDate: '2023-01-15',
+      categories: ['wedding', 'portrait']
+    },
+    {
+      id: '2',
+      name: 'Rajesh Kumar',
+      email: 'rajesh.kumar@email.com',
+      phone: '+91 987 654 3210',
+      location: 'Mumbai, India',
+      specialty: 'Haldi Photography',
+      rating: 4.8,
+      reviews: 203,
+      price: '₹12,000',
+      experience: '7+ years',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
+      status: 'active' as 'active' | 'inactive' | 'pending',
+      joinDate: '2023-02-20',
+      categories: ['wedding', 'events']
     }
   ]);
 
@@ -104,18 +140,7 @@ export default function MobileDashboard({ activeTab }: MobileDashboardProps) {
         return <CategoryManagement categories={categories} setCategories={setCategories} />;
       
       case 'photographers':
-        return (
-          <div className="admin-card p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900">Photographers</h2>
-              <button className="admin-button-primary text-sm px-3 py-2">
-                <MdAdd className="w-4 h-4 mr-1" />
-                Add
-              </button>
-            </div>
-            <p className="text-gray-600 text-sm">Photographer management coming soon...</p>
-          </div>
-        );
+        return <PhotographerManagement photographers={photographers} setPhotographers={setPhotographers} />;
       
       case 'users':
         return (

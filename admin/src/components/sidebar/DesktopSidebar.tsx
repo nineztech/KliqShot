@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   MdHome, 
   MdDashboard, 
@@ -32,8 +33,8 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
       <div className="p-4">
         {/* Logo */}
         <div className="flex items-center space-x-3 mb-8 overflow-hidden">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold text-lg">K</span>
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Image src="/LOGO.png" alt="KliqShot Logo" width={40} height={40} className="object-contain" />
           </div>
           <div className="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <h1 className="text-xl font-bold text-gray-900">KliqShot</h1>
@@ -57,7 +58,7 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                <Icon className={`w-6 h-6 flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
                 <span className="font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">{item.label}</span>
               </Link>
             );

@@ -1,6 +1,6 @@
 import express from 'express';
 import userRoutes from './userRoutes.js';
-
+import sellerRoutes from './sellerRoutes.js';
 const router = express.Router();
 
 // Health check route
@@ -14,7 +14,7 @@ router.get('/health', (req, res) => {
 
 // API routes
 router.use('/users', userRoutes);
-
+router.use('/sellers', sellerRoutes);
 // Add other route modules here as they are created
 // router.use('/products', productRoutes);
 // router.use('/orders', orderRoutes);

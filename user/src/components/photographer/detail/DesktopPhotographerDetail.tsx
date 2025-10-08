@@ -92,21 +92,48 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   };
 
   const getCurrentPortfolioImages = () => {
-    if (activePortfolioTab === 'TOP PHOTOS') {
-      return photographer.portfolio || [];
-    } else {
-      // For ALL FUNCTIONS tab, show category-specific images
-      const categories = photographer.portfolioCategories || [];
-      const category = categories.find(cat => cat.name === activePortfolioCategory);
-      
-      // If category exists and has images, return them; otherwise return empty array
-      if (category && category.images && category.images.length > 0) {
-        return category.images;
-      }
-      
-      // Fallback: if no specific category images, return main portfolio
-      return photographer.portfolio || [];
+    // Create category-specific image sets
+    const categoryImages = {
+      'Mehndi': [
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop"
+      ],
+      'Engagement': [
+        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop"
+      ],
+      'Wedding': [
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop"
+      ],
+      'Haldi/Chooda': [
+        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop"
+      ]
+    };
+
+    // If a category is selected, return its images, otherwise return all portfolio images
+    if (activePortfolioCategory && categoryImages[activePortfolioCategory]) {
+      return categoryImages[activePortfolioCategory];
     }
+    
+    return photographer.portfolio || [];
   };
 
   const handleBookNow = () => {
@@ -188,132 +215,94 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Photographer Header */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex items-start space-x-6">
-                <div className="relative w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
-                  <Image
-                    src={photographer.image}
-                    alt={photographer.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                
-                <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{photographer.name}</h1>
-                  <p className="text-xl text-blue-600 font-medium mb-3">{photographer.specialty}</p>
-                  
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="flex items-center space-x-1">
-                      {renderStars()}
-                      <span className="text-gray-600 ml-2">
-                        {photographer.rating} ({photographer.reviews} reviews)
-                      </span>
-                    </div>
-                    
-                    <div className="flex items-center text-gray-600">
-                      <MapPinIcon className="w-4 h-4 mr-1" />
-                      <span>{photographer.location}</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-700 leading-relaxed">{photographer.description}</p>
-                </div>
-              </div>
-            </div>
 
-            {/* Portfolio Gallery */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Photo Gallery</h2>
-              
-              {/* Portfolio Tabs */}
-              <div className="mb-6">
-                <div className="flex border-b border-gray-200 mb-4">
-                  <button
-                    onClick={() => setActivePortfolioTab('TOP PHOTOS')}
-                    className={`px-4 py-2 font-medium text-sm transition-colors duration-200 relative ${
-                      activePortfolioTab === 'TOP PHOTOS'
-                        ? 'text-blue-600 border-b-2 border-blue-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    TOP PHOTOS
-                  </button>
-                  <button
-                    onClick={() => setActivePortfolioTab('ALL FUNCTIONS')}
-                    className={`px-4 py-2 font-medium text-sm transition-colors duration-200 relative ${
-                      activePortfolioTab === 'ALL FUNCTIONS'
-                        ? 'text-blue-600 border-b-2 border-blue-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    ALL FUNCTIONS
-                  </button>
-                </div>
-                
-                {activePortfolioTab === 'ALL FUNCTIONS' && (
-                  <div className="flex space-x-6 mb-4">
-                    {(photographer.portfolioCategories && photographer.portfolioCategories.length > 0 
-                      ? photographer.portfolioCategories 
-                      : [
-                          { name: 'Mehndi', count: 38, images: [] },
-                          { name: 'Engagement', count: 37, images: [] },
-                          { name: 'Wedding', count: 24, images: [] },
-                          { name: 'Haldi/Chooda', count: 0, images: [] }
-                        ]
-                    ).map((category) => (
-                      <button
-                        key={category.name}
-                        onClick={() => setActivePortfolioCategory(category.name)}
-                        className={`font-medium text-sm transition-colors duration-200 ${
-                          activePortfolioCategory === category.name
-                            ? 'text-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {category.name} ({category.count})
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                {getCurrentPortfolioImages().map((image, index) => (
-                  <div
-                    key={index}
-                    className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
-                      selectedImageIndex === index ? 'ring-2 ring-blue-500' : 'hover:shadow-md'
-                    }`}
-                    onClick={() => setSelectedImageIndex(index)}
-                  >
-                    <Image
-                      src={image}
-                      alt={`Portfolio ${index + 1}`}
-                      width={300}
-                      height={300}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                    />
-                  </div>
-                ))}
-              </div>
-              
-              {/* Featured Image */}
-              <div className="aspect-video rounded-lg overflow-hidden shadow-lg">
-                <Image
-                  src={getCurrentPortfolioImages()[selectedImageIndex]}
-                  alt="Featured portfolio image"
-                  width={800}
-                  height={450}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+             {/* Portfolio Gallery */}
+             <div className="bg-white rounded-lg shadow-sm p-6">
+               {/* Main Photo Carousel */}
+               <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-6">
+                 <Image
+                   src={getCurrentPortfolioImages()[selectedImageIndex]}
+                   alt="Featured portfolio image"
+                   width={800}
+                   height={450}
+                   className="w-full h-full object-cover"
+                 />
+                 
+                 {/* Carousel Navigation */}
+                 <div className="absolute inset-0 flex items-center justify-between p-4">
+                   <button
+                     onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentPortfolioImages().length - 1)}
+                     className="w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all duration-200"
+                   >
+                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                     </svg>
+                   </button>
+                   <button
+                     onClick={() => setSelectedImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0)}
+                     className="w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all duration-200"
+                   >
+                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                     </svg>
+                   </button>
+                 </div>
+                 
+                 {/* Carousel Indicators */}
+                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                   {getCurrentPortfolioImages().map((_, index) => (
+                     <button
+                       key={index}
+                       onClick={() => setSelectedImageIndex(index)}
+                       className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                         selectedImageIndex === index ? 'bg-white' : 'bg-white bg-opacity-50'
+                       }`}
+                     />
+                   ))}
+                 </div>
+               </div>
+               
+               {/* Horizontal Category Cards */}
+               <div className="flex space-x-4 justify-center">
+                 {(() => {
+                   const categories = [
+                     { id: 1, name: "Mehndi", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=150&h=150&fit=crop" },
+                     { id: 2, name: "Engagement", image: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=150&h=150&fit=crop" },
+                     { id: 3, name: "Wedding", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=150&h=150&fit=crop" }
+                   ];
+
+                   return categories.map((category) => (
+                     <div 
+                       key={category.id} 
+                       className={`relative w-20 h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+                         activePortfolioCategory === category.name ? 'ring-2 ring-blue-500 scale-110' : 'hover:scale-105 hover:shadow-lg'
+                       }`}
+                       onClick={() => setActivePortfolioCategory(category.name)}
+                     >
+                       <Image
+                         src={category.image}
+                         alt={category.name}
+                         width={80}
+                         height={80}
+                         className="w-full h-full object-cover"
+                       />
+                       {/* Selection Indicator */}
+                       {activePortfolioCategory === category.name && (
+                         <div className="absolute top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                           <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                           </svg>
+                         </div>
+                       )}
+                     </div>
+                   ));
+                 })()}
+               </div>
+             </div>
 
             {/* About Section */}
             <div className="bg-white rounded-lg shadow-sm p-6">
@@ -643,62 +632,50 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
             </div>
           </div>
 
-          {/* Right Column - Booking Card */}
+          {/* Right Column - Photographer Detail & Booking Card */}
           <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-md border border-gray-100 p-4 sticky top-24">
+            <div className="bg-white rounded-lg shadow-lg border border-gray-100 p-5 sticky top-24">
+              {/* Photographer Header */}
               <div className="text-center mb-4">
-                <div className="flex items-center justify-center mb-1">
-                  <span className="text-3xl font-bold text-blue-600">{photographer.price}</span>
-                  <span className="text-gray-500 text-sm ml-2">per hour</span>
-                </div>
-                <div className="flex items-center justify-center mt-2">
+                <h1 className="text-xl font-bold text-gray-900 mb-2">{photographer.name}</h1>
+                <p className="text-lg text-blue-600 font-medium mb-3">{photographer.specialty}</p>
+                
+                <div className="flex items-center justify-center space-x-1 mb-2">
                   {renderStars()}
-                  <span className="text-gray-600 ml-2 text-xs">
+                  <span className="text-gray-600 ml-2 text-sm">
                     {photographer.rating} ({photographer.reviews} reviews)
                   </span>
                 </div>
-              </div>
-              
-              <button 
-                onClick={handleBookNow}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-3 rounded-md font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 mb-2 shadow-sm hover:shadow-md text-sm"
-              >
-                📸 Book Now
-              </button>
-              
-              <button className="w-full bg-white border border-gray-200 text-gray-700 py-2 px-3 rounded-md font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 mb-4 text-sm">
-                💬 Send Message
-              </button>
-              
-              <div className="bg-blue-50 rounded-md p-3 mb-4">
-                <div className="flex items-center text-blue-700 font-medium mb-1">
-                  <ClockIcon className="w-4 h-4 mr-2" />
-                  <span className="text-sm">Quick Response</span>
-                </div>
-                <p className="text-blue-600 text-xs">Usually responds within 2 hours</p>
-              </div>
-              
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center text-gray-600 p-2 bg-gray-50 rounded-md">
-                  <CameraIcon className="w-4 h-4 mr-2 text-blue-500" />
-                  <span className="font-medium">Professional equipment included</span>
+                
+                <div className="flex items-center justify-center text-gray-600 text-sm mb-3">
+                  <MapPinIcon className="w-4 h-4 mr-1" />
+                  <span>{photographer.location}</span>
                 </div>
                 
-                <div className="flex items-center text-gray-600 p-2 bg-gray-50 rounded-md">
-                  <MapPinIcon className="w-4 h-4 mr-2 text-green-500" />
-                  <span className="font-medium">Travels to your location</span>
-                </div>
-                
-                <div className="flex items-center text-gray-600 p-2 bg-gray-50 rounded-md">
-                  <HeartIcon className="w-4 h-4 mr-2 text-red-500" />
-                  <span className="font-medium">Free consultation call</span>
-                </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-4">{photographer.description}</p>
               </div>
               
-              <div className="mt-4 pt-3 border-t border-gray-200">
-                <p className="text-xs text-gray-500 text-center">
-                  🔒 Secure booking with instant confirmation
-                </p>
+              {/* Pricing & Booking */}
+              <div className="border-t border-gray-200 pt-4">
+                <div className="text-center mb-4">
+                  <div className="flex items-center justify-center mb-2">
+                    <span className="text-3xl font-bold text-blue-600">{photographer.price}</span>
+                    <span className="text-gray-500 text-sm ml-2">per hour</span>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={handleBookNow}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 mb-4 shadow-sm hover:shadow-md"
+                >
+                  📸 Book Now
+                </button>
+                
+                <div className="mt-4 pt-3 border-t border-gray-200">
+                  <p className="text-xs text-gray-500 text-center">
+                    🔒 Secure booking with instant confirmation
+                  </p>
+                </div>
               </div>
             </div>
           </div>

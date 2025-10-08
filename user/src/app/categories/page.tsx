@@ -84,7 +84,7 @@ export default function CategoriesPage() {
   };
 
   const handleBackClick = () => {
-    router.back();
+    router.push('/');
   };
 
   const handlePhotographerClick = (photographer: Photographer) => {

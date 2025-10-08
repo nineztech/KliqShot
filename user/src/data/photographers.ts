@@ -10,92 +10,319 @@ export interface Photographer {
   image: string;
   description: string;
   category: string;
+  subCategory?: string; // Optional subcategory field
+  categories?: string[]; // Additional categories photographer works in
 }
 
 export const photographersData: Photographer[] = [
-  // Wedding Photography
+  // Wedding Photography - Haldi Subcategory
   {
     id: 1,
     name: "Sarah Johnson",
-    specialty: "Wedding Photography",
+    specialty: "Haldi Photography",
     location: "Mumbai, India",
     rating: 4.9,
     reviews: 156,
     price: "₹15,000",
     experience: "5+ years",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face",
-    description: "Specialized in capturing beautiful wedding moments with a creative and artistic approach.",
-    category: "Wedding"
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+    description: "Specialized in capturing beautiful haldi ceremony moments with vibrant colors and emotions.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "portrait", "family"]
   },
   {
     id: 2,
     name: "Rajesh Kumar",
-    specialty: "Wedding Photography",
+    specialty: "Haldi Photography",
     location: "Delhi, India",
     rating: 4.8,
     reviews: 203,
     price: "₹12,000",
     experience: "7+ years",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
-    description: "Expert in traditional and modern wedding photography with stunning candid moments.",
-    category: "Wedding"
+    description: "Expert in traditional haldi ceremonies with stunning candid moments and cultural authenticity.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "events", "professional"]
   },
+  {
+    id: 21,
+    name: "Arjun Singh",
+    specialty: "Haldi Photography",
+    location: "Bangalore, India",
+    rating: 4.7,
+    reviews: 89,
+    price: "₹18,000",
+    experience: "4+ years",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
+    description: "Creative haldi photographer specializing in artistic compositions and vibrant color palettes.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "portrait", "sports", "creative"]
+  },
+  {
+    id: 22,
+    name: "Meera Patel",
+    specialty: "Haldi Photography",
+    location: "Chennai, India",
+    rating: 4.9,
+    reviews: 134,
+    price: "₹16,500",
+    experience: "6+ years",
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face",
+    description: "Passionate about capturing the joy and laughter during haldi ceremonies with natural lighting.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "family", "events"]
+  },
+  {
+    id: 23,
+    name: "Vikram Reddy",
+    specialty: "Haldi Photography",
+    location: "Hyderabad, India",
+    rating: 4.6,
+    reviews: 67,
+    price: "₹14,000",
+    experience: "3+ years",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face",
+    description: "Modern approach to haldi photography with contemporary styling and candid moments.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "portrait", "professional"]
+  },
+  {
+    id: 24,
+    name: "Kavya Nair",
+    specialty: "Haldi Photography",
+    location: "Kolkata, India",
+    rating: 4.8,
+    reviews: 98,
+    price: "₹17,000",
+    experience: "5+ years",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
+    description: "Specialized in traditional Bengali haldi ceremonies with cultural authenticity and warmth.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "family", "cultural"]
+  },
+  {
+    id: 25,
+    name: "Rohit Agarwal",
+    specialty: "Haldi Photography",
+    location: "Pune, India",
+    rating: 4.5,
+    reviews: 76,
+    price: "₹13,500",
+    experience: "4+ years",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+    description: "Expert in capturing the playful and emotional moments of haldi ceremonies.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "events", "portrait"]
+  },
+  {
+    id: 26,
+    name: "Anita Desai",
+    specialty: "Haldi Photography",
+    location: "Mumbai, India",
+    rating: 4.9,
+    reviews: 187,
+    price: "₹19,000",
+    experience: "8+ years",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop&crop=face",
+    description: "Award-winning haldi photographer with expertise in luxury wedding ceremonies.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "luxury", "professional", "events"]
+  },
+  {
+    id: 27,
+    name: "Suresh Iyer",
+    specialty: "Haldi Photography",
+    location: "Bangalore, India",
+    rating: 4.7,
+    reviews: 112,
+    price: "₹15,500",
+    experience: "5+ years",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+    description: "Creative storyteller capturing the essence of South Indian haldi traditions.",
+    category: "wedding",
+    subCategory: "haldi",
+    categories: ["wedding", "cultural", "traditional"]
+  },
+
+  // Wedding Photography - Mehendi Subcategory
   {
     id: 3,
     name: "Priya Sharma",
-    specialty: "Wedding Photography",
+    specialty: "Mehendi Photography",
     location: "Bangalore, India",
     rating: 4.9,
     reviews: 189,
     price: "₹18,000",
     experience: "6+ years",
     image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
-    description: "Passionate about capturing precious wedding moments with warmth and authenticity.",
-    category: "Wedding"
+    description: "Passionate about capturing beautiful mehendi designs and intimate moments.",
+    category: "wedding",
+    subCategory: "mehendi",
+    categories: ["wedding", "portrait", "artistic"]
+  },
+  {
+    id: 13,
+    name: "Kavya Reddy",
+    specialty: "Mehendi Photography",
+    location: "Hyderabad, India",
+    rating: 4.7,
+    reviews: 134,
+    price: "₹14,000",
+    experience: "4+ years",
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face",
+    description: "Specialized in mehendi ceremony photography with focus on intricate designs and emotions.",
+    category: "wedding",
+    subCategory: "mehendi",
+    categories: ["wedding", "cultural", "traditional"]
   },
 
-  // Portrait Photography
+  // Wedding Photography - Reception Subcategory
+  {
+    id: 14,
+    name: "Arjun Singh",
+    specialty: "Reception Photography",
+    location: "Pune, India",
+    rating: 4.8,
+    reviews: 167,
+    price: "₹20,000",
+    experience: "8+ years",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+    description: "Expert in grand reception celebrations with professional lighting and composition.",
+    category: "wedding",
+    subCategory: "reception"
+  },
+  {
+    id: 15,
+    name: "Ritu Patel",
+    specialty: "Reception Photography",
+    location: "Ahmedabad, India",
+    rating: 4.9,
+    reviews: 145,
+    price: "₹22,000",
+    experience: "6+ years",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
+    description: "Passionate about capturing elegant reception moments with artistic flair.",
+    category: "wedding",
+    subCategory: "reception"
+  },
+
+  // Wedding Photography - Pre-Wedding Subcategory
+  {
+    id: 16,
+    name: "Vikram Mehta",
+    specialty: "Pre-Wedding Photography",
+    location: "Jaipur, India",
+    rating: 4.9,
+    reviews: 178,
+    price: "₹25,000",
+    experience: "9+ years",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face",
+    description: "Creative pre-wedding photographer specializing in romantic and artistic sessions.",
+    category: "wedding",
+    subCategory: "pre-wedding"
+  },
+  {
+    id: 17,
+    name: "Anjali Joshi",
+    specialty: "Pre-Wedding Photography",
+    location: "Indore, India",
+    rating: 4.7,
+    reviews: 89,
+    price: "₹18,000",
+    experience: "4+ years",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&crop=face",
+    description: "Artistic pre-wedding photographer with unique perspective on romantic storytelling.",
+    category: "wedding",
+    subCategory: "pre-wedding"
+  },
+
+  // Portrait Photography - Headshots Subcategory
   {
     id: 4,
     name: "Amit Patel",
-    specialty: "Portrait Photography",
+    specialty: "Professional Headshots",
     location: "Chennai, India",
     rating: 4.7,
     reviews: 134,
     price: "₹10,000",
     experience: "4+ years",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
-    description: "Professional portrait photographer with experience in headshots and personal branding.",
-    category: "Portrait"
+    description: "Professional headshot photographer with experience in business and corporate portraits.",
+    category: "portrait",
+    subCategory: "headshots",
+    categories: ["portrait", "professional", "corporate"]
   },
+  {
+    id: 18,
+    name: "Rohit Verma",
+    specialty: "Professional Headshots",
+    location: "Kolkata, India",
+    rating: 4.8,
+    reviews: 156,
+    price: "₹12,000",
+    experience: "6+ years",
+    image: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=300&h=300&fit=crop&crop=face",
+    description: "Expert in professional headshots with modern studio techniques and lighting.",
+    category: "portrait",
+    subCategory: "headshots",
+    categories: ["portrait", "professional", "studio"]
+  },
+
+  // Portrait Photography - Portfolio Subcategory
   {
     id: 5,
     name: "Deepika Singh",
-    specialty: "Portrait Photography",
+    specialty: "Portfolio Photography",
     location: "Kolkata, India",
     rating: 4.8,
     reviews: 167,
     price: "₹8,000",
     experience: "3+ years",
     image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop&crop=face",
-    description: "Creative portrait photographer specializing in natural light and studio photography.",
-    category: "Portrait"
+    description: "Creative portfolio photographer specializing in natural light and artistic compositions.",
+    category: "portrait",
+    subCategory: "portfolio"
   },
+  {
+    id: 19,
+    name: "Suresh Kumar",
+    specialty: "Portfolio Photography",
+    location: "Kochi, India",
+    rating: 4.9,
+    reviews: 189,
+    price: "₹14,000",
+    experience: "7+ years",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop&crop=face",
+    description: "Professional portfolio photographer with expertise in creative and artistic sessions.",
+    category: "portrait",
+    subCategory: "portfolio"
+  },
+
+  // Portrait Photography - LinkedIn Profile Subcategory
   {
     id: 6,
     name: "Vikram Mehta",
-    specialty: "Portrait Photography",
+    specialty: "LinkedIn Profile Photography",
     location: "Pune, India",
     rating: 4.6,
     reviews: 98,
     price: "₹12,000",
     experience: "5+ years",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face",
-    description: "Professional headshot and portrait photographer with modern editing techniques.",
-    category: "Portrait"
+    description: "Professional LinkedIn profile photographer with modern editing techniques.",
+    category: "portrait",
+    subCategory: "linkedin"
   },
 
-  // Corporate Events
+  // Corporate Events - Corporate Events Subcategory
   {
     id: 7,
     name: "Arjun Reddy",
@@ -107,7 +334,8 @@ export const photographersData: Photographer[] = [
     experience: "8+ years",
     image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face",
     description: "Professional corporate photographer with experience in business events and conferences.",
-    category: "Corporate"
+    category: "events",
+    subCategory: "corporate-events"
   },
   {
     id: 8,
@@ -120,42 +348,15 @@ export const photographersData: Photographer[] = [
     experience: "6+ years",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&crop=face",
     description: "Expert in corporate photography with focus on professional event documentation.",
-    category: "Corporate"
+    category: "events",
+    subCategory: "corporate-events"
   },
 
-  // Creative Photography
-  {
-    id: 9,
-    name: "Rohit Verma",
-    specialty: "Creative Photography",
-    location: "Jaipur, India",
-    rating: 4.9,
-    reviews: 178,
-    price: "₹25,000",
-    experience: "9+ years",
-    image: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=300&h=300&fit=crop&crop=face",
-    description: "Creative photographer specializing in artistic and conceptual photography projects.",
-    category: "Creative"
-  },
-  {
-    id: 10,
-    name: "Anjali Joshi",
-    specialty: "Creative Photography",
-    location: "Indore, India",
-    rating: 4.7,
-    reviews: 89,
-    price: "₹18,000",
-    experience: "4+ years",
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&crop=face",
-    description: "Artistic photographer with unique perspective on creative and experimental photography.",
-    category: "Creative"
-  },
-
-  // Family Photography
+  // Family Photography - Family Portraits Subcategory
   {
     id: 11,
     name: "Suresh Kumar",
-    specialty: "Family Photography",
+    specialty: "Family Portraits",
     location: "Kochi, India",
     rating: 4.8,
     reviews: 156,
@@ -163,12 +364,14 @@ export const photographersData: Photographer[] = [
     experience: "7+ years",
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop&crop=face",
     description: "Family photographer specializing in capturing precious family moments and milestones.",
-    category: "Family"
+    category: "family",
+    subCategory: "family-portraits",
+    categories: ["family", "portrait", "events"]
   },
   {
     id: 12,
     name: "Meera Iyer",
-    specialty: "Family Photography",
+    specialty: "Family Portraits",
     location: "Coimbatore, India",
     rating: 4.9,
     reviews: 134,
@@ -176,23 +379,49 @@ export const photographersData: Photographer[] = [
     experience: "5+ years",
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&crop=face",
     description: "Passionate about capturing beautiful family memories with natural and candid shots.",
-    category: "Family"
+    category: "family",
+    subCategory: "family-portraits"
   }
 ];
 
-// Pre-compute category mapping for faster lookups
+// Pre-compute category and subcategory mappings for faster lookups
 const categoryMap = new Map<string, Photographer[]>();
+const subCategoryMap = new Map<string, Photographer[]>();
+
 photographersData.forEach(photographer => {
+  // Category mapping
   if (!categoryMap.has(photographer.category)) {
     categoryMap.set(photographer.category, []);
   }
   categoryMap.get(photographer.category)!.push(photographer);
+
+  // Subcategory mapping
+  if (photographer.subCategory) {
+    const subCategoryKey = `${photographer.category}-${photographer.subCategory}`;
+    if (!subCategoryMap.has(subCategoryKey)) {
+      subCategoryMap.set(subCategoryKey, []);
+    }
+    subCategoryMap.get(subCategoryKey)!.push(photographer);
+  }
 });
 
 export const getPhotographersByCategory = (category: string): Photographer[] => {
   return categoryMap.get(category) || [];
 };
 
+export const getPhotographersBySubCategory = (category: string, subCategory: string): Photographer[] => {
+  const subCategoryKey = `${category}-${subCategory}`;
+  return subCategoryMap.get(subCategoryKey) || [];
+};
+
 export const getCategories = (): string[] => {
   return Array.from(new Set(photographersData.map(photographer => photographer.category)));
+};
+
+export const getSubCategories = (category: string): string[] => {
+  return Array.from(new Set(
+    photographersData
+      .filter(photographer => photographer.category === category && photographer.subCategory)
+      .map(photographer => photographer.subCategory!)
+  ));
 };

@@ -5,7 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import PhotographerGrid from '@/components/photographer';
-import { categories, Category, SubCategory, getCategoryById } from '@/data/categories';
+import { categories, Category, SubCategory, getCategoryById, getSubCategoryById } from '@/data/categories';
+import { getPhotographersByCategory, getPhotographersBySubCategory } from '@/data/photographers';
+import type { Photographer } from '@/data/photographers';
 import { 
   HeartIcon, 
   CameraIcon, 
@@ -35,35 +37,119 @@ export default function CategoriesPage() {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null);
+  const [photographers, setPhotographers] = useState<Photographer[]>([]);
 
   useEffect(() => {
     const categoryParam = searchParams.get('category');
+    const subCategoryParam = searchParams.get('subcategory');
+    
     if (categoryParam) {
       const category = getCategoryById(categoryParam);
       if (category) {
         setSelectedCategory(category);
+        
+        // If subcategory is specified, find and set it
+        if (subCategoryParam) {
+          const subCategory = category.subCategories.find(sub => sub.id === subCategoryParam);
+          if (subCategory) {
+            setSelectedSubCategory(subCategory);
+            // Get photographers for this specific subcategory
+            const subCategoryPhotographers = getPhotographersBySubCategory(category.id, subCategoryParam);
+            setPhotographers(subCategoryPhotographers);
+          }
+        } else {
+          setSelectedSubCategory(null);
+          setPhotographers([]);
+        }
       }
     } else if (categories.length > 0) {
       setSelectedCategory(categories[0]);
+      setSelectedSubCategory(null);
+      setPhotographers([]);
     }
   }, [searchParams]);
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
     setSelectedSubCategory(null);
+    setPhotographers([]);
     router.push(`/categories?category=${category.id}`);
   };
 
   const handleSubCategorySelect = (subCategory: SubCategory) => {
     setSelectedSubCategory(subCategory);
-    // Navigate to photographer page for this subcategory
-    router.push(`/category/${subCategory.id}`);
+    // Update URL with subcategory as query parameter
+    const currentCategory = selectedCategory?.id || '';
+    router.push(`/categories?category=${currentCategory}&subcategory=${subCategory.id}`);
   };
 
   const handleBackClick = () => {
-    router.back();
+    router.push('/');
   };
 
+  const handlePhotographerClick = (photographer: Photographer) => {
+    const params = new URLSearchParams();
+    if (selectedCategory) {
+      params.append('category', selectedCategory.id);
+    }
+    if (selectedSubCategory) {
+      params.append('subcategory', selectedSubCategory.id);
+    }
+    
+    const queryString = params.toString();
+    const url = `/photographer/${photographer.id}${queryString ? `?${queryString}` : ''}`;
+    router.push(url);
+  };
+
+  // If we have a subcategory selected, show photographers for that subcategory
+  if (selectedSubCategory) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        {/* Navbar */}
+        <Navbar />
+        
+        {/* Main Content Container */}
+        <div className="max-w-7xl mx-auto">
+
+          {/* Subcategory Content */}
+          <div className="py-4">
+            {photographers.length > 0 ? (
+              <PhotographerGrid
+                photographers={photographers}
+                categoryName={selectedSubCategory.name}
+                onPhotographerClick={handlePhotographerClick}
+              />
+            ) : (
+              <div className="px-4">
+                <div className="text-center py-16">
+                  <div className="mb-6">
+                    <svg className="w-24 h-24 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">No Photographers Found</h2>
+                  <p className="text-gray-600 mb-8">
+                    Sorry, we couldn't find any photographers for {selectedSubCategory.name}.
+                  </p>
+                  <button
+                    onClick={() => router.push(`/categories?category=${selectedCategory?.id}`)}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    Browse Other Subcategories
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <Footer />
+      </div>
+    );
+  }
+
+  // Default categories page view (when no subcategory is selected)
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
@@ -87,7 +173,7 @@ export default function CategoriesPage() {
         <div className="flex flex-col lg:flex-row gap-6 px-4 pb-8">
           {/* Left Sidebar - Categories */}
           <div className="lg:w-1/3">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-4">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-hide">
               <h2 className="text-xl font-bold text-gray-900 mb-6">All Categories</h2>
               <div className="space-y-2">
                 {categories.map((category) => {

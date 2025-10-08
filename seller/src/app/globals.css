@@ -28,3 +28,88 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Global Font Size Classes */
+.section-title {
+  @apply font-bold text-gray-900;
+}
+
+.section-title-mobile {
+  @apply text-xl;
+}
+
+.section-title-desktop {
+  @apply text-3xl;
+}
+
+.section-subtitle {
+  @apply text-gray-600;
+}
+
+.section-subtitle-mobile {
+  @apply text-xs;
+}
+
+.section-subtitle-desktop {
+  @apply text-base;
+}
+
+.section-description {
+  @apply text-gray-600;
+}
+
+.section-description-mobile {
+  @apply text-sm;
+}
+
+.section-description-desktop {
+  @apply text-lg;
+}
+
+.card-title {
+  @apply font-semibold text-gray-900;
+}
+
+.card-title-mobile {
+  @apply text-sm;
+}
+
+.card-title-desktop {
+  @apply text-lg;
+}
+
+.card-description {
+  @apply text-gray-600;
+}
+
+.card-description-mobile {
+  @apply text-xs;
+}
+
+.card-description-desktop {
+  @apply text-sm;
+}
+
+.feature-title {
+  @apply font-semibold text-gray-900;
+}
+
+.feature-title-mobile {
+  @apply text-lg;
+}
+
+.feature-title-desktop {
+  @apply text-lg;
+}
+
+.feature-description {
+  @apply text-gray-600;
+}
+
+.feature-description-mobile {
+  @apply text-sm;
+}
+
+.feature-description-desktop {
+  @apply text-sm;
+}

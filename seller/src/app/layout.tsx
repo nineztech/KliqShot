@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+ 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KliqShot Seller Dashboard",
-  description: "Manage your photography business and connect with clients on KliqShot",
+  title: "KliqShot - Shop with Confidence",
+  description: "Discover amazing products from verified sellers. Shop with confidence and get the best deals on everything you need.",
   icons: {
     icon: [
       {
@@ -40,6 +41,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/Logo_Icon.png" type="image/png" />
+        <link rel="shortcut icon" href="/Logo_Icon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/Logo_Icon.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

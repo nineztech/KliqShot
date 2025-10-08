@@ -68,9 +68,9 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
           >
             <div className="p-4">
               {/* Logo */}
-              <div className="flex items-center justify-center mb-6">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center">
-                  <Image src="/main Logo.png" alt="KliqShot Logo" width={48} height={48} className="object-contain" />
+              <div className="flex items-center justify-center mb-2">
+                <div className="w-40 h-16 rounded-lg flex items-center justify-center">
+                  <Image src="/main Logo.png" alt="KliqShot Logo" width={160} height={64} className="object-contain" />
                 </div>
               </div>
 

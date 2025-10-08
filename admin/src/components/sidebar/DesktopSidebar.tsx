@@ -31,10 +31,17 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
   return (
     <div className="admin-sidebar w-20 hover:w-64 min-h-screen fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out group bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900">
       <div className="p-4">
-        {/* Logo */}
-        <div className="flex items-center justify-center mb-8 overflow-hidden">
-          <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Image src="/main Logo.png" alt="KliqShot Logo" width={48} height={48} className="object-contain" />
+        {/* Logo for Collapsed State */}
+        <div className="flex items-center justify-center mb-2 group-hover:hidden">
+          <div className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Image src="/Logo_Icon2.png" alt="KliqShot Icon" width={36} height={36} className="object-contain" />
+          </div>
+        </div>
+
+        {/* Logo for Expanded State */}
+        <div className="flex items-center justify-center mb-2 hidden group-hover:flex">
+          <div className="w-40 h-16 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Image src="/main Logo.png" alt="KliqShot Logo" width={160} height={64} className="object-contain" />
           </div>
         </div>
 

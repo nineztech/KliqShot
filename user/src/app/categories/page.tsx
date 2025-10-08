@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
-import PhotographerGrid from '@/components/photographer';
+import { PhotographerGrid } from '@/components/photographer';
 import { categories, Category, SubCategory, getCategoryById, getSubCategoryById } from '@/data/categories';
 import { getPhotographersByCategory, getPhotographersBySubCategory } from '@/data/photographers';
 import type { Photographer } from '@/data/photographers';

@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { api } from '@/lib/api';
+import { useAuth } from '@/components/AuthContext';
 
 export default function MobileSignupPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,6 +23,7 @@ export default function MobileSignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -27,20 +31,80 @@ export default function MobileSignupPage() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const validateForm = () => {
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return false;
+    }
+
+    // Check password length
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return false;
+    }
+
+    // Check if phone is provided and valid (10 digits)
+    if (formData.phone && formData.phone.replace(/\D/g, '').length !== 10) {
+      setError('Phone number must be exactly 10 digits');
+      return false;
+    }
+
+    // Check terms agreement
+    if (!formData.agreeToTerms) {
+      setError('You must agree to the Terms of Service and Privacy Policy');
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
     setIsLoading(true);
     
-    // TODO: Implement signup logic
-    console.log('Signup data:', formData);
-    
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Remove non-digit characters from phone
+      const cleanedPhone = formData.phone.replace(/\D/g, '');
+
+      const result = await api.register({
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        Phone: cleanedPhone
+      });
+
+      if (result.success && result.data) {
+        // Call AuthContext login to update global state and set cookies
+        login(result.data.token, {
+          id: result.data.id,
+          firstname: result.data.firstname,
+          lastname: result.data.lastname,
+          email: result.data.email,
+          createdAt: result.data.createdAt || new Date().toISOString(),
+          updatedAt: result.data.updatedAt || new Date().toISOString()
+        });
+        
+        // Success! Redirect to Desktop
+        router.push('/Desktop');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.');
+    } finally {
       setIsLoading(false);
-      router.push('/signin');
-    }, 2000);
+    }
   };
 
   return (
@@ -84,6 +148,13 @@ export default function MobileSignupPage() {
             </h2>
             <p className="text-sm text-gray-600">Join KliqShot today</p>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-xs text-red-600">{error}</p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -141,7 +212,7 @@ export default function MobileSignupPage() {
             {/* Phone Number */}
             <div>
               <label htmlFor="phone" className="block text-xs font-semibold text-gray-700 mb-1.5">
-                Phone Number <span className="text-gray-400 font-normal">(Optional)</span>
+                Phone Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
@@ -149,9 +220,12 @@ export default function MobileSignupPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="+1 (555) 000-0000"
+                required
+                placeholder="1234567890"
+                maxLength={10}
                 className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
               />
+              <p className="mt-1 text-xs text-gray-500">Enter 10 digit phone number</p>
             </div>
 
             {/* Password */}

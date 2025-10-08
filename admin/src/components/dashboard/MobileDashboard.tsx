@@ -8,84 +8,20 @@ import {
   MdAdd
 } from 'react-icons/md';
 import { useState } from 'react';
-import CategoryManagement from '../category';
-import PhotographerManagement from '../photographer';
 
-interface MobileDashboardProps {
-  activeTab: string;
-}
+interface MobileDashboardProps {}
 
-export default function MobileDashboard({ activeTab }: MobileDashboardProps) {
-  const [categories, setCategories] = useState([
-    {
-      id: '1',
-      name: 'Wedding & Pre-Wedding',
-      description: 'Capture your special day',
-      photographerCount: 420,
-      subCategories: [
-        { id: '1-1', name: 'Haldi', photographerCount: 45 },
-        { id: '1-2', name: 'Mehendi', photographerCount: 38 },
-        { id: '1-3', name: 'Reception', photographerCount: 67 }
-      ]
-    },
-    {
-      id: '2',
-      name: 'Portrait & Portfolio',
-      description: 'Professional headshots & portraits',
-      photographerCount: 380,
-      subCategories: [
-        { id: '2-1', name: 'Headshots', photographerCount: 78 },
-        { id: '2-2', name: 'Portfolio', photographerCount: 65 }
-      ]
-    }
-  ]);
-
-  const [photographers, setPhotographers] = useState([
-    {
-      id: '1',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@email.com',
-      phone: '+1 234 567 8900',
-      location: 'New York, NY',
-      specialty: 'Wedding Photography',
-      rating: 4.9,
-      reviews: 156,
-      price: '₹15,000',
-      experience: '5+ years',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face',
-      status: 'active' as 'active' | 'inactive' | 'pending',
-      joinDate: '2023-01-15',
-      categories: ['wedding', 'portrait']
-    },
-    {
-      id: '2',
-      name: 'Rajesh Kumar',
-      email: 'rajesh.kumar@email.com',
-      phone: '+91 987 654 3210',
-      location: 'Mumbai, India',
-      specialty: 'Haldi Photography',
-      rating: 4.8,
-      reviews: 203,
-      price: '₹12,000',
-      experience: '7+ years',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-      status: 'active' as 'active' | 'inactive' | 'pending',
-      joinDate: '2023-02-20',
-      categories: ['wedding', 'events']
-    }
-  ]);
+export default function MobileDashboard({}: MobileDashboardProps) {
 
   const stats = [
-    { title: 'Categories', value: categories.length, icon: MdDashboard, color: 'blue' },
+    { title: 'Categories', value: 8, icon: MdDashboard, color: 'blue' },
     { title: 'Photographers', value: 1247, icon: MdCameraAlt, color: 'green' },
     { title: 'Users', value: 3421, icon: MdPeople, color: 'purple' },
     { title: 'Bookings', value: 892, icon: MdBarChart, color: 'orange' }
   ];
 
   const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard':
-        return (
+    return (
           <div className="space-y-4 p-4">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4">
@@ -135,54 +71,6 @@ export default function MobileDashboard({ activeTab }: MobileDashboardProps) {
             </div>
           </div>
         );
-      
-      case 'categories':
-        return <CategoryManagement categories={categories} setCategories={setCategories} />;
-      
-      case 'photographers':
-        return <PhotographerManagement photographers={photographers} setPhotographers={setPhotographers} />;
-      
-      case 'users':
-        return (
-          <div className="admin-card p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900">Users</h2>
-              <button className="admin-button-primary text-sm px-3 py-2">
-                <MdAdd className="w-4 h-4 mr-1" />
-                Add
-              </button>
-            </div>
-            <p className="text-gray-600 text-sm">User management coming soon...</p>
-          </div>
-        );
-      
-      case 'analytics':
-        return (
-          <div className="admin-card p-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Analytics</h2>
-            <p className="text-gray-600 text-sm">Analytics dashboard coming soon...</p>
-          </div>
-        );
-      
-      case 'notifications':
-        return (
-          <div className="admin-card p-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Notifications</h2>
-            <p className="text-gray-600 text-sm">Notifications coming soon...</p>
-          </div>
-        );
-      
-      case 'settings':
-        return (
-          <div className="admin-card p-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Settings</h2>
-            <p className="text-gray-600 text-sm">Settings panel coming soon...</p>
-          </div>
-        );
-      
-      default:
-        return null;
-    }
   };
 
   return (

@@ -192,7 +192,7 @@ html {
 
 /* Admin Dashboard Specific Styles */
 .admin-sidebar {
-  @apply bg-white border-r border-gray-200;
+  @apply bg-white/80 backdrop-blur-md border-r border-gray-200/50;
 }
 
 .admin-main {

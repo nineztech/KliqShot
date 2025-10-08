@@ -32,72 +32,10 @@ import {
   BarChart,
   Bar
 } from 'recharts';
-import CategoryManagement from '../category';
-import PhotographerManagement from '../photographer';
 
-interface DesktopDashboardProps {
-  activeTab: string;
-}
+interface DesktopDashboardProps {}
 
-export default function DesktopDashboard({ activeTab }: DesktopDashboardProps) {
-  const [categories, setCategories] = useState([
-    {
-      id: '1',
-      name: 'Wedding & Pre-Wedding',
-      description: 'Capture your special day',
-      photographerCount: 420,
-      subCategories: [
-        { id: '1-1', name: 'Haldi', photographerCount: 45 },
-        { id: '1-2', name: 'Mehendi', photographerCount: 38 },
-        { id: '1-3', name: 'Reception', photographerCount: 67 }
-      ]
-    },
-    {
-      id: '2',
-      name: 'Portrait & Portfolio',
-      description: 'Professional headshots & portraits',
-      photographerCount: 380,
-      subCategories: [
-        { id: '2-1', name: 'Headshots', photographerCount: 78 },
-        { id: '2-2', name: 'Portfolio', photographerCount: 65 }
-      ]
-    }
-  ]);
-
-  const [photographers, setPhotographers] = useState([
-    {
-      id: '1',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@email.com',
-      phone: '+1 234 567 8900',
-      location: 'New York, NY',
-      specialty: 'Wedding Photography',
-      rating: 4.9,
-      reviews: 156,
-      price: '₹15,000',
-      experience: '5+ years',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face',
-      status: 'active' as 'active' | 'inactive' | 'pending',
-      joinDate: '2023-01-15',
-      categories: ['wedding', 'portrait']
-    },
-    {
-      id: '2',
-      name: 'Rajesh Kumar',
-      email: 'rajesh.kumar@email.com',
-      phone: '+91 987 654 3210',
-      location: 'Mumbai, India',
-      specialty: 'Haldi Photography',
-      rating: 4.8,
-      reviews: 203,
-      price: '₹12,000',
-      experience: '7+ years',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-      status: 'active' as 'active' | 'inactive' | 'pending',
-      joinDate: '2023-02-20',
-      categories: ['wedding', 'events']
-    }
-  ]);
+export default function DesktopDashboard({}: DesktopDashboardProps) {
 
   // Chart data
   const bookingData = [
@@ -132,7 +70,7 @@ export default function DesktopDashboard({ activeTab }: DesktopDashboardProps) {
   const stats = [
     { 
       title: 'Total Categories', 
-      value: categories.length, 
+      value: 8, 
       icon: MdDashboard, 
       gradient: 'from-purple-500 to-pink-500',
       bgGradient: 'from-purple-50 to-pink-50',
@@ -169,14 +107,12 @@ export default function DesktopDashboard({ activeTab }: DesktopDashboardProps) {
   ];
 
   const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard':
-        return (
+    return (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-6"
+            className="space-y-8"
           >
             {/* Animated Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -416,58 +352,10 @@ export default function DesktopDashboard({ activeTab }: DesktopDashboardProps) {
             </motion.div>
           </motion.div>
         );
-      
-      case 'categories':
-        return <CategoryManagement categories={categories} setCategories={setCategories} />;
-      
-      case 'photographers':
-        return <PhotographerManagement photographers={photographers} setPhotographers={setPhotographers} />;
-      
-      case 'users':
-        return (
-          <div className="admin-card">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Users Management</h2>
-              <button className="admin-button-primary">
-                <MdAdd className="w-4 h-4 mr-2" />
-                Add User
-              </button>
-            </div>
-            <p className="text-gray-600">User management interface coming soon...</p>
-          </div>
-        );
-      
-      case 'analytics':
-        return (
-          <div className="admin-card">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Analytics Dashboard</h2>
-            <p className="text-gray-600">Analytics dashboard coming soon...</p>
-          </div>
-        );
-      
-      case 'notifications':
-        return (
-          <div className="admin-card">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Notifications</h2>
-            <p className="text-gray-600">Notification management coming soon...</p>
-          </div>
-        );
-      
-      case 'settings':
-        return (
-          <div className="admin-card">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Settings</h2>
-            <p className="text-gray-600">Settings panel coming soon...</p>
-          </div>
-        );
-      
-      default:
-        return null;
-    }
   };
 
   return (
-    <div className="admin-main p-8 min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+    <div className="admin-main min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto">
         {renderContent()}
       </div>

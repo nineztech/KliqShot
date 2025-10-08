@@ -4,11 +4,9 @@ import { useState, useEffect } from 'react';
 import DesktopDashboard from './DesktopDashboard';
 import MobileDashboard from './MobileDashboard';
 
-interface DashboardProps {
-  activeTab: string;
-}
+interface DashboardProps {}
 
-export default function Dashboard({ activeTab }: DashboardProps) {
+export default function Dashboard({}: DashboardProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -29,9 +27,9 @@ export default function Dashboard({ activeTab }: DashboardProps) {
   return (
     <>
       {isMobile ? (
-        <MobileDashboard activeTab={activeTab} />
+        <MobileDashboard />
       ) : (
-        <DesktopDashboard activeTab={activeTab} />
+        <DesktopDashboard />
       )}
     </>
   );

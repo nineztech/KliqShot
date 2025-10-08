@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Navbar from '@/components/navbar';
 import { categories, type Category, type SubCategory } from '@/data/categories';
 import { BestInCategory, InspiredByHistory } from '@/components/photographer';
+import YourSearches from '@/components/common/YourSearches';
 
 interface PortfolioCategory {
   name: string;
@@ -582,34 +583,10 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         comment: "Fantastic work on our anniversary photoshoot! The photographer was creative with poses and lighting. The final album exceeded our expectations completely.",
                         date: "2 months ago",
                         images: []
-                      },
-                      {
-                        id: 9,
-                        user: {
-                          name: "Deepika Joshi",
-                          avatar: "https://images.unsplash.com/photo-1491349174775-aaafddd81942?w=100&h=100&fit=crop&crop=face"
-                        },
-                        rating: 4,
-                        comment: "Very professional and friendly photographer. The candid shots were the best part of our wedding album. Would definitely book again for future events.",
-                        date: "3 months ago",
-                        images: [
-                          "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=300&h=300&fit=crop",
-                          "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=300&h=300&fit=crop"
-                        ]
-                      },
-                      {
-                        id: 10,
-                        user: {
-                          name: "Suresh Nair",
-                          avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face"
-                        },
-                        rating: 5,
-                        comment: "Excellent photographer with great attention to detail. The Mehndi ceremony photos were captured beautifully with vibrant colors and emotions. Highly satisfied!",
-                        date: "3 months ago",
-                        images: []
                       }
                     ];
-                    return sampleComments;
+                    // Show only first 7 reviews on detail page
+                    return sampleComments.slice(0, 7);
                   }
                   
                   return comments;
@@ -667,6 +644,27 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 <div className="text-center py-8">
                   <ChatBubbleLeftIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-500">No reviews yet. Be the first to leave a review!</p>
+                </div>
+              )}
+
+              {/* More Reviews Button */}
+              {photographer.reviews > 0 && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      const params = new URLSearchParams();
+                      params.append('name', photographer.name);
+                      params.append('reviews', photographer.reviews.toString());
+                      params.append('rating', photographer.rating.toString());
+                      router.push(`/photographer/${photographer.id}/reviews?${params.toString()}`);
+                    }}
+                    className="w-full bg-white border-2 border-blue-600 text-blue-600 py-3 px-6 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <span>See All {photographer.reviews} Reviews</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
                 </div>
               )}
             </div>
@@ -730,6 +728,11 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
       {/* Inspired by Browsing History Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <InspiredByHistory userHistory={[photographer.specialty, "Portrait Photography", "Event Photography"]} />
+      </div>
+
+      {/* Your Searches Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <YourSearches />
       </div>
 
       {/* Image Popup Modal */}

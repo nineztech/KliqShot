@@ -119,7 +119,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
 
       {/* Browsing History Tags */}
       <div className="mb-6">
-        <p className="text-sm text-gray-600 mb-3">Based on your recent interests:</p>
+        {/* <p className="text-sm text-gray-600 mb-3">Based on your recent interests:</p> */}
         <div className="flex flex-wrap gap-2">
           {userHistory.map((interest, index) => (
             <span 

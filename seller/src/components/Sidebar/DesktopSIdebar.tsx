@@ -50,7 +50,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`${isMinimized ? 'w-20' : 'w-64'} bg-gradient-to-b from-indigo-600 to-indigo-700 h-screen fixed left-0 top-0 text-white z-20 transition-all duration-300`}>
+    <div className={`${isMinimized ? 'w-20' : 'w-64'} ease-in-out bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900 h-screen fixed left-0 top-0 text-white z-20 transition-all duration-300`}>
       {/* Logo/Brand Section */}
       <div className={`${isMinimized ? 'p-6' : 'p-6'} transition-all duration-300`}>
         <div className="flex items-center justify-center">

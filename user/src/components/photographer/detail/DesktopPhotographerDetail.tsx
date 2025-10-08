@@ -7,6 +7,7 @@ import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
 import { categories, type Category, type SubCategory } from '@/data/categories';
+import { BestInCategory, InspiredByHistory } from '@/components/photographer';
 
 interface PortfolioCategory {
   name: string;
@@ -62,6 +63,20 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('');
+  const [showImagePopup, setShowImagePopup] = useState(false);
+  const [popupImageIndex, setPopupImageIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Auto-scroll carousel
+  useEffect(() => {
+    if (isPaused) return;
+    
+    const interval = setInterval(() => {
+      setSelectedImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0);
+    }, 3000); // Change image every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [selectedImageIndex, activePortfolioCategory, isPaused]);
 
   const renderStars = (rating: number = photographer.rating, size: string = 'w-5 h-5') => {
     const stars = [];
@@ -93,7 +108,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
   const getCurrentPortfolioImages = () => {
     // Create category-specific image sets
-    const categoryImages = {
+    const categoryImages: { [key: string]: string[] } = {
       'Mehndi': [
         "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop",
         "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
@@ -223,7 +238,15 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
              {/* Portfolio Gallery */}
              <div className="bg-white rounded-lg shadow-sm p-6">
                {/* Main Photo Carousel */}
-               <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-6">
+               <div 
+                 className="relative aspect-video rounded-lg overflow-hidden shadow-lg mb-6 cursor-pointer"
+                 onClick={() => {
+                   setPopupImageIndex(selectedImageIndex);
+                   setShowImagePopup(true);
+                 }}
+                 onMouseEnter={() => setIsPaused(true)}
+                 onMouseLeave={() => setIsPaused(false)}
+               >
                  <Image
                    src={getCurrentPortfolioImages()[selectedImageIndex]}
                    alt="Featured portfolio image"
@@ -235,7 +258,10 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                  {/* Carousel Navigation */}
                  <div className="absolute inset-0 flex items-center justify-between p-4">
                    <button
-                     onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentPortfolioImages().length - 1)}
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentPortfolioImages().length - 1);
+                     }}
                      className="w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all duration-200"
                    >
                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,7 +269,10 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                      </svg>
                    </button>
                    <button
-                     onClick={() => setSelectedImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0)}
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       setSelectedImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0);
+                     }}
                      className="w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all duration-200"
                    >
                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,10 +283,13 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                  
                  {/* Carousel Indicators */}
                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                   {getCurrentPortfolioImages().map((_, index) => (
+                   {getCurrentPortfolioImages().map((_: string, index: number) => (
                      <button
                        key={index}
-                       onClick={() => setSelectedImageIndex(index)}
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         setSelectedImageIndex(index);
+                       }}
                        className={`w-2 h-2 rounded-full transition-all duration-200 ${
                          selectedImageIndex === index ? 'bg-white' : 'bg-white bg-opacity-50'
                        }`}
@@ -278,7 +310,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                    return categories.map((category) => (
                      <div 
                        key={category.id} 
-                       className={`relative w-20 h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+                       className={`relative w-24 h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                          activePortfolioCategory === category.name ? 'ring-2 ring-blue-500 scale-110' : 'hover:scale-105 hover:shadow-lg'
                        }`}
                        onClick={() => setActivePortfolioCategory(category.name)}
@@ -286,10 +318,18 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                        <Image
                          src={category.image}
                          alt={category.name}
-                         width={80}
+                         width={96}
                          height={80}
                          className="w-full h-full object-cover"
                        />
+                       {/* Dark overlay */}
+                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                       
+                       {/* Category text */}
+                       <div className="absolute bottom-0 left-0 right-0 p-2 text-center">
+                         <p className="text-white text-xs font-semibold drop-shadow-lg">{category.name}</p>
+                       </div>
+                       
                        {/* Selection Indicator */}
                        {activePortfolioCategory === category.name && (
                          <div className="absolute top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
@@ -681,6 +721,64 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
           </div>
         </div>
       </div>
+
+      {/* Best in Category Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <BestInCategory category={photographer.specialty} />
+      </div>
+
+      {/* Inspired by Browsing History Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <InspiredByHistory userHistory={[photographer.specialty, "Portrait Photography", "Event Photography"]} />
+      </div>
+
+      {/* Image Popup Modal */}
+      {showImagePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm" onClick={() => setShowImagePopup(false)}>
+          <button
+            onClick={() => setShowImagePopup(false)}
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 transition-colors z-10"
+          >
+            <XMarkIcon className="w-8 h-8" />
+          </button>
+          
+          <div className="relative max-w-6xl max-h-[90vh] w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            {/* Large Image */}
+            <div className="relative w-full h-full flex items-center justify-center">
+              <Image
+                src={getCurrentPortfolioImages()[popupImageIndex]}
+                alt="Portfolio image"
+                width={1200}
+                height={800}
+                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+              />
+            </div>
+            
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => setPopupImageIndex(prev => prev > 0 ? prev - 1 : getCurrentPortfolioImages().length - 1)}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-100 bg-opacity-80 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-200 shadow-lg"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setPopupImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0)}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-100 bg-opacity-80 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-200 shadow-lg"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            
+            {/* Image Counter */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-100 bg-opacity-90 text-gray-700 px-4 py-2 rounded-full text-sm backdrop-blur-sm shadow-lg">
+              {popupImageIndex + 1} / {getCurrentPortfolioImages().length}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Category Selection Modal */}
       {showCategoryModal && (

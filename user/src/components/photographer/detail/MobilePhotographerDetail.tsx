@@ -7,6 +7,7 @@ import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
 import { categories, type Category, type SubCategory } from '@/data/categories';
+import { BestInCategory, InspiredByHistory } from '@/components/photographer';
 
 interface Photographer {
   id: number;
@@ -40,6 +41,17 @@ export default function MobilePhotographerDetail({ photographer, category, subca
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('');
+  const [showImagePopup, setShowImagePopup] = useState(false);
+  const [popupImageIndex, setPopupImageIndex] = useState(0);
+
+  // Auto-scroll carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSelectedImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0);
+    }, 3000); // Change image every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [selectedImageIndex, activePortfolioCategory]);
 
   const renderStars = () => {
     const stars = [];
@@ -71,7 +83,7 @@ export default function MobilePhotographerDetail({ photographer, category, subca
 
   const getCurrentPortfolioImages = () => {
     // Create category-specific image sets
-    const categoryImages = {
+    const categoryImages: { [key: string]: string[] } = {
       'Mehndi': [
         "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop",
         "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
@@ -196,7 +208,13 @@ export default function MobilePhotographerDetail({ photographer, category, subca
              {/* Portfolio Gallery */}
              <div className="bg-white rounded-lg shadow-sm p-4">
                {/* Main Photo Carousel */}
-               <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
+               <div 
+                 className="relative aspect-video rounded-lg overflow-hidden mb-4 cursor-pointer"
+                 onClick={() => {
+                   setPopupImageIndex(selectedImageIndex);
+                   setShowImagePopup(true);
+                 }}
+               >
                  <Image
                    src={getCurrentPortfolioImages()[selectedImageIndex]}
                    alt="Featured portfolio image"
@@ -208,7 +226,10 @@ export default function MobilePhotographerDetail({ photographer, category, subca
                  {/* Carousel Navigation */}
                  <div className="absolute inset-0 flex items-center justify-between p-2">
                    <button
-                     onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentPortfolioImages().length - 1)}
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentPortfolioImages().length - 1);
+                     }}
                      className="w-8 h-8 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all duration-200"
                    >
                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,7 +237,10 @@ export default function MobilePhotographerDetail({ photographer, category, subca
                      </svg>
                    </button>
                    <button
-                     onClick={() => setSelectedImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0)}
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       setSelectedImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0);
+                     }}
                      className="w-8 h-8 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all duration-200"
                    >
                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -230,7 +254,10 @@ export default function MobilePhotographerDetail({ photographer, category, subca
                    {getCurrentPortfolioImages().map((_, index) => (
                      <button
                        key={index}
-                       onClick={() => setSelectedImageIndex(index)}
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         setSelectedImageIndex(index);
+                       }}
                        className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
                          selectedImageIndex === index ? 'bg-white' : 'bg-white bg-opacity-50'
                        }`}
@@ -251,18 +278,26 @@ export default function MobilePhotographerDetail({ photographer, category, subca
                    return categories.map((category) => (
                      <div 
                        key={category.id} 
-                       className={`relative w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
-                         activePortfolioCategory === category.name ? 'ring-2 ring-blue-500 scale-110' : 'hover:scale-105'
+                       className={`relative w-20 h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+                         activePortfolioCategory === category.name ? 'ring-2 ring-blue-500 scale-110' : 'active:scale-95'
                        }`}
                        onClick={() => setActivePortfolioCategory(category.name)}
                      >
                        <Image
                          src={category.image}
                          alt={category.name}
-                         width={48}
-                         height={48}
+                         width={80}
+                         height={80}
                          className="w-full h-full object-cover"
                        />
+                       {/* Dark overlay */}
+                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                       
+                       {/* Category text */}
+                       <div className="absolute bottom-0 left-0 right-0 p-1.5 text-center">
+                         <p className="text-white text-xs font-semibold drop-shadow-lg">{category.name}</p>
+                       </div>
+                       
                        {/* Selection Indicator */}
                        {activePortfolioCategory === category.name && (
                          <div className="absolute top-0.5 right-0.5 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
@@ -365,6 +400,64 @@ export default function MobilePhotographerDetail({ photographer, category, subca
           </div>
         </div>
       </div>
+
+      {/* Best in Category Section */}
+      <div className="px-4 py-6">
+        <BestInCategory category={photographer.specialty} />
+      </div>
+
+      {/* Inspired by Browsing History Section */}
+      <div className="px-4 py-6">
+        <InspiredByHistory userHistory={[photographer.specialty, "Portrait Photography", "Event Photography"]} />
+      </div>
+
+      {/* Image Popup Modal */}
+      {showImagePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm" onClick={() => setShowImagePopup(false)}>
+          <button
+            onClick={() => setShowImagePopup(false)}
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 transition-colors z-10"
+          >
+            <XMarkIcon className="w-8 h-8" />
+          </button>
+          
+          <div className="relative w-full h-full flex items-center justify-center px-4" onClick={(e) => e.stopPropagation()}>
+            {/* Large Image */}
+            <div className="relative w-full flex items-center justify-center">
+              <Image
+                src={getCurrentPortfolioImages()[popupImageIndex]}
+                alt="Portfolio image"
+                width={800}
+                height={600}
+                className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+              />
+            </div>
+            
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => setPopupImageIndex(prev => prev > 0 ? prev - 1 : getCurrentPortfolioImages().length - 1)}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 bg-opacity-80 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-200 shadow-lg"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setPopupImageIndex(prev => prev < getCurrentPortfolioImages().length - 1 ? prev + 1 : 0)}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gray-100 bg-opacity-80 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-200 shadow-lg"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            
+            {/* Image Counter */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-100 bg-opacity-90 text-gray-700 px-4 py-2 rounded-full text-sm backdrop-blur-sm shadow-lg">
+              {popupImageIndex + 1} / {getCurrentPortfolioImages().length}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Category Selection Modal */}
       {showCategoryModal && (

@@ -16,7 +16,6 @@ interface PhotographerCardProps {
   price: string;
   experience: string;
   image: string;
-  description: string;
   category: string;
   subCategory?: string;
   categories?: string[];
@@ -33,7 +32,6 @@ export default function PhotographerCard({
   price,
   experience,
   image,
-  description,
   category,
   subCategory,
   categories,
@@ -141,19 +139,6 @@ export default function PhotographerCard({
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
-          {/* Availability Badge */}
-          <div className="absolute top-3 left-3">
-            {Math.random() > 0.5 ? (
-              <div className="bg-orange-100 text-orange-800 border border-orange-200 text-xs px-3 py-1 rounded-full font-medium shadow-sm">
-                Limited Slots
-              </div>
-            ) : (
-              <div className="bg-green-100 text-green-800 border border-green-200 text-xs px-3 py-1 rounded-full font-medium shadow-sm">
-                Available Now
-              </div>
-            )}
-          </div>
-          
           {/* Like Button */}
           <button
             className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
@@ -257,15 +242,10 @@ export default function PhotographerCard({
                  {experience}
                </div>
              </div>
-           </div>
          </div>
+       </div>
 
-         {/* Description */}
-         <p className="text-gray-600 text-xs leading-relaxed mb-3 line-clamp-2">
-           {description}
-         </p>
-
-         {/* Category Tags */}
+       {/* Category Tags */}
          {categories && categories.length > 0 && (
            <div className="mb-3">
              <div className="flex flex-wrap gap-1">

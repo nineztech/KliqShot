@@ -1,13 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { api } from '@/lib/api';
+import { useAuth } from '@/components/AuthContext';
 
-export default function DesktopSigninPage() {
+export default function MobileSigninPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -15,6 +19,7 @@ export default function DesktopSigninPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -22,20 +27,41 @@ export default function DesktopSigninPage() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
     
-    // TODO: Implement signin logic
-    console.log('Signin data:', formData);
-    
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const result = await api.login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (result.success && result.data) {
+        // Call AuthContext login to update global state and set cookies
+        login(result.data.token, {
+          id: result.data.id,
+          firstname: result.data.firstname,
+          lastname: result.data.lastname,
+          email: result.data.email,
+          createdAt: result.data.createdAt || new Date().toISOString(),
+          updatedAt: result.data.updatedAt || new Date().toISOString()
+        });
+        
+        // Get redirect URL from query params or default to Desktop
+        const redirectUrl = searchParams.get('redirect') || '/Desktop';
+        router.push(redirectUrl);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Login failed. Please try again.');
+    } finally {
       setIsLoading(false);
-      router.push('/');
-    }, 2000);
+    }
   };
 
   return (
@@ -77,6 +103,13 @@ export default function DesktopSigninPage() {
             </h1>
             <p className="text-gray-600">Sign in to continue to KliqShot</p>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">

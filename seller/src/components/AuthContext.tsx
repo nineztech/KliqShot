@@ -1,3 +1,5 @@
+'use client';
+
 // AuthContext.tsx - Auth context with safe chrome extension communication
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
  
@@ -73,6 +75,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpiration');
     localStorage.removeItem('user');
+    
+    // Clear cookie
+    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    
     setUser(null);
   };
 
@@ -81,9 +87,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000; // 24 hours
 
+    // Store in localStorage
     localStorage.setItem('token', token);
     localStorage.setItem('tokenExpiration', expirationTime.toString());
     localStorage.setItem('user', JSON.stringify(userData));
+
+    // Store token in cookie for middleware access
+    document.cookie = `token=${token}; path=/; max-age=${24 * 60 * 60}; SameSite=Lax`;
 
     setUser(userData);
 

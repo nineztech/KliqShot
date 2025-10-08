@@ -1,14 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { api } from '@/lib/api';
+import { useAuth } from '@/components/AuthContext';
 
 export default function DesktopSigninPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login } = useAuth();
    
   const [formData, setFormData] = useState({
     email: '',
@@ -40,9 +43,20 @@ export default function DesktopSigninPage() {
         password: formData.password
       });
 
-      if (result.success) {
-        // Success! Redirect to home page
-        router.push('/Desktop');
+      if (result.success && result.data) {
+        // Call AuthContext login to update global state and set cookies
+        login(result.data.token, {
+          id: result.data.id,
+          firstname: result.data.firstname,
+          lastname: result.data.lastname,
+          email: result.data.email,
+          createdAt: result.data.createdAt || new Date().toISOString(),
+          updatedAt: result.data.updatedAt || new Date().toISOString()
+        });
+        
+        // Get redirect URL from query params or default to Desktop
+        const redirectUrl = searchParams.get('redirect') || '/Desktop';
+        router.push(redirectUrl);
       }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');

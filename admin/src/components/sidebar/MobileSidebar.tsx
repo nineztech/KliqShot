@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   MdHome, 
   MdDashboard, 
@@ -62,18 +63,14 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
           onClick={() => setIsOpen(false)}
         >
           <div 
-            className="admin-sidebar w-64 h-full"
+            className="admin-sidebar w-64 h-full bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-4">
               {/* Logo */}
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">K</span>
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold text-gray-900">KliqShot</h1>
-                  <p className="text-xs text-gray-500">Admin Panel</p>
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center">
+                  <Image src="/main Logo.png" alt="KliqShot Logo" width={48} height={48} className="object-contain" />
                 </div>
               </div>
 
@@ -90,11 +87,11 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
                       onClick={() => setIsOpen(false)}
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
                         isActive
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          ? 'bg-white/20 text-white backdrop-blur-sm'
+                          : 'text-blue-100 hover:bg-white/10 hover:text-white'
                       }`}
                     >
-                      <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                      <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-blue-200'}`} />
                       <span className="font-medium text-sm">{item.label}</span>
                     </Link>
                   );

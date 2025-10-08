@@ -147,28 +147,16 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="admin-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">User Management</h2>
-            <p className="text-gray-600">Manage users on the platform</p>
-          </div>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="admin-button-primary"
-          >
-            <MdAdd className="w-4 h-4 mr-2" />
-            Add User
-          </button>
-        </div>
-      </div>
-
-      {/* Filters */}
+    <div className="space-y-2">
+      {/* Header and Filters Combined - All in One Line */}
       <div className="admin-card">
         <div className="flex items-center space-x-4">
-          <div className="flex-1 relative">
+          <div className="flex-shrink-0">
+            <h2 className="text-xl font-bold text-gray-900">User Management</h2>
+            <p className="text-gray-600 text-sm">Manage users on the platform</p>
+          </div>
+          
+          <div className="flex-1 relative max-w-md">
             <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
@@ -178,52 +166,44 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
               className="admin-input pl-10 w-full"
             />
           </div>
+          
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="admin-input"
+            className="admin-input min-w-[120px]"
           >
             <option value="all">All Roles</option>
             <option value="admin">Admin</option>
             <option value="photographer">Photographer</option>
             <option value="customer">Customer</option>
           </select>
+          
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="admin-input"
+            className="admin-input min-w-[120px]"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
             <option value="suspended">Suspended</option>
           </select>
-          <button className="admin-button-secondary">
-            <MdFilterList className="w-4 h-4 mr-2" />
+          
+          <button className="admin-button-secondary text-sm px-3 py-2">
+            <MdFilterList className="w-3 h-3 mr-1" />
             Filters
+          </button>
+          
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="admin-button-primary text-sm px-3 py-2"
+          >
+            <MdAdd className="w-3 h-3 mr-1" />
+            Add User
           </button>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="admin-card">
-          <h3 className="text-sm text-gray-600 mb-1">Total Users</h3>
-          <p className="text-2xl font-bold text-gray-900">{users.length}</p>
-        </div>
-        <div className="admin-card">
-          <h3 className="text-sm text-gray-600 mb-1">Active Users</h3>
-          <p className="text-2xl font-bold text-green-600">{users.filter(u => u.status === 'active').length}</p>
-        </div>
-        <div className="admin-card">
-          <h3 className="text-sm text-gray-600 mb-1">Photographers</h3>
-          <p className="text-2xl font-bold text-blue-600">{users.filter(u => u.role === 'photographer').length}</p>
-        </div>
-        <div className="admin-card">
-          <h3 className="text-sm text-gray-600 mb-1">Customers</h3>
-          <p className="text-2xl font-bold text-gray-600">{users.filter(u => u.role === 'customer').length}</p>
-        </div>
-      </div>
 
       {/* Users Table */}
       <div className="admin-card overflow-hidden">
@@ -233,7 +213,6 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activity</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -258,11 +237,6 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{user.email}</div>
                     <div className="text-sm text-gray-500">{user.phone || 'No phone'}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleColor(user.role)}`}>
-                      {user.role}
-                    </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.status)}`}>

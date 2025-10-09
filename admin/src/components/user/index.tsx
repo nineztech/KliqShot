@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import DesktopUserManagement from './DesktopUserManagement';
 import MobileUserManagement from './MobileUserManagement';
+import { useSidebar } from '@/components/sidebar/SidebarContext';
 
 interface User {
   id: string;
@@ -23,6 +24,7 @@ interface UserManagementProps {
 
 export default function UserManagement({ users, setUsers }: UserManagementProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const { isMinimized } = useSidebar();
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -40,13 +42,16 @@ export default function UserManagement({ users, setUsers }: UserManagementProps)
   }, []);
 
   return (
-    <>
+    <div 
+      className="transition-all duration-300"
+      style={{ marginLeft: isMobile ? '0' : (isMinimized ? '5rem' : '16rem') }}
+    >
       {isMobile ? (
         <MobileUserManagement users={users} setUsers={setUsers} />
       ) : (
         <DesktopUserManagement users={users} setUsers={setUsers} />
       )}
-    </>
+    </div>
   );
 }
 

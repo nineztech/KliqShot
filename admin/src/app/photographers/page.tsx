@@ -43,7 +43,7 @@ export default function PhotographersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar activeTab="photographers" onTabChange={(tab) => window.location.href = `/${tab}`} />
-      <div className="ml-20 pt-16 transition-all duration-300 p-4 md:p-8">
+      <div className="pt-16 transition-all duration-300 p-4 md:p-8">
         <PhotographerManagement photographers={photographers} setPhotographers={setPhotographers} />
       </div>
     </div>

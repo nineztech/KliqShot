@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import DesktopCategoryManagement from './DesktopCategoryManagement';
 import MobileCategoryManagement from './MobileCategoryManagement';
+import { useSidebar } from '@/components/sidebar/SidebarContext';
 
 interface SubCategory {
   id: string;
@@ -25,6 +26,7 @@ interface CategoryManagementProps {
 
 export default function CategoryManagement({ categories, setCategories }: CategoryManagementProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const { isMinimized } = useSidebar();
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -42,12 +44,15 @@ export default function CategoryManagement({ categories, setCategories }: Catego
   }, []);
 
   return (
-    <>
+    <div 
+      className="transition-all duration-300"
+      style={{ marginLeft: isMobile ? '0' : (isMinimized ? '5rem' : '16rem') }}
+    >
       {isMobile ? (
         <MobileCategoryManagement categories={categories} setCategories={setCategories} />
       ) : (
         <DesktopCategoryManagement categories={categories} setCategories={setCategories} />
       )}
-    </>
+    </div>
   );
 }

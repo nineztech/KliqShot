@@ -32,7 +32,7 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar activeTab="categories" onTabChange={(tab) => window.location.href = `/${tab}`} />
-      <div className="ml-20 pt-16 transition-all duration-300 p-4 md:p-8">
+      <div className="pt-16 transition-all duration-300 p-4 md:p-8">
         <CategoryManagement categories={categories} setCategories={setCategories} />
       </div>
     </div>

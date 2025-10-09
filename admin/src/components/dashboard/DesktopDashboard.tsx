@@ -16,6 +16,7 @@ import {
 } from 'react-icons/md';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSidebar } from '@/components/sidebar/SidebarContext';
 import { 
   LineChart, 
   Line, 
@@ -36,6 +37,7 @@ import {
 interface DesktopDashboardProps {}
 
 export default function DesktopDashboard({}: DesktopDashboardProps) {
+  const { isMinimized } = useSidebar();
 
   // Chart data
   const bookingData = [
@@ -355,7 +357,10 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
   };
 
   return (
-    <div className="admin-main min-h-screen bg-gray-50">
+    <div 
+      className="admin-main min-h-screen bg-gray-50 transition-all duration-300"
+      style={{ marginLeft: isMinimized ? '5rem' : '16rem' }}
+    >
       <div className="max-w-7xl mx-auto">
         {renderContent()}
       </div>

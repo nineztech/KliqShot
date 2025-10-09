@@ -129,7 +129,7 @@ export default function HeroSection() {
   return (
     <div className="relative overflow-hidden">
       {/* Full Width Image Background */}
-      <div className="relative w-full h-[55vh] min-h-[450px]">
+      <div className="relative w-full h-[55vh] min-h-[420px]">
         <Image
           src={heroSlides[currentSlide].image}
           alt={heroSlides[currentSlide].title}

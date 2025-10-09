@@ -21,7 +21,6 @@ export default function DesktopNavbar() {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [showNavbarSearch, setShowNavbarSearch] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
   const searchDropdownRef = useRef<HTMLDivElement>(null);
@@ -219,26 +218,6 @@ export default function DesktopNavbar() {
     }
   }, []);
 
-  // Hero section visibility detection for navbar search
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroSection = document.querySelector('[data-hero-section]') || document.querySelector('.hero-section');
-      if (heroSection) {
-        const rect = heroSection.getBoundingClientRect();
-        const isHeroVisible = rect.bottom > 0;
-        setShowNavbarSearch(!isHeroVisible);
-      } else {
-        // Fallback: show search when scrolled down a bit
-        setShowNavbarSearch(window.scrollY > 200);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial state
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -304,8 +283,8 @@ export default function DesktopNavbar() {
 
           {/* Search Bar & Location */}
           <div className="flex-1 max-w-4xl mx-8 flex items-center gap-4">
-            {/* Search Bar - Only show when hero section is not visible */}
-            <div className={`flex-1 relative transition-all duration-300 ${showNavbarSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none absolute'}`} ref={searchDropdownRef}>
+            {/* Search Bar */}
+            <div className="flex-1 relative" ref={searchDropdownRef}>
               <form onSubmit={handleSearch} className="relative">
                 <div className="relative">
                   <input

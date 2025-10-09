@@ -113,7 +113,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
       <div className="admin-card p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">KliqChamps</h2>
+            <h2 className="text-lg font-bold text-gray-900">Photographers</h2>
             <p className="text-gray-600 text-sm">Manage photographers</p>
           </div>
           <button 
@@ -132,7 +132,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
           <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search KliqChamps..."
+            placeholder="Search photographers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="admin-input pl-10 w-full"
@@ -140,7 +140,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
         </div>
       </div>
 
-      {/* KliqChamps List */}
+      {/* Photographers List */}
       <div className="space-y-3">
         {filteredPhotographers.map((photographer) => (
           <div key={photographer.id} className="admin-card p-4">
@@ -179,12 +179,12 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
         ))}
       </div>
 
-      {/* Add KliqChamp Modal */}
+      {/* Add Photographer Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add KliqChamp</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Add Photographer</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -259,7 +259,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
                 onClick={handleAddPhotographer}
                 className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Add KliqChamp
+                Add Photographer
               </button>
               <button
                 onClick={() => setShowAddModal(false)}

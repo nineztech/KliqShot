@@ -171,7 +171,7 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                 <div>
                   <h3 className="font-semibold text-gray-900">{category.name}</h3>
                   <p className="text-sm text-gray-600">{category.description}</p>
-                  <p className="text-xs text-blue-600">{category.photographerCount} KliqChamps</p>
+                  <p className="text-xs text-blue-600">{category.photographerCount} photographers</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -207,7 +207,7 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                     <div key={subCategory.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <h4 className="font-medium text-gray-900">{subCategory.name}</h4>
-                        <p className="text-xs text-blue-600">{subCategory.photographerCount} KliqChamps</p>
+                        <p className="text-xs text-blue-600">{subCategory.photographerCount} photographers</p>
                       </div>
                       <button
                         onClick={() => handleDeleteSubCategory(category.id, subCategory.id)}

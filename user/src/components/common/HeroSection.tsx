@@ -178,7 +178,7 @@ export default function HeroSection() {
                 <div className="space-y-2">
                   <h1 className="text-xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight">
                     <span className="block">{heroSlides[currentSlide].title.split(' ').slice(0, -1).join(' ')}</span>
-                    <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                    <span className="block text-white">
                       {heroSlides[currentSlide].title.split(' ').slice(-1)[0]}
                     </span>
                   </h1>
@@ -212,11 +212,11 @@ export default function HeroSection() {
                 <div className="pt-1">
                   <button
                     onClick={handleCTAClick}
-                    className="group relative inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-semibold rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+                    className="group relative inline-flex items-center px-4 py-2 bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 text-white font-semibold rounded-lg hover:from-slate-700 hover:via-purple-700 hover:to-indigo-800 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
                   >
                     <span className="relative z-10">{heroSlides[currentSlide].ctaText}</span>
                     <ChevronRightIcon className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
                   </button>
                 </div>
               </div>

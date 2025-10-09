@@ -14,10 +14,14 @@ export default function Home() {
       <Navbar />
       
       {/* Hero Section */}
-      <HeroSection />
+      {/* <HeroSection /> */}
 
       {/* Main Content Container */}
       <div className="max-w-7xl mx-auto">
+        <div className='py-[0.5px]'>
+          <HeroSection/>
+        </div>
+
         {/* Category Section */}
         <div className="py-4">
           <CategorySection />

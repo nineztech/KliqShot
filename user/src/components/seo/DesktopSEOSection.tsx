@@ -65,35 +65,7 @@ export default function DesktopSEOSection() {
         <div className="absolute bottom-4 left-4 w-16 h-16 bg-gradient-to-br from-pink-400/20 to-purple-500/20 rounded-full blur-xl"></div>
       </div>
 
-      {/* Popular Search Terms */}
-      <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-t-2xl"></div>
-        <div className="flex items-center mb-6">
-          <div className="flex items-center space-x-2 mr-4">
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse"></div>
-            <h3 className="feature-title feature-title-desktop text-gray-800">MOST SEARCHED FOR ON KLIQSHOT</h3>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {[
-            "Wedding Photographer Near Me", "Portrait Photography", "Family Photo Shoot", "Corporate Event Photography", 
-            "Engagement Photography", "Maternity Photography", "Newborn Photography", "Graduation Photography",
-            "Pre Wedding Photography", "Post Wedding Photography", "Candid Photography", "Traditional Photography",
-            "Outdoor Photography", "Studio Photography", "Event Photography", "Product Photography", "Fashion Photography",
-            "Art Photography", "Fine Art Photography", "Conceptual Photography", "Abstract Photography",
-            "Senior Portraits", "Corporate Headshots", "Professional Headshots", "Studio Portraits",
-            "Birthday Party Photography", "Anniversary Photography", "Conference Photography", "Seminar Photography",
-            "Destination Wedding", "Candid Wedding", "Traditional Wedding", "Modern Wedding Photography"
-          ].map((term, index) => (
-            <span 
-              key={index} 
-              className="text-sm bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 px-4 py-2 rounded-full border border-blue-100 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-200 hover:scale-105 transition-all duration-200 cursor-pointer shadow-sm"
-            >
-              {term}
-            </span>
-          ))}
-        </div>
-      </div>
+      
 
       {/* Photography Categories */}
       <div className="mt-8 relative bg-gradient-to-br from-white via-gray-50 to-blue-50 rounded-2xl p-8 shadow-lg border border-gray-100">
@@ -253,6 +225,36 @@ export default function DesktopSEOSection() {
               <p className="feature-description feature-description-desktop text-gray-600 leading-relaxed">{feature.description}</p>
             </div>
           ))}
+      </div>
+
+      {/* Popular Search Terms */}
+      <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 mt-12 mb-8    ">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-t-2xl"></div>
+        <div className="flex items-center mb-6">
+          <div className="flex items-center space-x-2 mr-4">
+            <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse"></div>
+            <h3 className="feature-title feature-title-desktop text-gray-800">MOST SEARCHED FOR ON KLIQSHOT</h3>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {[
+            "Wedding Photographer Near Me", "Portrait Photography", "Family Photo Shoot", "Corporate Event Photography", 
+            "Engagement Photography", "Maternity Photography", "Newborn Photography", "Graduation Photography",
+            "Pre Wedding Photography", "Post Wedding Photography", "Candid Photography", "Traditional Photography",
+            "Outdoor Photography", "Studio Photography", "Event Photography", "Product Photography", "Fashion Photography",
+            "Art Photography", "Fine Art Photography", "Conceptual Photography", "Abstract Photography",
+            "Senior Portraits", "Corporate Headshots", "Professional Headshots", "Studio Portraits",
+            "Birthday Party Photography", "Anniversary Photography", "Conference Photography", "Seminar Photography",
+            "Destination Wedding", "Candid Wedding", "Traditional Wedding", "Modern Wedding Photography"
+          ].map((term, index) => (
+            <span 
+              key={index} 
+              className="text-sm bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 px-4 py-2 rounded-full border border-blue-100 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-200 hover:scale-105 transition-all duration-200 cursor-pointer shadow-sm"
+            >
+              {term}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );

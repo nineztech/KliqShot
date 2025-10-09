@@ -162,18 +162,18 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
       <div className="admin-card">
         <div className="flex items-center space-x-4">
           <div className="flex-shrink-0">
-            <h2 className="text-xl font-bold text-gray-900">Photographer Management</h2>
+            <h2 className="text-xl font-bold text-gray-900">KliqChamps Management</h2>
             <p className="text-gray-600 text-sm">Manage photographers on the platform</p>
           </div>
           
           <div className="flex-1 relative max-w-md">
-            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search photographers..."
+              placeholder="Search KliqChamps..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="admin-input pl-10 w-full"
+              className="pl-10 pr-4 py-2 w-full text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
           
@@ -188,22 +188,22 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
             <option value="pending">Pending</option>
           </select>
           
-          <button className="admin-button-secondary text-sm px-3 py-2">
-            <MdFilterList className="w-3 h-3 mr-1" />
+          <button className="admin-button-secondary text-sm px-3 py-2 flex items-center gap-2">
+            <MdFilterList className="w-4 h-4" />
             Filters
           </button>
           
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2"
+            className="admin-button-primary text-sm px-4 py-2.5 flex items-center gap-2 whitespace-nowrap"
           >
-            <MdAdd className="w-3 h-3 mr-1" />
-            Add Photographer
+            <MdAdd className="w-4 h-4" />
+            Add KliqChamp
           </button>
         </div>
       </div>
 
-      {/* Photographers Table */}
+      {/* KliqChamps Table */}
       <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -288,12 +288,12 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
         </div>
       </div>
 
-      {/* Add Photographer Modal */}
+      {/* Add KliqChamp Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add New Photographer</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Add New KliqChamp</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -414,7 +414,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
                 onClick={handleAddPhotographer}
                 className="admin-button-primary"
               >
-                Add Photographer
+                Add KliqChamp
               </button>
             </div>
           </div>

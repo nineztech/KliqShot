@@ -80,7 +80,7 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
       trend: 'up'
     },
     { 
-      title: 'Total Photographers', 
+      title: 'Total KliqChamps', 
       value: 1247, 
       icon: MdCameraAlt, 
       gradient: 'from-blue-500 to-cyan-500',
@@ -89,7 +89,7 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
       trend: 'up'
     },
     { 
-      title: 'Total Users', 
+      title: 'Total Clients', 
       value: 3421, 
       icon: MdPeople, 
       gradient: 'from-green-500 to-emerald-500',
@@ -263,15 +263,15 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
               className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">User Growth</h3>
+                <h3 className="text-xl font-bold text-gray-900">Client Growth</h3>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Users</span>
+                    <span className="text-sm text-gray-600">Clients</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Photographers</span>
+                    <span className="text-sm text-gray-600">KliqChamps</span>
                   </div>
                 </div>
               </div>

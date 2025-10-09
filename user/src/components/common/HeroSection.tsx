@@ -1,248 +1,130 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-interface HeroSlide {
-  id: number;
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  ctaText: string;
-  ctaLink: string;
-  badge?: string;
-  stats?: {
-    label: string;
-    value: string;
-  }[];
-}
-
-const heroSlides: HeroSlide[] = [
-    {
-        id: 1,
-        title: "Wedding Photography Excellence",
-        subtitle: "Capture Your Special Day",
-        description: "Professional wedding photographers with years of experience. From candid moments to traditional ceremonies, we preserve your memories beautifully.",
-        image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
-        ctaText: "Book Wedding Photographer",
-        ctaLink: "/categories/wedding-photography",
-        badge: "Trending",
-        stats: [
-          { label: "Wedding Packages", value: "500+" },
-          { label: "Weddings Shot", value: "15,000+" },
-          { label: "Satisfaction Rate", value: "99%" }
-        ]
-      },
-  {
-    id: 2,
-    title: "Find Your Perfect Photographer",
-    subtitle: "Professional Photography Services",
-    description: "Discover top-rated photographers for weddings, portraits, events, and more. Book with confidence and capture your precious moments with style.",
-    image: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
-    ctaText: "Explore Photographers",
-    ctaLink: "/photographers",
-    badge: "Most Popular",
-    stats: [
-      { label: "Photographers", value: "10,000+" },
-      { label: "Happy Customers", value: "50,000+" },
-      { label: "Cities Covered", value: "100+" }
-    ]
-  },
-
-  {
-    id: 3,
-    title: "Portrait & Studio Sessions",
-    subtitle: "Professional Portraits Made Easy",
-    description: "Transform your look with professional portrait photography. From corporate headshots to creative portraits, our photographers deliver stunning results.",
-    image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
-    ctaText: "Book Portrait Session",
-    ctaLink: "/categories/portrait-photography",
-    badge: "Featured",
-    stats: [
-      { label: "Portrait Styles", value: "25+" },
-      { label: "Sessions Completed", value: "20,000+" },
-      { label: "Studio Locations", value: "50+" }
-    ]
-  },
-  {
-    id: 4,
-    title: "Event Photography Services",
-    subtitle: "Document Your Important Moments",
-    description: "From corporate events to birthday parties, our photographers capture every detail with professional expertise and artistic flair.",
-    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
-    ctaText: "Book Event Photographer",
-    ctaLink: "/categories/event-photography",
-    badge: "New",
-    stats: [
-      { label: "Event Types", value: "30+" },
-      { label: "Events Covered", value: "8,000+" },
-      { label: "Quick Delivery", value: "24hrs" }
-    ]
-  }
-];
+import { MagnifyingGlassIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 export default function HeroSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [location, setLocation] = useState('');
+  const [showText, setShowText] = useState(false);
 
-  // Auto-rotate slides every 5 seconds
   useEffect(() => {
-    if (isAutoPlaying) {
-      intervalRef.current = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-      }, 5000);
+    // Trigger text animation after component mounts
+    const timer = setTimeout(() => {
+      setShowText(true);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.append('q', searchQuery);
+    if (location) params.append('location', location);
+    router.push(`/search?${params.toString()}`);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
     }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isAutoPlaying]);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
-    // Resume auto-play after 10 seconds
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  };
-
-  const goToPrevious = () => {
-    const newIndex = currentSlide === 0 ? heroSlides.length - 1 : currentSlide - 1;
-    goToSlide(newIndex);
-  };
-
-  const goToNext = () => {
-    const newIndex = currentSlide === heroSlides.length - 1 ? 0 : currentSlide + 1;
-    goToSlide(newIndex);
-  };
-
-  const handleCTAClick = () => {
-    router.push(heroSlides[currentSlide].ctaLink);
   };
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Full Width Image Background */}
-      <div className="relative w-full h-[55vh] min-h-[420px]">
-        <Image
-          src={heroSlides[currentSlide].image}
-          alt={heroSlides[currentSlide].title}
-          fill
-          className="object-cover transition-all duration-700 ease-in-out"
-          priority={currentSlide === 0}
-        />
-        
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/40" />
-        
-        {/* Left Arrow */}
-        <button
-          onClick={goToPrevious}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 hover:scale-110 border border-white/30 z-20"
-          aria-label="Previous slide"
-        >
-          <ChevronLeftIcon className="w-6 h-6 text-white" />
-        </button>
+    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[26rem] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden rounded-xl shadow-lg" data-hero-section>
+      {/* Light Unsplash Background Image */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center blur-[1px] scale-105"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=1920&h=1080&fit=crop&auto=format&q=80)',
+        }}
+      >
+        {/* Light Pleasant Overlay for Professional Look */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-indigo-50/15 to-purple-50/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-50/15 via-transparent to-transparent"></div>
+      </div>
 
-        {/* Right Arrow */}
-        <button
-          onClick={goToNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 hover:scale-110 border border-white/30 z-20"
-          aria-label="Next slide"
-        >
-          <ChevronRightIcon className="w-6 h-6 text-white" />
-        </button>
-
-        {/* Badge */}
-        {heroSlides[currentSlide].badge && (
-          <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold text-gray-800 shadow-lg z-20">
-            {heroSlides[currentSlide].badge}
+      {/* Content Overlay */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-center max-w-4xl px-4 sm:px-6 lg:px-8 w-full">
+          {/* Animated Heading */}
+          <div className={`transform transition-all duration-1000 ease-out ${
+            showText ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+          }`}>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3 leading-tight">
+              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Capture Your Perfect Moment
+              </span>
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-4 md:mb-6 font-medium">
+              Find and book professional photographers for every occasion
+            </p>
           </div>
-        )}
 
-        {/* Blur Background - Right Side */}
-        <div className="absolute inset-y-0 right-0 w-full lg:w-[55%] xl:w-[45%] backdrop-blur-md bg-black/20" />
-        
-        {/* Content Overlay - Right Side */}
-        <div className="absolute inset-0 flex items-center justify-end">
-          <div className="w-full lg:w-[55%] xl:w-[45%] pr-4 lg:pr-8">
-            <div className="p-4 lg:p-6">
-              {/* Main Content */}
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <h1 className="text-xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight">
-                    <span className="block">{heroSlides[currentSlide].title.split(' ').slice(0, -1).join(' ')}</span>
-                    <span className="block text-white">
-                      {heroSlides[currentSlide].title.split(' ').slice(-1)[0]}
-                    </span>
-                  </h1>
-                  
-                  <p className="text-base lg:text-lg text-white/90 font-medium">
-                    {heroSlides[currentSlide].subtitle}
-                  </p>
-                  
-                  <p className="text-sm text-white/80 leading-relaxed">
-                    {heroSlides[currentSlide].description}
-                  </p>
+          {/* Search Box */}
+          <div className={`transform transition-all duration-1000 delay-200 ease-out ${
+            showText ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}>
+            <div className="bg-white/98 backdrop-blur-lg rounded-xl shadow-2xl p-2 md:p-3 border border-white/60 ring-1 ring-blue-100/50">
+              <div className="flex flex-col md:flex-row gap-2">
+                {/* Search Input */}
+                <div className="flex-1 relative">
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search photographers, events, or categories..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="w-full pl-10 pr-4 py-2 md:py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400"
+                  />
                 </div>
 
-                {/* Stats */}
-                {heroSlides[currentSlide].stats && (
-                  <div className="grid grid-cols-3 gap-2 py-2">
-                    {heroSlides[currentSlide].stats.map((stat, index) => (
-                      <div key={index} className="text-center">
-                        <div className="text-lg lg:text-xl font-bold text-white">
-                          {stat.value}
-                        </div>
-                        <div className="text-xs text-white/70 mt-1">
-                          {stat.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* CTA Button */}
-                <div className="pt-1">
-                  <button
-                    onClick={handleCTAClick}
-                    className="group relative inline-flex items-center px-4 py-2 bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 text-white font-semibold rounded-lg hover:from-slate-700 hover:via-purple-700 hover:to-indigo-800 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-                  >
-                    <span className="relative z-10">{heroSlides[currentSlide].ctaText}</span>
-                    <ChevronRightIcon className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
-                  </button>
+                {/* Location Input */}
+                <div className="flex-1 relative">
+                  <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Enter location..."
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="w-full pl-10 pr-4 py-2 md:py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400"
+                  />
                 </div>
+
+                {/* Search Button */}
+                <button
+                  onClick={handleSearch}
+                  className="px-5 py-2 md:py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg whitespace-nowrap"
+                >
+                  Search Now
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Mobile Navigation Controls */}
-      <div className="lg:hidden bg-white/10 backdrop-blur-sm border-t border-white/20">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-center space-x-4">
-          <button
-            onClick={goToPrevious}
-            className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 border border-white/30"
-            aria-label="Previous slide"
-          >
-            <ChevronLeftIcon className="w-5 h-5 text-white" />
-          </button>
-
-          <button
-            onClick={goToNext}
-            className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 border border-white/30"
-            aria-label="Next slide"
-          >
-            <ChevronRightIcon className="w-5 h-5 text-white" />
-          </button>
+          {/* Popular Categories/Tags */}
+          <div className={`transform transition-all duration-1000 delay-300 ease-out ${
+            showText ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <span className="text-xs md:text-sm text-gray-600 font-medium">Popular:</span>
+              {['Wedding', 'Portrait', 'Event', 'Pre-Wedding', 'Baby', 'Commercial'].map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => {
+                    setSearchQuery(tag);
+                    router.push(`/search?q=${tag}`);
+                  }}
+                  className="px-2.5 py-0.5 md:px-3 md:py-1 bg-white/80 backdrop-blur-sm text-gray-700 text-xs md:text-sm rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 border border-gray-200"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

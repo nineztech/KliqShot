@@ -5,17 +5,34 @@ import {
   MdSearch, 
   MdNotifications, 
   MdAccountCircle,
-  MdMenu,
+  MdChevronLeft,
+  MdChevronRight,
   MdSettings
 } from 'react-icons/md';
+import { useSidebar } from '@/components/sidebar/SidebarContext';
 
 export default function TopNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
+  const { isMinimized, toggleSidebar } = useSidebar();
 
   return (
-    <div className="fixed top-0 left-20 right-0 h-16 bg-white border-b border-gray-200 z-30 flex items-center justify-between px-6 shadow-sm">
-      {/* Left Section - Search */}
+    <div 
+      className="fixed top-0 right-0 h-16 bg-white border-b border-gray-200 z-30 flex items-center justify-between px-6 shadow-sm transition-all duration-300"
+      style={{ left: isMinimized ? '5rem' : '16rem' }}
+    >
+      {/* Left Section - Menu and Search */}
       <div className="flex items-center space-x-4">
+        <button 
+          onClick={toggleSidebar}
+          className="p-2 hover:bg-gray-100 rounded-lg transition"
+          title={isMinimized ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {isMinimized ? (
+            <MdChevronRight className="w-5 h-5 text-gray-600" />
+          ) : (
+            <MdChevronLeft className="w-5 h-5 text-gray-600" />
+          )}
+        </button>
         <div className="relative">
           <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input

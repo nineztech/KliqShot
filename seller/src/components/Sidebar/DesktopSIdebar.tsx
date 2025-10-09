@@ -5,12 +5,14 @@ import { Home, Package, Wallet, ArrowLeftRight, TrendingDown, TrendingUp, Settin
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSidebar } from './SidebarContext'; // Import the context
+import { useAuth } from '@/components/AuthContext';
 
 const Sidebar = () => {
   const [transactionsOpen, setTransactionsOpen] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
   const { isMinimized } = useSidebar(); // Get the minimized state
+  const { logout } = useAuth();
 
   const menuItems = [
     { icon: Home, label: 'Dashboard', active: true, href: '/' },
@@ -32,52 +34,23 @@ const Sidebar = () => {
     try {
       setIsLoggingOut(true);
       
-      // Get token from localStorage
-      const token = localStorage.getItem('sellerToken');
+      // Call AuthContext logout to clear all tokens and cookies
+      logout();
       
-      if (token) {
-        // Call logout API
-        const response = await fetch('/api/sellers/logout', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          // Clear token from localStorage
-          localStorage.removeItem('sellerToken');
-          localStorage.removeItem('sellerData');
-          
-          // Redirect to login page
-          router.push('/');
-        } else {
-          console.error('Logout failed:', data.message);
-          // Still clear local data and redirect even if API fails
-          localStorage.removeItem('sellerToken');
-          localStorage.removeItem('sellerData');
-          router.push('/');
-        }
-      } else {
-        // No token found, just redirect
-        router.push('/');
-      }
+      // Redirect to signin page
+      router.push('/signin');
     } catch (error) {
       console.error('Logout error:', error);
-      // Clear local data even on error
-      localStorage.removeItem('sellerToken');
-      localStorage.removeItem('sellerData');
-      router.push('/');
+      // Still logout and redirect even on error
+      logout();
+      router.push('/signin');
     } finally {
       setIsLoggingOut(false);
     }
   };
 
   return (
-    <div className={`${isMinimized ? 'w-20' : 'w-64'} bg-gradient-to-b from-indigo-600 to-indigo-700 h-screen fixed left-0 top-0 text-white z-20 transition-all duration-300`}>
+    <div className={`${isMinimized ? 'w-20' : 'w-64'} ease-in-out bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900 h-screen fixed left-0 top-0 text-white z-20 transition-all duration-300`}>
       {/* Logo/Brand Section */}
       <div className={`${isMinimized ? 'p-6' : 'p-6'} transition-all duration-300`}>
         <div className="flex items-center justify-center">

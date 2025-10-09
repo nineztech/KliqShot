@@ -6,9 +6,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { api } from '@/lib/api';
+import { useAuth } from '@/components/AuthContext';
 
 export default function DesktopSignupPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -84,9 +86,19 @@ export default function DesktopSignupPage() {
         Phone: cleanedPhone
       });
 
-      if (result.success) {
-        // Success! Redirect to sign in page
-        router.push('/signin'); // Change to your desired route
+      if (result.success && result.data) {
+        // Call AuthContext login to update global state and set cookies
+        login(result.data.token, {
+          id: result.data.id,
+          firstname: result.data.firstname,
+          lastname: result.data.lastname,
+          email: result.data.email,
+          createdAt: result.data.createdAt || new Date().toISOString(),
+          updatedAt: result.data.updatedAt || new Date().toISOString()
+        });
+        
+        // Success! Redirect to Desktop
+        router.push('/Desktop');
       }
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');

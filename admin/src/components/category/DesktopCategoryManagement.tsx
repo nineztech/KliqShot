@@ -134,26 +134,26 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Header */}
       <div className="admin-card">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Category Management</h2>
-            <p className="text-gray-600">Manage categories and subcategories for the platform</p>
+            <p className="text-gray-600 text-sm">Manage categories and subcategories for the platform</p>
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary"
+            className="admin-button-primary text-sm px-3 py-2"
           >
-            <MdAdd className="w-4 h-4 mr-2" />
+            <MdAdd className="w-3 h-3 mr-1" />
             Add Category
           </button>
         </div>
       </div>
 
       {/* Categories List */}
-      <div className="space-y-4">
+      <div className="space-y-2">
         {categories.map((category) => (
           <div key={category.id} className="admin-card">
             <div className="flex items-center justify-between">

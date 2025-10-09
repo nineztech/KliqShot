@@ -81,7 +81,7 @@ export default function UsersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar activeTab="users" onTabChange={(tab) => window.location.href = `/${tab}`} />
-      <div className="ml-20 transition-all duration-300 p-4 md:p-8">
+      <div className="pt-16 transition-all duration-300 p-4 md:p-8">
         <UserManagement users={users} setUsers={setUsers} />
       </div>
     </div>

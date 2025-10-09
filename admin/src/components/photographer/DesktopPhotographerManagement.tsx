@@ -157,28 +157,16 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="admin-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Photographer Management</h2>
-            <p className="text-gray-600">Manage photographers on the platform</p>
-          </div>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="admin-button-primary"
-          >
-            <MdAdd className="w-4 h-4 mr-2" />
-            Add Photographer
-          </button>
-        </div>
-      </div>
-
-      {/* Filters */}
+    <div className="space-y-2">
+      {/* Header and Filters Combined - All in One Line */}
       <div className="admin-card">
         <div className="flex items-center space-x-4">
-          <div className="flex-1 relative">
+          <div className="flex-shrink-0">
+            <h2 className="text-xl font-bold text-gray-900">Photographer Management</h2>
+            <p className="text-gray-600 text-sm">Manage photographers on the platform</p>
+          </div>
+          
+          <div className="flex-1 relative max-w-md">
             <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
@@ -188,19 +176,29 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
               className="admin-input pl-10 w-full"
             />
           </div>
+          
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="admin-input"
+            className="admin-input min-w-[120px]"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
             <option value="pending">Pending</option>
           </select>
-          <button className="admin-button-secondary">
-            <MdFilterList className="w-4 h-4 mr-2" />
+          
+          <button className="admin-button-secondary text-sm px-3 py-2">
+            <MdFilterList className="w-3 h-3 mr-1" />
             Filters
+          </button>
+          
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="admin-button-primary text-sm px-3 py-2"
+          >
+            <MdAdd className="w-3 h-3 mr-1" />
+            Add Photographer
           </button>
         </div>
       </div>

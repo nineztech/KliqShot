@@ -14,14 +14,68 @@ export default function DesktopNavbar() {
   const [showMapModal, setShowMapModal] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState('');
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
 
+  const categories = [
+    'haldi',
+    'mehendi',
+    'wedding',
+    'portrait',
+    'family',
+    'events',
+    'maternity',
+    'product',
+    'interior',
+    'fashion',
+    'sports',
+    'cinematography'
+  ];
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement search functionality
-    console.log('Searching for:', searchQuery);
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
   };
+
+  // Animated placeholder effect
+  useEffect(() => {
+    const currentCategory = categories[currentCategoryIndex];
+    const baseText = 'Search for ';
+    const fullText = baseText + currentCategory + '...';
+
+    if (isTyping) {
+      // Typing effect
+      if (animatedPlaceholder.length < fullText.length) {
+        const timeout = setTimeout(() => {
+          setAnimatedPlaceholder(fullText.substring(0, animatedPlaceholder.length + 1));
+        }, 100);
+        return () => clearTimeout(timeout);
+      } else {
+        // Wait before starting to delete
+        const timeout = setTimeout(() => {
+          setIsTyping(false);
+        }, 2000);
+        return () => clearTimeout(timeout);
+      }
+    } else {
+      // Deleting effect
+      if (animatedPlaceholder.length > baseText.length) {
+        const timeout = setTimeout(() => {
+          setAnimatedPlaceholder(animatedPlaceholder.substring(0, animatedPlaceholder.length - 1));
+        }, 50);
+        return () => clearTimeout(timeout);
+      } else {
+        // Move to next category
+        setCurrentCategoryIndex((prev) => (prev + 1) % categories.length);
+        setIsTyping(true);
+      }
+    }
+  }, [animatedPlaceholder, isTyping, currentCategoryIndex, categories]);
 
 
   const handleLocationClick = () => {
@@ -148,7 +202,7 @@ export default function DesktopNavbar() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Search products, brands, categories..."
+                    placeholder={animatedPlaceholder}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="block w-full pl-10 pr-3 py-3 border border-white/30 rounded-full leading-5 bg-white/90 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-white/50 focus:border-white text-sm"

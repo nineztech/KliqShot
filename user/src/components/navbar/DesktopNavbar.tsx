@@ -17,8 +17,13 @@ export default function DesktopNavbar() {
   const [animatedPlaceholder, setAnimatedPlaceholder] = useState('');
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
+  const searchDropdownRef = useRef<HTMLDivElement>(null);
 
   const categories = [
     'haldi',
@@ -35,11 +40,85 @@ export default function DesktopNavbar() {
     'cinematography'
   ];
 
+  // Sample search suggestions based on categories
+  const allSuggestions = [
+    'haldi photography',
+    'mehendi ceremony',
+    'wedding photographer',
+    'portrait session',
+    'family photoshoot',
+    'corporate events',
+    'maternity shoot',
+    'product photography',
+    'interior design',
+    'fashion photography',
+    'sports photography',
+    'cinematography',
+    'pre-wedding shoot',
+    'reception photography',
+    'newborn photos',
+    'headshot photographer',
+    'linkedin profile',
+    'professional branding',
+    'birthday party',
+    'house warming',
+    'festival photography',
+    'fitness photography',
+    'swimming photography',
+    'documentary video',
+    'social media content'
+  ];
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      // Add to recent searches
+      addToRecentSearches(searchQuery.trim());
+      setShowSearchDropdown(false);
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
+  };
+
+  const addToRecentSearches = (query: string) => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(item => item !== query);
+      const newRecent = [query, ...filtered].slice(0, 5); // Keep only 5 recent searches
+      localStorage.setItem('recentSearches', JSON.stringify(newRecent));
+      return newRecent;
+    });
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    addToRecentSearches(suggestion);
+    setShowSearchDropdown(false);
+    router.push(`/search?q=${encodeURIComponent(suggestion)}`);
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    if (value.trim()) {
+      // Filter suggestions based on input
+      const filtered = allSuggestions.filter(suggestion => 
+        suggestion.toLowerCase().includes(value.toLowerCase())
+      ).slice(0, 8);
+      setSearchSuggestions(filtered);
+    }
+  };
+
+  const handleSearchFocus = () => {
+    setIsSearchFocused(true);
+    setShowSearchDropdown(true);
+  };
+
+  const handleSearchBlur = () => {
+    setIsSearchFocused(false);
+    // Delay hiding dropdown to allow clicks on suggestions
+    setTimeout(() => {
+      setShowSearchDropdown(false);
+    }, 200);
   };
 
   // Animated placeholder effect
@@ -131,6 +210,14 @@ export default function DesktopNavbar() {
     }
   };
 
+  // Load recent searches from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('recentSearches');
+    if (saved) {
+      setRecentSearches(JSON.parse(saved));
+    }
+  }, []);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -140,16 +227,19 @@ export default function DesktopNavbar() {
       if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
         setShowLanguageDropdown(false);
       }
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
+        setShowSearchDropdown(false);
+      }
     };
 
-    if (showLocationDropdown || showLanguageDropdown) {
+    if (showLocationDropdown || showLanguageDropdown || showSearchDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showLocationDropdown, showLanguageDropdown]);
+  }, [showLocationDropdown, showLanguageDropdown, showSearchDropdown]);
 
   return (
     <nav className="relative bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 shadow-lg border-b border-white/10 sticky top-0 z-50">
@@ -194,21 +284,81 @@ export default function DesktopNavbar() {
           {/* Search Bar & Location */}
           <div className="flex-1 max-w-4xl mx-8 flex items-center gap-4">
             {/* Search Bar */}
-            <div className="flex-1">
+            <div className="flex-1 relative" ref={searchDropdownRef}>
               <form onSubmit={handleSearch} className="relative">
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-                  </div>
                   <input
                     type="text"
-                    placeholder={animatedPlaceholder}
+                    placeholder={isSearchFocused ? "Search for Products, Brands and More" : animatedPlaceholder}
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-white/30 rounded-full leading-5 bg-white/90 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-white/50 focus:border-white text-sm"
+                    onChange={handleSearchInputChange}
+                    onFocus={handleSearchFocus}
+                    onBlur={handleSearchBlur}
+                    className="block w-full pl-4 pr-10 py-2 border border-white/30 rounded-full leading-5 bg-white/90 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-white/50 focus:border-white text-sm"
                   />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                  </div>
                 </div>
               </form>
+
+              {/* Search Dropdown */}
+              {showSearchDropdown && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                  {/* Recent Searches */}
+                  {recentSearches.length > 0 && !searchQuery && (
+                    <div className="p-3 border-b border-gray-100">
+                      <div className="flex items-center gap-2 text-gray-600 hover:bg-gray-50 p-2 rounded cursor-pointer">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm">{recentSearches[0]}</span>
+                        <span className="text-xs text-blue-600 ml-auto">in Photography</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Search Suggestions */}
+                  <div className="p-3">
+                    {searchQuery ? (
+                      <>
+                        <h3 className="text-sm font-medium text-gray-900 mb-2">Suggestions</h3>
+                        <div className="space-y-1">
+                          {searchSuggestions.map((suggestion, index) => (
+                            <div
+                              key={index}
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                            >
+                              <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
+                              <span className="text-sm text-gray-700">{suggestion}</span>
+                            </div>
+                          ))}
+                          {searchSuggestions.length === 0 && (
+                            <div className="text-sm text-gray-500 p-2">No suggestions found</div>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h3 className="text-sm font-medium text-gray-900 mb-2">Trending</h3>
+                        <div className="space-y-1">
+                          {allSuggestions.slice(0, 8).map((suggestion, index) => (
+                            <div
+                              key={index}
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                            >
+                              <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
+                              <span className="text-sm text-gray-700">{suggestion}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Location Selector */}
@@ -324,12 +474,13 @@ export default function DesktopNavbar() {
 
           {/* Become Seller Button & Profile Icon */}
           <div className="flex items-center gap-3">
-            {/* Become Seller Button */}
+            {/* Become KliqChamp Button */}
             <button
               onClick={() => window.open('http://localhost:3002', '_blank')}
-              className="bg-white text-purple-600 px-4 py-2 rounded-md text-sm font-semibold hover:bg-white/90 transition-all duration-200 shadow-sm hover:shadow-md"
+              className="bg-gradient-to-r from-orange-300 to-red-400 text-white px-4 py-2 rounded-full text-sm font-bold hover:from-orange-400 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 hover:border-white/30 relative overflow-hidden group"
             >
-              Become Seller
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">Become KliqChamp</span>
             </button>
             
             {/* Profile Dropdown */}

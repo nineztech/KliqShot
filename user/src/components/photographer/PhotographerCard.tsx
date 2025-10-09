@@ -121,13 +121,13 @@ export default function PhotographerCard({
 
   return (
     <div 
-      className="bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer overflow-hidden group transform hover:-translate-y-2 hover:scale-[1.02]"
+      className="bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer  group transform hover:-translate-y-2 hover:scale-[1.02]"
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-       {/* Animated Image Gallery Section */}
-       <div className="relative aspect-[3/2] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+         {/* Animated Image Gallery Section */}
+        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
         {/* Main Image */}
         <div className="relative w-full h-full">
             <img
@@ -136,10 +136,19 @@ export default function PhotographerCard({
               className="w-full h-full object-cover object-center transition-all duration-700 ease-in-out group-hover:scale-110"
             />
           
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          
-          {/* Like Button */}
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            {/* Trusted Badge */}
+            <div className="absolute top-3 left-3 text-cyan-400 flex items-center gap-1">
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="white"/>
+              </svg>
+              <span className="italic text-[10px] font-bold">TRUSTED</span>
+            </div>
+            
+            {/* Like Button */}
           <button
             className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
             onClick={(e) => {
@@ -172,15 +181,26 @@ export default function PhotographerCard({
         )}
       </div>
       
-       {/* Content Section */}
-       <div className="p-4">
+         {/* Content Section */}
+        <div className="p-3">
          {/* Photographer Info */}
          <div className="flex items-start space-x-3 mb-3">
            <div className="flex-1 min-w-0">
              <div className="flex items-center justify-between mb-1">
-               <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
-                 {name}
-               </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
+                    {name}
+                  </h3>
+                  <div className="relative group/verified">
+                    <svg className="w-4 h-4 text-green-500 flex-shrink-0 cursor-help" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-900 text-xs rounded-lg opacity-0 group-hover/verified:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-200">
+                       All details of this photographer are <span className="font-bold">verified</span>
+                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-white"></div>
+                     </div>
+                  </div>
+                </div>
                <div
                  className="relative flex items-center space-x-1 ml-2 cursor-pointer"
                  onMouseEnter={() => setShowRatingPopup(true)}
@@ -224,14 +244,6 @@ export default function PhotographerCard({
                  )}
                </div>
              </div>
-             <div className="flex items-center space-x-2 mt-1">
-               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                 Verified
-               </span>
-               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                 Trusted
-               </span>
-             </div>
              <div className="flex items-center justify-between mt-1">
                <div className="flex items-center">
                  <MapPinIcon className="w-3 h-3 text-gray-400 mr-1" />
@@ -266,14 +278,19 @@ export default function PhotographerCard({
            </div>
          )}
 
-         {/* Price and Book Button */}
-         <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-           <div className="flex flex-col">
-             <span className="text-lg font-bold text-blue-600">{price}</span>
-             <span className="text-gray-500 text-xs">per session</span>
-           </div>
+         {/* View Details and Book Button */}
+         <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
           <button 
-            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+            className="flex-1 bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/photographer/${id}`);
+            }}
+          >
+            View 
+          </button>
+          <button 
+            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             onClick={(e) => {
               e.stopPropagation();
               // Navigate to photographer detail page where booking logic will handle category selection

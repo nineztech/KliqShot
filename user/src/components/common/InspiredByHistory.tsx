@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { MapPinIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, ClockIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import PhotographerCard from '@/components/photographer/PhotographerCard';
 
 interface Photographer {
   id: number;
@@ -212,69 +213,20 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {inspiredPhotographers.map((photographer) => (
-            <div 
-              key={photographer.id} 
-              className="flex-none w-[calc(25%-18px)] border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
-              onClick={() => router.push(`/photographer/${photographer.id}`)}
-            >
-              {/* Photographer Image */}
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src={photographer.image}
-                  alt={photographer.name}
-                  width={300}
-                  height={225}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                {/* Last Viewed */}
-                {photographer.lastViewed && (
-                  <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-1.5 py-0.5 rounded-full text-[10px]">
-                    Viewed {photographer.lastViewed}
-                  </div>
-                )}
-              </div>
-              
-              {/* Photographer Info */}
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors">
-                      {photographer.name}
-                    </h3>
-                    <p className="text-blue-600 text-xs font-medium">{photographer.specialty}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-base font-bold text-blue-600">{photographer.price}</div>
-                    <div className="text-[10px] text-gray-500">per hour</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-1 mb-2">
-                  {renderStars(photographer.rating, 'w-3.5 h-3.5')}
-                  <span className="text-xs text-gray-600 ml-1">
-                    {photographer.rating} ({photographer.reviews} reviews)
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                  <div className="flex items-center">
-                    <MapPinIcon className="w-3.5 h-3.5 mr-1" />
-                    <span>{photographer.location}</span>
-                  </div>
-                  <span>{photographer.experience}</span>
-                </div>
-
-                {/* Similarity Reason */}
-                {photographer.similarity && (
-                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-2 mt-2">
-                    <p className="text-[10px] text-purple-700 font-medium">
-                      💡 {photographer.similarity}
-                    </p>
-                  </div>
-                )}
-              </div>
+            <div key={photographer.id} className="flex-none w-[calc(25%-18px)]">
+              <PhotographerCard
+                id={photographer.id}
+                name={photographer.name}
+                specialty={photographer.specialty}
+                location={photographer.location}
+                rating={photographer.rating}
+                reviews={photographer.reviews}
+                price={photographer.price}
+                experience={photographer.experience}
+                image={photographer.image}
+                category="portrait"
+                onClick={() => router.push(`/photographer/${photographer.id}`)}
+              />
             </div>
           ))}
         </div>
@@ -283,150 +235,40 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       {/* Tablet View - 2 cards per row */}
       <div className="hidden md:grid lg:hidden grid-cols-2 gap-6">
         {inspiredPhotographers.slice(0, 4).map((photographer) => (
-          <div 
-            key={photographer.id} 
-            className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
+          <PhotographerCard
+            key={photographer.id}
+            id={photographer.id}
+            name={photographer.name}
+            specialty={photographer.specialty}
+            location={photographer.location}
+            rating={photographer.rating}
+            reviews={photographer.reviews}
+            price={photographer.price}
+            experience={photographer.experience}
+            image={photographer.image}
+            category="portrait"
             onClick={() => router.push(`/photographer/${photographer.id}`)}
-          >
-            {/* Photographer Image */}
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                src={photographer.image}
-                alt={photographer.name}
-                width={300}
-                height={225}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
-              {/* Personalization Badge */}
-              <div className="absolute top-2 left-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                For You
-              </div>
-              
-              {/* Last Viewed */}
-              {photographer.lastViewed && (
-                <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full text-xs">
-                  Viewed {photographer.lastViewed}
-                </div>
-              )}
-            </div>
-            
-            {/* Photographer Info */}
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors">
-                    {photographer.name}
-                  </h3>
-                  <p className="text-blue-600 text-xs font-medium">{photographer.specialty}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-base font-bold text-blue-600">{photographer.price}</div>
-                  <div className="text-[10px] text-gray-500">per hour</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-1 mb-2">
-                {renderStars(photographer.rating, 'w-3.5 h-3.5')}
-                <span className="text-xs text-gray-600 ml-1">
-                  {photographer.rating} ({photographer.reviews} reviews)
-                </span>
-              </div>
-              
-              <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                <div className="flex items-center">
-                  <MapPinIcon className="w-3.5 h-3.5 mr-1" />
-                  <span>{photographer.location}</span>
-                </div>
-                <span>{photographer.experience}</span>
-              </div>
-
-              {/* Similarity Reason */}
-              {photographer.similarity && (
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-2 mt-2">
-                  <p className="text-[10px] text-purple-700 font-medium">
-                    💡 {photographer.similarity}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+          />
         ))}
       </div>
 
       {/* Mobile View - 1 card per row */}
       <div className="grid grid-cols-1 md:hidden gap-6">
         {inspiredPhotographers.slice(0, 3).map((photographer) => (
-          <div 
-            key={photographer.id} 
-            className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
+          <PhotographerCard
+            key={photographer.id}
+            id={photographer.id}
+            name={photographer.name}
+            specialty={photographer.specialty}
+            location={photographer.location}
+            rating={photographer.rating}
+            reviews={photographer.reviews}
+            price={photographer.price}
+            experience={photographer.experience}
+            image={photographer.image}
+            category="portrait"
             onClick={() => router.push(`/photographer/${photographer.id}`)}
-          >
-            {/* Photographer Image */}
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                src={photographer.image}
-                alt={photographer.name}
-                width={300}
-                height={225}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
-              {/* Personalization Badge */}
-              <div className="absolute top-2 left-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                For You
-              </div>
-              
-              {/* Last Viewed */}
-              {photographer.lastViewed && (
-                <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full text-xs">
-                  Viewed {photographer.lastViewed}
-                </div>
-              )}
-            </div>
-            
-            {/* Photographer Info */}
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors">
-                    {photographer.name}
-                  </h3>
-                  <p className="text-blue-600 text-xs font-medium">{photographer.specialty}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-base font-bold text-blue-600">{photographer.price}</div>
-                  <div className="text-[10px] text-gray-500">per hour</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-1 mb-2">
-                {renderStars(photographer.rating, 'w-3.5 h-3.5')}
-                <span className="text-xs text-gray-600 ml-1">
-                  {photographer.rating} ({photographer.reviews} reviews)
-                </span>
-              </div>
-              
-              <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                <div className="flex items-center">
-                  <MapPinIcon className="w-3.5 h-3.5 mr-1" />
-                  <span>{photographer.location}</span>
-                </div>
-                <span>{photographer.experience}</span>
-              </div>
-
-              {/* Similarity Reason */}
-              {photographer.similarity && (
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-2 mt-2">
-                  <p className="text-[10px] text-purple-700 font-medium">
-                    💡 {photographer.similarity}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+          />
         ))}
       </div>
       

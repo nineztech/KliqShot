@@ -6,6 +6,7 @@ import ProcessSection from '@/components/process';
 import TopRatedPhotographers from '@/components/common/TopRatedPhotographers';
 import SEOSection from '@/components/seo';
 import Footer from '@/components/footer';
+import HowSellerWorks from '@/components/sellerworks';
 
 export default function Home() {
   return (
@@ -13,7 +14,6 @@ export default function Home() {
       {/* Navbar */}
       <Navbar />
       
-      {/* Hero Section */}
       {/* <HeroSection /> */}
 
       {/* Main Content Container */}
@@ -30,6 +30,10 @@ export default function Home() {
         {/* Top Rated Photographer */}
         <div className='py-4'>
           <TopRatedPhotographers/>
+        </div>
+
+        <div>
+          <HowSellerWorks/>
         </div>
         
         {/* Advertisement Section */}

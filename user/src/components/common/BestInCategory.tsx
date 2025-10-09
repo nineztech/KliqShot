@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { MapPinIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import PhotographerCard from '@/components/photographer/PhotographerCard';
 
 interface Photographer {
   id: number;
@@ -179,58 +180,20 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {bestPhotographers.map((photographer) => (
-            <div 
-              key={photographer.id} 
-              className="flex-none w-[calc(25%-18px)] border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
-              onClick={() => router.push(`/photographer/${photographer.id}`)}
-            >
-              {/* Photographer Image */}
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src={photographer.image}
-                  alt={photographer.name}
-                  width={300}
-                  height={225}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                {/* Top Badge */}
-                <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                  Best in Category
-                </div>
-              </div>
-              
-              {/* Photographer Info */}
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors">
-                      {photographer.name}
-                    </h3>
-                    <p className="text-blue-600 text-xs font-medium">{photographer.specialty}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-base font-bold text-blue-600">{photographer.price}</div>
-                    <div className="text-[10px] text-gray-500">per hour</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-1 mb-2">
-                  {renderStars(photographer.rating, 'w-3.5 h-3.5')}
-                  <span className="text-xs text-gray-600 ml-1">
-                    {photographer.rating} ({photographer.reviews} reviews)
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between text-xs text-gray-600">
-                  <div className="flex items-center">
-                    <MapPinIcon className="w-3.5 h-3.5 mr-1" />
-                    <span>{photographer.location}</span>
-                  </div>
-                  <span>{photographer.experience}</span>
-                </div>
-              </div>
+            <div key={photographer.id} className="flex-none w-[calc(25%-18px)]">
+              <PhotographerCard
+                id={photographer.id}
+                name={photographer.name}
+                specialty={photographer.specialty}
+                location={photographer.location}
+                rating={photographer.rating}
+                reviews={photographer.reviews}
+                price={photographer.price}
+                experience={photographer.experience}
+                image={photographer.image}
+                category="wedding"
+                onClick={() => router.push(`/photographer/${photographer.id}`)}
+              />
             </div>
           ))}
         </div>
@@ -239,118 +202,40 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       {/* Tablet View - 2 cards per row */}
       <div className="hidden md:grid lg:hidden grid-cols-2 gap-6">
         {bestPhotographers.slice(0, 4).map((photographer) => (
-          <div 
-            key={photographer.id} 
-            className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
+          <PhotographerCard
+            key={photographer.id}
+            id={photographer.id}
+            name={photographer.name}
+            specialty={photographer.specialty}
+            location={photographer.location}
+            rating={photographer.rating}
+            reviews={photographer.reviews}
+            price={photographer.price}
+            experience={photographer.experience}
+            image={photographer.image}
+            category="wedding"
             onClick={() => router.push(`/photographer/${photographer.id}`)}
-          >
-            {/* Photographer Image */}
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                src={photographer.image}
-                alt={photographer.name}
-                width={300}
-                height={225}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
-              {/* Top Badge */}
-              <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                Best in Category
-              </div>
-            </div>
-            
-            {/* Photographer Info */}
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors">
-                    {photographer.name}
-                  </h3>
-                  <p className="text-blue-600 text-xs font-medium">{photographer.specialty}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-base font-bold text-blue-600">{photographer.price}</div>
-                  <div className="text-[10px] text-gray-500">per hour</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-1 mb-2">
-                {renderStars(photographer.rating, 'w-3.5 h-3.5')}
-                <span className="text-xs text-gray-600 ml-1">
-                  {photographer.rating} ({photographer.reviews} reviews)
-                </span>
-              </div>
-              
-              <div className="flex items-center justify-between text-xs text-gray-600">
-                <div className="flex items-center">
-                  <MapPinIcon className="w-3.5 h-3.5 mr-1" />
-                  <span>{photographer.location}</span>
-                </div>
-                <span>{photographer.experience}</span>
-              </div>
-            </div>
-          </div>
+          />
         ))}
       </div>
 
       {/* Mobile View - 1 card per row */}
       <div className="grid grid-cols-1 md:hidden gap-6">
         {bestPhotographers.slice(0, 3).map((photographer) => (
-          <div 
-            key={photographer.id} 
-            className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
+          <PhotographerCard
+            key={photographer.id}
+            id={photographer.id}
+            name={photographer.name}
+            specialty={photographer.specialty}
+            location={photographer.location}
+            rating={photographer.rating}
+            reviews={photographer.reviews}
+            price={photographer.price}
+            experience={photographer.experience}
+            image={photographer.image}
+            category="wedding"
             onClick={() => router.push(`/photographer/${photographer.id}`)}
-          >
-            {/* Photographer Image */}
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                src={photographer.image}
-                alt={photographer.name}
-                width={300}
-                height={225}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
-              {/* Top Badge */}
-              <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                Best in Category
-              </div>
-            </div>
-            
-            {/* Photographer Info */}
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors">
-                    {photographer.name}
-                  </h3>
-                  <p className="text-blue-600 text-xs font-medium">{photographer.specialty}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-base font-bold text-blue-600">{photographer.price}</div>
-                  <div className="text-[10px] text-gray-500">per hour</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-1 mb-2">
-                {renderStars(photographer.rating, 'w-3.5 h-3.5')}
-                <span className="text-xs text-gray-600 ml-1">
-                  {photographer.rating} ({photographer.reviews} reviews)
-                </span>
-              </div>
-              
-              <div className="flex items-center justify-between text-xs text-gray-600">
-                <div className="flex items-center">
-                  <MapPinIcon className="w-3.5 h-3.5 mr-1" />
-                  <span>{photographer.location}</span>
-                </div>
-                <span>{photographer.experience}</span>
-              </div>
-            </div>
-          </div>
+          />
         ))}
       </div>
       

@@ -1,8 +1,9 @@
 import Navbar from '@/components/navbar';
-import VideoSection from '@/components/video/VideoSection';
+import HeroSection from '@/components/common/HeroSection';
 import CategorySection from '@/components/category';
 import AdvertisementSection from '@/components/advertisement';
 import ProcessSection from '@/components/process';
+import TopRatedPhotographers from '@/components/common/TopRatedPhotographers';
 import SEOSection from '@/components/seo';
 import Footer from '@/components/footer';
 
@@ -12,16 +13,19 @@ export default function Home() {
       {/* Navbar */}
       <Navbar />
       
+      {/* Hero Section */}
+      <HeroSection />
+
       {/* Main Content Container */}
       <div className="max-w-7xl mx-auto">
-        {/* Video Section */}
-        <div>
-          <VideoSection />
-        </div>
-        
         {/* Category Section */}
         <div className="py-4">
           <CategorySection />
+        </div>
+
+        {/* Top Rated Photographer */}
+        <div className='py-4'>
+          <TopRatedPhotographers/>
         </div>
         
         {/* Advertisement Section */}

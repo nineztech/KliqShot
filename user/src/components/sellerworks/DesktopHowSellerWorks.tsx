@@ -22,6 +22,8 @@ export default function DesktopHowSellerWorks() {
       description: "Sign up and create a stunning professional portfolio showcasing your photography work",
       icon: <UserPlusIcon className="w-8 h-8 text-white" />,
       gradient: "from-cyan-500 to-blue-600",
+      bgGradient: "from-cyan-50 to-blue-50",
+      borderColor: "border-cyan-200",
       accentColor: "text-cyan-600"
     },
     {
@@ -30,6 +32,8 @@ export default function DesktopHowSellerWorks() {
       description: "Upload your best photos, set your pricing, and highlight your unique photography style",
       icon: <PencilSquareIcon className="w-8 h-8 text-white" />,
       gradient: "from-violet-500 to-purple-600",
+      bgGradient: "from-violet-50 to-purple-50",
+      borderColor: "border-violet-200",
       accentColor: "text-violet-600"
     },
     {
@@ -38,6 +42,8 @@ export default function DesktopHowSellerWorks() {
       description: "Get discovered by clients looking for talented photographers in your area",
       icon: <CalendarDaysIcon className="w-8 h-8 text-white" />,
       gradient: "from-amber-500 to-orange-600",
+      bgGradient: "from-amber-50 to-orange-50",
+      borderColor: "border-amber-200",
       accentColor: "text-amber-600"
     },
     {
@@ -46,6 +52,8 @@ export default function DesktopHowSellerWorks() {
       description: "Build your reputation, earn money, and grow your photography business with every shoot",
       icon: <BanknotesIcon className="w-8 h-8 text-white" />,
       gradient: "from-emerald-500 to-green-600",
+      bgGradient: "from-emerald-50 to-green-50",
+      borderColor: "border-emerald-200",
       accentColor: "text-emerald-600"
     }
   ];
@@ -60,49 +68,49 @@ export default function DesktopHowSellerWorks() {
   ];
 
   return (
-    <div className="px-4 py-8">
+    <div className="px-4 py-8 bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
       <div className="max-w-6xl mx-auto">
-        {/* Hero Section - Compact */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl p-8 mb-8 shadow-xl">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl p-8 mb-10 shadow-2xl">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00ek0xOCAxNmMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6TTQ4IDE2YzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30"></div>
           
           <div className="relative z-10">
-            <div className="flex items-center justify-center mb-3">
-              <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/30">
+            <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-md rounded-full px-5 py-2 shadow-xl border border-white/30">
                 <RocketLaunchIcon className="w-5 h-5 text-white animate-bounce" />
-                <span className="text-white font-semibold text-sm">Join the Community</span>
+                <span className="text-white font-bold text-base">Join the Community</span>
                 <StarIcon className="w-5 h-5 text-yellow-300 animate-pulse" />
               </div>
             </div>
             
-            <h2 className="text-3xl font-bold text-white text-center mb-3 leading-tight">
+            <h2 className="text-4xl font-bold text-white text-center mb-4 leading-tight">
               Become a <span className="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">KliqChamp</span>
             </h2>
             
-            <p className="text-base text-white/90 text-center max-w-2xl mx-auto mb-5">
-              Turn your photography passion into a thriving business. Connect with clients and earn on your own terms.
+            <p className="text-lg text-white/90 text-center max-w-2xl mx-auto leading-relaxed mb-6">
+              Turn your photography passion into a thriving business. Connect with clients, showcase your talent, and earn on your own terms.
             </p>
 
-            {/* Benefits Grid - Compact */}
-            <div className="grid grid-cols-3 gap-2 max-w-2xl mx-auto mb-5">
+            {/* Benefits Grid */}
+            <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto mb-6">
               {benefits.map((benefit, index) => (
                 <div 
                   key={index} 
-                  className="flex items-center space-x-1.5 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/20 hover:bg-white/20 transition-all duration-300"
+                  className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
                 >
                   <CheckBadgeIcon className="w-4 h-4 text-green-300 flex-shrink-0" />
-                  <span className="text-white font-medium text-xs">{benefit}</span>
+                  <span className="text-white font-medium text-sm">{benefit}</span>
                 </div>
               ))}
             </div>
 
-            {/* CTA Button - Compact */}
+            {/* CTA Button */}
             <div className="flex justify-center">
-              <button className="group relative bg-white text-purple-600 px-8 py-3 rounded-full font-bold text-base shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden">
+              <button className="group relative bg-white text-purple-600 px-8 py-3.5 rounded-full font-bold text-base shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative flex items-center space-x-2">
-                  <span className="group-hover:text-white transition-colors duration-300">Become a KliqChamp</span>
-                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300 group-hover:text-white" />
+                  <span className="group-hover:text-white transition-colors duration-300">Start Earning Today</span>
+                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300 group-hover:text-white" />
                 </div>
               </button>
             </div>
@@ -113,31 +121,26 @@ export default function DesktopHowSellerWorks() {
           <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-400/30 rounded-full blur-3xl"></div>
         </div>
         
-        {/* How It Works - Timeline Style */}
-        <div className="mb-6">
-          <div className="text-center mb-6">
-            <div className="flex items-center justify-center mb-2">
-              <div className="flex items-center space-x-1.5 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full px-4 py-1.5 shadow-sm">
-                <StarIcon className="w-4 h-4 text-purple-600" />
-                <span className="text-purple-600 font-semibold text-sm">Simple & Fast</span>
-              </div>
+        {/* How It Works Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center mb-3">
+            <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full px-4 py-1.5 shadow-md">
+              <StarIcon className="w-4 h-4 text-purple-600" />
+              <span className="text-purple-600 font-semibold text-sm">Simple & Fast</span>
             </div>
-            
-            <h3 className="section-title section-title-desktop mb-2 text-gray-800">
-              How It Works
-            </h3>
-            
-            <p className="section-description section-description-desktop text-gray-600">
-              Four simple steps to start your journey
-            </p>
           </div>
+          
+          <h3 className="section-title section-title-desktop text-center mb-3 text-gray-800">
+            How It Works
+          </h3>
+          
+          <p className="section-description section-description-desktop text-center max-w-2xl mx-auto text-gray-600 mb-8">
+            Four simple steps to start your journey as a professional photographer on KliqShot
+          </p>
 
-          {/* Timeline Layout */}
-          <div className="relative max-w-5xl mx-auto">
-            {/* Timeline Line */}
-            <div className="hidden lg:block absolute top-8 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-300 via-violet-300 via-amber-300 to-emerald-300"></div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative z-10">
+          {/* Process Steps - Timeline Style */}
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-4">
               {steps.map((step, index) => (
                 <div 
                   key={index} 
@@ -145,37 +148,71 @@ export default function DesktopHowSellerWorks() {
                   onMouseEnter={() => setHoveredStep(index)}
                   onMouseLeave={() => setHoveredStep(null)}
                 >
-                  {/* Timeline Item */}
-                  <div className="flex flex-col items-center">
-                    {/* Icon Circle */}
-                    <div className={`relative w-16 h-16 bg-gradient-to-br ${step.gradient} rounded-full flex items-center justify-center shadow-lg ring-4 ring-white transition-all duration-300 ${hoveredStep === index ? 'scale-125 rotate-12' : 'group-hover:scale-110'}`}>
-                      {step.icon}
-                      {/* Step Number */}
-                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md">
-                        <span className={`text-xs font-bold ${step.accentColor}`}>{step.number}</span>
+                  {/* Step Row */}
+                  <div className={`relative flex items-center bg-white rounded-xl p-5 shadow-md border-l-4 ${step.borderColor} transition-all duration-300 ${hoveredStep === index ? 'shadow-xl scale-105' : 'hover:shadow-lg'}`}>
+                    {/* Number Badge */}
+                    <div className={`flex-shrink-0 w-14 h-14 bg-gradient-to-br ${step.gradient} rounded-full flex items-center justify-center shadow-lg ring-2 ring-white transition-transform duration-300 ${hoveredStep === index ? 'scale-110 rotate-6' : ''}`}>
+                      <span className="text-white text-lg font-bold">{step.number}</span>
+                    </div>
+                    
+                    {/* Icon */}
+                    <div className={`flex-shrink-0 mx-5 w-12 h-12 bg-gradient-to-br ${step.bgGradient} rounded-lg flex items-center justify-center transition-transform duration-300 ${hoveredStep === index ? 'scale-110' : ''}`}>
+                      <div className="w-6 h-6">
+                        {step.icon}
                       </div>
                     </div>
                     
-                    {/* Arrow Connector */}
-                    {index < steps.length - 1 && (
-                      <div className="hidden lg:block absolute top-7 left-full w-full">
-                        <ArrowRightIcon className="w-6 h-6 text-gray-300 absolute left-1/2 -translate-x-1/2" />
-                      </div>
-                    )}
-                    
                     {/* Content */}
-                    <div className="text-center mt-4">
-                      <h3 className={`font-bold text-base mb-2 ${step.accentColor} transition-all duration-300 ${hoveredStep === index ? 'scale-105' : ''}`}>
+                    <div className="flex-1">
+                      <h3 className={`font-bold text-lg mb-1 ${step.accentColor}`}>
                         {step.title}
                       </h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
+                      <p className="text-sm text-gray-600 leading-relaxed">
                         {step.description}
                       </p>
                     </div>
+
+                    {/* Arrow Indicator */}
+                    <div className={`flex-shrink-0 ml-4 transition-transform duration-300 ${hoveredStep === index ? 'translate-x-2' : ''}`}>
+                      <ArrowRightIcon className={`w-6 h-6 ${step.accentColor}`} />
+                    </div>
+
+                    {/* Gradient Overlay on Hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-r ${step.bgGradient} opacity-0 group-hover:opacity-30 rounded-xl transition-opacity duration-300 pointer-events-none`}></div>
                   </div>
+
+                  {/* Connector Line */}
+                  {index < steps.length - 1 && (
+                    <div className="flex justify-start pl-7 py-2">
+                      <div className={`w-0.5 h-6 bg-gradient-to-b ${step.gradient}`}></div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA Section */}
+        <div className="mt-10 bg-gradient-to-r from-purple-100 via-blue-100 to-pink-100 rounded-2xl p-6 text-center shadow-xl border-2 border-purple-200">
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center justify-center mb-3">
+              <RocketLaunchIcon className="w-8 h-8 text-purple-600 animate-bounce" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              Ready to Start Your Journey?
+            </h3>
+            <p className="text-base text-gray-700 mb-6 leading-relaxed">
+              Join thousands of photographers already earning and growing their business on KliqShot. 
+              Your success story starts here!
+            </p>
+            <button className="group bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 text-white px-10 py-3.5 rounded-full font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center space-x-2">
+                <span>Become a KliqChamp Now</span>
+                <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
+              </div>
+            </button>
           </div>
         </div>
       </div>

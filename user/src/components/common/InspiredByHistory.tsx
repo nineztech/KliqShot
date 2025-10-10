@@ -65,7 +65,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       rating: 4.6,
       reviews: 98,
       price: "₹280",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "5 years",
       lastViewed: "2 hours ago",
       similarity: "Similar to Sarah Johnson"
@@ -78,7 +78,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       rating: 4.5,
       reviews: 142,
       price: "₹350",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "8 years",
       lastViewed: "1 day ago",
       similarity: "Based on your wedding searches"
@@ -91,7 +91,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       rating: 4.8,
       reviews: 167,
       price: "₹420",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "6 years",
       lastViewed: "3 days ago",
       similarity: "Popular in your area"
@@ -104,7 +104,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       rating: 4.7,
       reviews: 134,
       price: "₹310",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "7 years",
       lastViewed: "4 days ago",
       similarity: "Matches your style preferences"
@@ -117,7 +117,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       rating: 4.6,
       reviews: 156,
       price: "₹340",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "6 years",
       lastViewed: "5 days ago",
       similarity: "Similar to your recent bookings"
@@ -130,7 +130,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       rating: 4.8,
       reviews: 189,
       price: "₹400",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "9 years",
       lastViewed: "1 week ago",
       similarity: "Top rated in your searches"

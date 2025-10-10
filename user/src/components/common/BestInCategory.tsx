@@ -63,7 +63,7 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       rating: 4.9,
       reviews: 234,
       price: "₹450",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "9 years"
     },
     {
@@ -74,7 +74,7 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       rating: 4.8,
       reviews: 189,
       price: "₹380",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1556155092-490a1ba16284?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "7 years"
     },
     {
@@ -85,7 +85,7 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       rating: 4.7,
       reviews: 156,
       price: "₹320",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "6 years"
     },
     {
@@ -96,7 +96,7 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       rating: 4.9,
       reviews: 201,
       price: "₹400",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "8 years"
     },
     {
@@ -107,7 +107,7 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       rating: 4.8,
       reviews: 178,
       price: "₹360",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "7 years"
     },
     {
@@ -118,7 +118,7 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       rating: 4.7,
       reviews: 145,
       price: "₹340",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=300&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "6 years"
     }
   ];

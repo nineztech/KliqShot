@@ -88,14 +88,14 @@ export default function DesktopCategorySection() {
       category: "Sports",
       photographerCount: 120
     },
-    {
-      title: "Video",
-      description: "Video and cinematography",
-      imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <CameraIcon className="w-12 h-12 text-blue-500" />,
-      category: "Cinematography",
-      photographerCount: 150
-    }
+    // {
+    //   title: "Video",
+    //   description: "Video and cinematography",
+    //   imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop&crop=center&auto=format",
+    //   icon: <CameraIcon className="w-12 h-12 text-blue-500" />,
+    //   category: "Cinematography",
+    //   photographerCount: 150
+    // }
   ];
 
   const handleCategoryClick = (category: string) => {

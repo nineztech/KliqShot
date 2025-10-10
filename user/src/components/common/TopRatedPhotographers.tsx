@@ -29,7 +29,7 @@ const topRatedPhotographers: Photographer[] = [
     id: 1,
     name: 'Rajesh Kumar',
     specialty: 'Wedding Photography',
-    image: '/wedding_image.png',
+    image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=400&h=300&fit=crop&crop=center&auto=format',
     price: '₹8,500',
     rating: 4.9,
     reviews: 247,
@@ -42,7 +42,7 @@ const topRatedPhotographers: Photographer[] = [
     id: 2,
     name: 'Priya Sharma',
     specialty: 'Portrait Photography',
-    image: '/wedding_image.png',
+    image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop&crop=center&auto=format',
     price: '₹6,200',
     rating: 4.8,
     reviews: 189,
@@ -55,7 +55,7 @@ const topRatedPhotographers: Photographer[] = [
     id: 3,
     name: 'Amit Patel',
     specialty: 'Event Photography',
-    image: '/wedding_image.png',
+    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop&crop=center&auto=format',
     price: '₹7,800',
     rating: 4.9,
     reviews: 156,
@@ -68,7 +68,7 @@ const topRatedPhotographers: Photographer[] = [
     id: 4,
     name: 'Sneha Reddy',
     specialty: 'Pre Wedding Photography',
-    image: '/wedding_image.png',
+    image: 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=300&fit=crop&crop=center&auto=format',
     price: '₹9,200',
     rating: 4.7,
     reviews: 203,
@@ -81,7 +81,7 @@ const topRatedPhotographers: Photographer[] = [
     id: 5,
     name: 'Vikram Singh',
     specialty: 'Commercial Photography',
-    image: '/wedding_image.png',
+    image: 'https://images.unsplash.com/photo-1556155092-490a1ba16284?w=400&h=300&fit=crop&crop=center&auto=format',
     price: '₹11,500',
     rating: 4.8,
     reviews: 134,
@@ -94,7 +94,7 @@ const topRatedPhotographers: Photographer[] = [
     id: 6,
     name: 'Anita Joshi',
     specialty: 'Baby Photography',
-    image: '/wedding_image.png',
+    image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop&crop=center&auto=format',
     price: '₹4,800',
     rating: 4.9,
     reviews: 178,
@@ -124,13 +124,13 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm p-6 ${className}`}>
-      <div className="flex items-center justify-between mb-6">
-        <div>
+    <div className={`bg-white rounded-lg shadow-sm p-6 relative ${className}`}>
+      <div className="mb-6">
+        <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900">Top Rated Photographers</h2>
           <p className="text-gray-600 mt-1">Highest rated photographers with exceptional reviews</p>
         </div>
-        <div className="hidden md:block">
+        <div className="text-center mt-4 md:absolute md:right-6 md:top-6 md:mt-0">
           <button
             onClick={() => router.push('/photographers?sort=rating&order=desc')}
             className="text-blue-600 hover:text-blue-700 font-medium text-sm"

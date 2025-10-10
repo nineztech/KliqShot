@@ -723,7 +723,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         comment: "Outstanding work! The photographer was very patient and captured candid moments perfectly. The final photos exceeded our expectations.",
                         date: "1 week ago",
                         images: [
-                          "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=300&h=300&fit=crop"
+                          "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=300&fit=crop"
                         ]
                       },
                       {
@@ -735,7 +735,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         rating: 4,
                         comment: "Great experience! Professional service and beautiful photos. The team was very responsive and delivered on time.",
                         date: "2 weeks ago",
-                        images: []
+                        images: [
+                          "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=300&fit=crop"
+                        ]
                       },
                       {
                         id: 4,
@@ -747,9 +749,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         comment: "Exceptional photography skills! The photographer made us feel comfortable throughout the session. The engagement photos came out absolutely stunning. Worth every penny!",
                         date: "3 weeks ago",
                         images: [
-                          "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=300&fit=crop",
-                          "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=300&fit=crop",
-                          "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=300&h=300&fit=crop"
+                          "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=300&h=300&fit=crop",
+                          "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=300&h=300&fit=crop",
+                          "https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=300&fit=crop"
                         ]
                       },
                       {
@@ -774,7 +776,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         rating: 4,
                         comment: "Good quality work with reasonable pricing. The photographer was professional and the final delivery was on time. Some photos were exceptional!",
                         date: "1 month ago",
-                        images: []
+                        images: [
+                          "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=300&h=300&fit=crop"
+                        ]
                       },
                       {
                         id: 7,
@@ -786,8 +790,8 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         comment: "Amazing pre-wedding shoot experience! The photographer has a great eye for detail and knows how to capture natural emotions. Highly recommend for any special occasion!",
                         date: "2 months ago",
                         images: [
-                          "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=300&fit=crop",
-                          "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=300&fit=crop"
+                          "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=300&fit=crop",
+                          "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=300&fit=crop"
                         ]
                       },
                       {
@@ -799,7 +803,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         rating: 5,
                         comment: "Fantastic work on our anniversary photoshoot! The photographer was creative with poses and lighting. The final album exceeded our expectations completely.",
                         date: "2 months ago",
-                        images: []
+                        images: [
+                          "https://images.unsplash.com/photo-1511578314322-379afb476865?w=300&h=300&fit=crop"
+                        ]
                       }
                     ];
                     // Show only first 7 reviews on detail page

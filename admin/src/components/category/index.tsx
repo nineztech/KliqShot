@@ -9,6 +9,7 @@ interface SubCategory {
   id: string;
   name: string;
   photographerCount: number;
+  image?: string;
 }
 
 interface Category {
@@ -17,14 +18,16 @@ interface Category {
   description: string;
   photographerCount: number;
   subCategories: SubCategory[];
+  image?: string;
 }
 
 interface CategoryManagementProps {
   categories: Category[];
   setCategories: (categories: Category[]) => void;
+  onRefresh?: () => void;
 }
 
-export default function CategoryManagement({ categories, setCategories }: CategoryManagementProps) {
+export default function CategoryManagement({ categories, setCategories, onRefresh }: CategoryManagementProps) {
   const [isMobile, setIsMobile] = useState(false);
   const { isMinimized } = useSidebar();
 
@@ -49,9 +52,17 @@ export default function CategoryManagement({ categories, setCategories }: Catego
       style={{ marginLeft: isMobile ? '0' : (isMinimized ? '5rem' : '16rem') }}
     >
       {isMobile ? (
-        <MobileCategoryManagement categories={categories} setCategories={setCategories} />
+        <MobileCategoryManagement 
+          categories={categories} 
+          setCategories={setCategories}
+          onRefresh={onRefresh}
+        />
       ) : (
-        <DesktopCategoryManagement categories={categories} setCategories={setCategories} />
+        <DesktopCategoryManagement 
+          categories={categories} 
+          setCategories={setCategories}
+          onRefresh={onRefresh}
+        />
       )}
     </div>
   );

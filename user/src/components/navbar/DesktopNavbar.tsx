@@ -88,6 +88,14 @@ export default function DesktopNavbar() {
     });
   };
 
+  const removeFromRecentSearches = (query: string) => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(item => item !== query);
+      localStorage.setItem('recentSearches', JSON.stringify(filtered));
+      return filtered;
+    });
+  };
+
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
     addToRecentSearches(suggestion);
@@ -308,12 +316,36 @@ export default function DesktopNavbar() {
                   {/* Recent Searches */}
                   {recentSearches.length > 0 && !searchQuery && (
                     <div className="p-3 border-b border-gray-100">
-                      <div className="flex items-center gap-2 text-gray-600 hover:bg-gray-50 p-2 rounded cursor-pointer">
-                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span className="text-sm">{recentSearches[0]}</span>
-                        <span className="text-xs text-blue-600 ml-auto">in Photography</span>
+                      <h3 className="text-sm font-medium text-gray-900 mb-2">Recent</h3>
+                      <div className="space-y-1">
+                        {recentSearches.map((search, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 text-gray-600 hover:bg-gray-50 p-2 rounded group"
+                          >
+                            <div
+                              onClick={() => handleSuggestionClick(search)}
+                              className="flex items-center gap-2 flex-1 cursor-pointer"
+                            >
+                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span className="text-sm">{search}</span>
+                              <span className="text-xs text-blue-600 ml-auto">in Photography</span>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeFromRecentSearches(search);
+                              }}
+                              className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-600 transition-opacity duration-200 p-1"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}

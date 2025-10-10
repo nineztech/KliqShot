@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { 
   ShieldCheckIcon, 
   StarIcon, 
@@ -46,9 +47,15 @@ export default function DesktopSEOSection() {
         <div className="relative z-10 text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-              <CameraIcon className="w-6 h-6 text-blue-600" />
-              <span className="text-blue-600 font-semibold">KliqShot</span>
-              <SparklesIcon className="w-5 h-5 text-yellow-500" />
+              {/* <CameraIcon className="w-6 h-6 text-blue-600" /> */}
+              <Image
+                src="/Logo.png"
+                alt="KliqShot Logo"
+                width={80}
+                height={24}
+                className="h-6 w-auto object-contain"
+              />
+              {/* <SparklesIcon className="w-5 h-5 text-yellow-500" /> */}
             </div>
           </div>
           <h2 className="section-title section-title-desktop mb-4 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
@@ -67,46 +74,6 @@ export default function DesktopSEOSection() {
 
       
 
-      {/* Photography Categories */}
-      <div className="mt-8 relative bg-gradient-to-br from-white via-gray-50 to-blue-50 rounded-2xl p-8 shadow-lg border border-gray-100">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/10 to-pink-400/10 rounded-full blur-2xl"></div>
-        <div className="relative z-10">
-          <div className="flex items-center mb-6">
-            <HeartIcon className="w-6 h-6 text-red-500 mr-3" />
-            <h3 className="feature-title feature-title-desktop text-gray-800">PHOTOGRAPHY CATEGORIES</h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-xl border border-pink-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full mr-2"></div>
-                <h4 className="font-bold text-gray-900 text-base">WEDDING:</h4>
-              </div>
-              <p className="text-gray-600 text-sm leading-relaxed">Wedding Photography, Engagement Shoot, Pre Wedding Photography, Post Wedding Photography, Candid Wedding Photography, Traditional Wedding Photography, Destination Wedding Photography, Bridal Photography, Groom Photography, Wedding Videography</p>
-            </div>
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mr-2"></div>
-                <h4 className="font-bold text-gray-900 text-base">PORTRAIT:</h4>
-              </div>
-              <p className="text-gray-600 text-sm leading-relaxed">Family Portraits, Individual Portraits, Corporate Headshots, Senior Portraits, Professional Headshots, Studio Portraits, Outdoor Portraits, Lifestyle Portraits, Business Portraits, Executive Portraits</p>
-            </div>
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mr-2"></div>
-                <h4 className="font-bold text-gray-900 text-base">EVENTS:</h4>
-              </div>
-              <p className="text-gray-600 text-sm leading-relaxed">Corporate Events, Birthday Parties, Anniversary Photography, Graduation Photography, Conference Photography, Seminar Photography, Workshop Photography, Award Ceremonies, Product Launches, Corporate Meetings</p>
-            </div>
-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full mr-2"></div>
-                <h4 className="font-bold text-gray-900 text-base">CREATIVE:</h4>
-              </div>
-              <p className="text-gray-600 text-sm leading-relaxed">Fashion Photography, Art Photography, Abstract Photography, Fine Art Photography, Conceptual Photography, Experimental Photography, Street Photography, Landscape Photography, Nature Photography, Wildlife Photography</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Best Selling Services */}
       <div className="mt-8 relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-100">
@@ -227,35 +194,6 @@ export default function DesktopSEOSection() {
           ))}
       </div>
 
-      {/* Popular Search Terms */}
-      <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 mt-12 mb-8    ">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-t-2xl"></div>
-        <div className="flex items-center mb-6">
-          <div className="flex items-center space-x-2 mr-4">
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse"></div>
-            <h3 className="feature-title feature-title-desktop text-gray-800">MOST SEARCHED FOR ON KLIQSHOT</h3>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {[
-            "Wedding Photographer Near Me", "Portrait Photography", "Family Photo Shoot", "Corporate Event Photography", 
-            "Engagement Photography", "Maternity Photography", "Newborn Photography", "Graduation Photography",
-            "Pre Wedding Photography", "Post Wedding Photography", "Candid Photography", "Traditional Photography",
-            "Outdoor Photography", "Studio Photography", "Event Photography", "Product Photography", "Fashion Photography",
-            "Art Photography", "Fine Art Photography", "Conceptual Photography", "Abstract Photography",
-            "Senior Portraits", "Corporate Headshots", "Professional Headshots", "Studio Portraits",
-            "Birthday Party Photography", "Anniversary Photography", "Conference Photography", "Seminar Photography",
-            "Destination Wedding", "Candid Wedding", "Traditional Wedding", "Modern Wedding Photography"
-          ].map((term, index) => (
-            <span 
-              key={index} 
-              className="text-sm bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 px-4 py-2 rounded-full border border-blue-100 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-200 hover:scale-105 transition-all duration-200 cursor-pointer shadow-sm"
-            >
-              {term}
-            </span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

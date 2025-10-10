@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import BookingPage from '@/components/booking';
 
-export default function Booking() {
+function BookingContent() {
   const searchParams = useSearchParams();
   const [bookingData, setBookingData] = useState({
     photographerId: '',
@@ -31,4 +31,12 @@ export default function Booking() {
   }, [searchParams]);
 
   return <BookingPage bookingData={bookingData} />;
+}
+
+export default function Booking() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <BookingContent />
+    </Suspense>
+  );
 }

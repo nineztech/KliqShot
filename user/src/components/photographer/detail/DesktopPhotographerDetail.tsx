@@ -67,6 +67,8 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const [showImagePopup, setShowImagePopup] = useState(false);
   const [popupImageIndex, setPopupImageIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [activeAboutTab, setActiveAboutTab] = useState('about');
+  const [showAllTeamMembers, setShowAllTeamMembers] = useState(false);
 
   // Auto-scroll carousel
   useEffect(() => {
@@ -200,38 +202,38 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-9">
             <button
               onClick={() => router.back()}
               className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200"
             >
-              <ArrowLeftIcon className="w-5 h-5 mr-2" />
-              Back
+              <ArrowLeftIcon className="w-4 h-4 mr-1.5" />
+              <span className="text-xs">Back</span>
             </button>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <button
                 onClick={() => setIsFavorite(!isFavorite)}
-                className="flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors duration-200"
+                className="flex items-center space-x-1.5 text-gray-600 hover:text-red-500 transition-colors duration-200"
               >
                 {isFavorite ? (
-                  <HeartSolidIcon className="w-5 h-5 text-red-500" />
+                  <HeartSolidIcon className="w-4 h-4 text-red-500" />
                 ) : (
-                  <HeartIcon className="w-5 h-5" />
+                  <HeartIcon className="w-4 h-4" />
                 )}
-                <span className="text-sm">Save</span>
+                <span className="text-xs">Save</span>
               </button>
               
-              <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
-                <ShareIcon className="w-5 h-5" />
-                <span className="text-sm">Share</span>
+              <button className="flex items-center space-x-1.5 text-gray-600 hover:text-gray-900 transition-colors duration-200">
+                <ShareIcon className="w-4 h-4" />
+                <span className="text-xs">Share</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-8">
@@ -345,9 +347,36 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                </div>
              </div>
 
-            {/* About Section */}
+            {/* About Section with Tabs */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">About {photographer.name}</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">About {photographer.name}</h2>
+              
+              {/* Tab Navigation */}
+              <div className="flex border-b border-gray-200 mb-6">
+                <button
+                  onClick={() => setActiveAboutTab('about')}
+                  className={`px-4 py-3 font-medium text-sm transition-colors duration-200 ${
+                    activeAboutTab === 'about'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  About
+                </button>
+                <button
+                  onClick={() => setActiveAboutTab('teams')}
+                  className={`px-4 py-3 font-medium text-sm transition-colors duration-200 ${
+                    activeAboutTab === 'teams'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  Teams
+                </button>
+              </div>
+
+              {/* Tab Content */}
+              {activeAboutTab === 'about' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Experience</h3>
@@ -381,8 +410,182 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                   </div>
                 </div>
               </div>
+              )}
+
+              {activeAboutTab === 'teams' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Team Members */}
+                    {(() => {
+                      const allTeamMembers = [
+                        {
+                          id: 1,
+                          name: "Rajesh Kumar",
+                          role: "Lead Photographer",
+                          specialization: "Wedding & Portrait Photography",
+                          experience: "8+ years",
+                          skills: ["Portrait Photography", "Event Coverage", "Photo Editing"]
+                        },
+                        {
+                          id: 2,
+                          name: "Priya Sharma",
+                          role: "Drone Operator",
+                          specialization: "Aerial Photography & Videography",
+                          experience: "5+ years",
+                          skills: ["Drone Photography", "Aerial Videography", "Safety Management"]
+                        },
+                        {
+                          id: 3,
+                          name: "Amit Patel",
+                          role: "Video Editor",
+                          specialization: "Cinematic Video Editing",
+                          experience: "6+ years",
+                          skills: ["Video Editing", "Color Grading", "Motion Graphics"]
+                        },
+                        {
+                          id: 4,
+                          name: "Sneha Reddy",
+                          role: "Assistant Photographer",
+                          specialization: "Candid & Lifestyle Photography",
+                          experience: "4+ years",
+                          skills: ["Candid Photography", "Second Shooter", "Equipment Management"]
+                        },
+                        {
+                          id: 5,
+                          name: "Vikram Singh",
+                          role: "Photo Editor",
+                          specialization: "Post-Processing & Retouching",
+                          experience: "7+ years",
+                          skills: ["Photo Retouching", "Color Correction", "Album Design"]
+                        },
+                        {
+                          id: 6,
+                          name: "Kavya Gupta",
+                          role: "Event Coordinator",
+                          specialization: "Wedding Planning & Coordination",
+                          experience: "5+ years",
+                          skills: ["Event Planning", "Client Communication", "Timeline Management"]
+                        },
+                        {
+                          id: 7,
+                          name: "Rohit Mehta",
+                          role: "Lighting Specialist",
+                          specialization: "Studio & Outdoor Lighting",
+                          experience: "6+ years",
+                          skills: ["Studio Lighting", "Natural Light", "Flash Photography"]
+                        },
+                        {
+                          id: 8,
+                          name: "Anita Joshi",
+                          role: "Makeup Artist",
+                          specialization: "Bridal & Event Makeup",
+                          experience: "9+ years",
+                          skills: ["Bridal Makeup", "Photo Makeup", "Hair Styling"]
+                        },
+                        {
+                          id: 9,
+                          name: "Suresh Kumar",
+                          role: "Equipment Manager",
+                          specialization: "Technical Support & Maintenance",
+                          experience: "10+ years",
+                          skills: ["Equipment Setup", "Technical Support", "Maintenance"]
+                        },
+                        {
+                          id: 10,
+                          name: "Deepika Singh",
+                          role: "Client Relations Manager",
+                          specialization: "Customer Service & Coordination",
+                          experience: "5+ years",
+                          skills: ["Client Communication", "Booking Management", "Customer Service"]
+                        },
+                        {
+                          id: 11,
+                          name: "Manoj Agarwal",
+                          role: "Second Shooter",
+                          specialization: "Event Coverage & Backup Photography",
+                          experience: "4+ years",
+                          skills: ["Event Photography", "Candid Shots", "Backup Coverage"]
+                        },
+                        {
+                          id: 12,
+                          name: "Pooja Verma",
+                          role: "Album Designer",
+                          specialization: "Photo Album & Print Design",
+                          experience: "6+ years",
+                          skills: ["Album Design", "Print Layout", "Creative Design"]
+                        }
+                      ];
+
+                      const displayedMembers = showAllTeamMembers ? allTeamMembers : allTeamMembers.slice(0, 6);
+
+                      return displayedMembers.map((member) => (
+                        <div key={member.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                          <div className="mb-3">
+                            <h4 className="font-semibold text-gray-900 text-sm mb-1">{member.name}</h4>
+                            <p className="text-blue-600 font-medium text-xs mb-1">{member.role}</p>
+                            <p className="text-gray-500 text-xs">{member.specialization}</p>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center text-xs text-gray-600">
+                              <ClockIcon className="w-3 h-3 mr-1" />
+                              <span>{member.experience}</span>
+                            </div>
+                            
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-1">Skills:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {member.skills.map((skill, index) => (
+                                  <span key={index} className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ));
+                    })()}
+                  </div>
+
+                  {/* Show More Button */}
+                  {!showAllTeamMembers && (
+                    <div className="text-center">
+                      <button
+                        onClick={() => setShowAllTeamMembers(true)}
+                        className="bg-blue-50 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-100 transition-colors duration-200 border border-blue-200"
+                      >
+                        Show More Team Members
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Team Stats */}
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+                    <h3 className="font-semibold text-gray-900 mb-4">Team Overview</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">12</div>
+                        <div className="text-sm text-gray-600">Team Members</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">75+</div>
+                        <div className="text-sm text-gray-600">Years Combined</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">500+</div>
+                        <div className="text-sm text-gray-600">Events Covered</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">24/7</div>
+                        <div className="text-sm text-gray-600">Support Available</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
-              {photographer.awards.length > 0 && (
+              {activeAboutTab === 'about' && photographer.awards.length > 0 && (
                 <div className="mt-6">
                   <h3 className="font-semibold text-gray-900 mb-2">Awards & Recognition</h3>
                   <ul className="list-disc list-inside text-gray-600 space-y-1">
@@ -467,7 +670,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
             {/* Comments Section */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-3">
                 <h2 className="text-2xl font-bold text-gray-900">Comments & Reviews</h2>
                 <div className="flex items-center space-x-2">
                   <ChatBubbleLeftIcon className="w-5 h-5 text-gray-400" />
@@ -658,7 +861,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                       params.append('rating', photographer.rating.toString());
                       router.push(`/photographer/${photographer.id}/reviews?${params.toString()}`);
                     }}
-                    className="w-full bg-white border-2 border-blue-600 text-blue-600 py-3 px-6 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-200 flex items-center justify-center space-x-2"
+                    className="w-full bg-white border-2 border-blue-600 text-blue-600 py-2 px-4 rounded-lg font-medium hover:bg-blue-50 transition-all duration-200 flex items-center justify-center space-x-2"
                   >
                     <span>See All {photographer.reviews} Reviews</span>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -704,9 +907,16 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 
                 <button 
                   onClick={handleBookNow}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 mb-4 shadow-sm hover:shadow-md"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-3 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 mb-4 shadow-sm hover:shadow-md flex items-center justify-center space-x-2"
                 >
-                  📸 Book Now
+                  <Image
+                    src="/Logo_Icon.png"
+                    alt="KliqShot Logo"
+                    width={16}
+                    height={16}
+                    className="object-contain"
+                  />
+                  <span>Book Now</span>
                 </button>
                 
                 <div className="mt-4 pt-3 border-t border-gray-200">

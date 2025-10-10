@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
-import { HeartIcon, MapPinIcon, ClockIcon, CameraIcon } from '@heroicons/react/24/outline';
+import { HeartIcon, MapPinIcon, ClockIcon, CameraIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 interface PhotographerCardProps {
   id: number;
@@ -140,12 +140,9 @@ export default function PhotographerCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             
             {/* Trusted Badge */}
-            <div className="absolute top-3 left-3 text-cyan-400 flex items-center gap-1">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-                <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="white"/>
-              </svg>
-              <span className="italic text-[10px] font-bold">TRUSTED</span>
+            <div className="absolute top-3 left-3 bg-purple-500/90 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg">
+              <ShieldCheckIcon className="w-3 h-3" />
+              <span className="text-[8px] font-bold tracking-wide">TRUSTED</span>
             </div>
             
             {/* Like Button */}

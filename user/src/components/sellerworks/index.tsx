@@ -18,10 +18,6 @@ export default function HowSellerWorks() {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  return (
-    <>
-      {isMobile ? <MobileHowSellerWorks /> : <DesktopHowSellerWorks />}
-    </>
-  );
+  return isMobile ? <MobileHowSellerWorks /> : <DesktopHowSellerWorks />;
 }
 

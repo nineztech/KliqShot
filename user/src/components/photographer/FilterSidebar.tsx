@@ -7,7 +7,8 @@ import {
   MapPinIcon, 
   CurrencyRupeeIcon,
   ClockIcon,
-  CameraIcon
+  CameraIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 
 interface FilterSidebarProps {
@@ -29,9 +30,84 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
     onFilterChange(newFilters);
   };
 
+  const removeFilter = (filterKey: string) => {
+    const clearedFilters = { ...filters };
+    
+    if (filterKey === 'priceRange') {
+      clearedFilters.priceRange = [0, 50000];
+    } else if (filterKey === 'rating') {
+      clearedFilters.rating = 0;
+    } else {
+      (clearedFilters as any)[filterKey] = '';
+    }
+    
+    setFilters(clearedFilters);
+    onFilterChange(clearedFilters);
+  };
+
+  const clearAllFilters = () => {
+    const clearedFilters = {
+      priceRange: [0, 50000],
+      rating: 0,
+      location: '',
+      experience: '',
+      specialty: ''
+    };
+    setFilters(clearedFilters);
+    onFilterChange(clearedFilters);
+  };
+
+  const getAppliedFilters = () => {
+    const applied: { key: string; label: string; value: string }[] = [];
+    
+    if (filters.priceRange[1] < 50000) {
+      applied.push({
+        key: 'priceRange',
+        label: `Price up to ₹${filters.priceRange[1].toLocaleString()}`,
+        value: 'priceRange'
+      });
+    }
+    
+    if (filters.rating > 0) {
+      applied.push({
+        key: 'rating',
+        label: `${filters.rating}+ Stars`,
+        value: 'rating'
+      });
+    }
+    
+    if (filters.location) {
+      applied.push({
+        key: 'location',
+        label: filters.location,
+        value: 'location'
+      });
+    }
+    
+    if (filters.experience) {
+      applied.push({
+        key: 'experience',
+        label: filters.experience,
+        value: 'experience'
+      });
+    }
+    
+    if (filters.specialty) {
+      applied.push({
+        key: 'specialty',
+        label: filters.specialty,
+        value: 'specialty'
+      });
+    }
+    
+    return applied;
+  };
+
   const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Pune', 'Hyderabad'];
   const specialties = ['Wedding', 'Portrait', 'Corporate', 'Family', 'Events', 'Creative'];
   const experienceLevels = ['1-2 years', '3-5 years', '5+ years', '10+ years'];
+
+  const appliedFilters = getAppliedFilters();
 
   return (
     <div className="w-64 bg-gray-50 border-r border-gray-200 p-4 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-hide">
@@ -40,6 +116,37 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
         <FunnelIcon className="w-5 h-5 text-gray-600 mr-2" />
         <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
       </div>
+
+      {/* Applied Filters */}
+      {appliedFilters.length > 0 && (
+        <div className="mb-6 pb-4 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">Applied Filters</h3>
+            <button
+              onClick={clearAllFilters}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+            >
+              CLEAR ALL
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {appliedFilters.map((filter) => (
+              <div
+                key={filter.key}
+                className="flex items-center bg-blue-50 border border-blue-200 rounded-full px-3 py-1 text-xs"
+              >
+                <span className="text-blue-700 font-medium">{filter.label}</span>
+                <button
+                  onClick={() => removeFilter(filter.key)}
+                  className="ml-2 text-blue-600 hover:text-blue-800"
+                >
+                  <XMarkIcon className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Price Range */}
       <div className="mb-4">
@@ -210,17 +317,7 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
 
       {/* Clear Filters */}
       <button
-        onClick={() => {
-          const clearedFilters = {
-            priceRange: [0, 50000],
-            rating: 0,
-            location: '',
-            experience: '',
-            specialty: ''
-          };
-          setFilters(clearedFilters);
-          onFilterChange(clearedFilters);
-        }}
+        onClick={clearAllFilters}
         className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
       >
         Clear All Filters

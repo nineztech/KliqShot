@@ -6,11 +6,16 @@ import ProcessSection from '@/components/process';
 import TopRatedPhotographers from '@/components/common/TopRatedPhotographers';
 import SEOSection from '@/components/seo';
 import Footer from '@/components/footer';
-import HowSellerWorks from '@/components/sellerworks';
+import HowSellerWorks from '@/components/sellerworks/index';
+import DownloadApp from '@/components/downloadapp';
+import SEOLinks from '@/components/seolinks';
+
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
+   
+      
       {/* Navbar */}
       <Navbar />
       
@@ -32,10 +37,6 @@ export default function Home() {
           <TopRatedPhotographers/>
         </div>
 
-        <div>
-          <HowSellerWorks/>
-        </div>
-        
         {/* Advertisement Section */}
         <div className="py-4">
           <AdvertisementSection />
@@ -49,6 +50,21 @@ export default function Home() {
         {/* SEO Section */}
         <div className="py-4">
           <SEOSection />
+        </div>
+
+        {/* How KliqChamp Works Section */}
+        <div>
+          <HowSellerWorks/>
+        </div>
+
+        {/* Download App Section */}
+        <div className="py-4">
+          <DownloadApp />
+        </div>
+
+        {/* SEO Links Section */}
+        <div className="py-4">
+          <SEOLinks />
         </div>
       </div>
       

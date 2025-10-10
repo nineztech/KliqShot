@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
@@ -32,7 +32,7 @@ const iconMap = {
   VideoCameraIcon
 };
 
-export default function CategoriesPage() {
+function CategoriesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -268,5 +268,13 @@ export default function CategoriesPage() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function CategoriesPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <CategoriesContent />
+    </Suspense>
   );
 }

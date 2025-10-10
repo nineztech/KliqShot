@@ -127,122 +127,110 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Full Width Image Background */}
-      <div className="relative w-full h-[55vh] min-h-[420px]">
-        <Image
-          src={heroSlides[currentSlide].image}
-          alt={heroSlides[currentSlide].title}
-          fill
-          className="object-cover transition-all duration-700 ease-in-out"
-          priority={currentSlide === 0}
+    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[26rem] overflow-hidden rounded-xl shadow-2xl" data-hero-section>
+      {/* Professional Background with Enhanced Blur Effect */}
+      <div className="absolute inset-0 w-full h-full">
+        {/* Background Image Layer */}
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center scale-110 transition-transform duration-700 hover:scale-105"
+          style={{
+            backgroundImage: 'url(/Banner.jpeg)',
+            filter: 'blur(2px) brightness(1.1)',
+          }}
         />
         
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/40" />
+        {/* Multi-layer Professional Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/40 via-indigo-500/30 to-purple-600/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-transparent"></div>
         
-        {/* Left Arrow */}
-        <button
-          onClick={goToPrevious}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 hover:scale-110 border border-white/30 z-20"
-          aria-label="Previous slide"
-        >
-          <ChevronLeftIcon className="w-6 h-6 text-white" />
-        </button>
+        {/* Glassmorphism Effect */}
+        <div className="absolute inset-0 backdrop-blur-[0.5px]"></div>
+      </div>
 
-        {/* Right Arrow */}
-        <button
-          onClick={goToNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 hover:scale-110 border border-white/30 z-20"
-          aria-label="Next slide"
-        >
-          <ChevronRightIcon className="w-6 h-6 text-white" />
-        </button>
-
-        {/* Badge */}
-        {heroSlides[currentSlide].badge && (
-          <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold text-gray-800 shadow-lg z-20">
-            {heroSlides[currentSlide].badge}
+      {/* Content Overlay */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-center max-w-4xl px-4 sm:px-6 lg:px-8 w-full">
+          {/* Animated Heading */}
+          <div className={`transform transition-all duration-1000 ease-out ${
+            showText ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+          }`}>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3 leading-tight drop-shadow-lg">
+              <span className="block bg-gradient-to-r from-white via-blue-50 to-white bg-clip-text text-transparent filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
+                Capture Your Perfect Moment
+              </span>
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg text-white mb-4 md:mb-6 font-medium drop-shadow-md">
+              Find and book professional photographers for every occasion
+            </p>
           </div>
         )}
 
-        {/* Blur Background - Right Side */}
-        <div className="absolute inset-y-0 right-0 w-full lg:w-[55%] xl:w-[45%] backdrop-blur-md bg-black/20" />
-        
-        {/* Content Overlay - Right Side */}
-        <div className="absolute inset-0 flex items-center justify-end">
-          <div className="w-full lg:w-[55%] xl:w-[45%] pr-4 lg:pr-8">
-            <div className="p-4 lg:p-6">
-              {/* Main Content */}
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <h1 className="text-xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight">
-                    <span className="block">{heroSlides[currentSlide].title.split(' ').slice(0, -1).join(' ')}</span>
-                    <span className="block text-white">
-                      {heroSlides[currentSlide].title.split(' ').slice(-1)[0]}
-                    </span>
-                  </h1>
-                  
-                  <p className="text-base lg:text-lg text-white/90 font-medium">
-                    {heroSlides[currentSlide].subtitle}
-                  </p>
-                  
-                  <p className="text-sm text-white/80 leading-relaxed">
-                    {heroSlides[currentSlide].description}
-                  </p>
+          {/* Search Box */}
+          <div className={`transform transition-all duration-1000 delay-200 ease-out ${
+            showText ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}>
+            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-2 md:p-3 border border-white/80 ring-1 ring-white/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-all duration-300">
+              <div className="flex flex-col md:flex-row gap-2">
+                {/* Search Input */}
+                <div className="flex-1 relative">
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search photographers, events, or categories..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="w-full pl-10 pr-4 py-2 md:py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                  />
                 </div>
 
-                {/* Stats */}
-                {heroSlides[currentSlide].stats && (
-                  <div className="grid grid-cols-3 gap-2 py-2">
-                    {heroSlides[currentSlide].stats.map((stat, index) => (
-                      <div key={index} className="text-center">
-                        <div className="text-lg lg:text-xl font-bold text-white">
-                          {stat.value}
-                        </div>
-                        <div className="text-xs text-white/70 mt-1">
-                          {stat.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* CTA Button */}
-                <div className="pt-1">
-                  <button
-                    onClick={handleCTAClick}
-                    className="group relative inline-flex items-center px-4 py-2 bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 text-white font-semibold rounded-lg hover:from-slate-700 hover:via-purple-700 hover:to-indigo-800 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-                  >
-                    <span className="relative z-10">{heroSlides[currentSlide].ctaText}</span>
-                    <ChevronRightIcon className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
-                  </button>
+                {/* Location Input */}
+                <div className="flex-1 relative">
+                  <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Enter location..."
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="w-full pl-10 pr-4 py-2 md:py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                  />
                 </div>
+
+                {/* Search Button */}
+                <button
+                  onClick={handleSearch}
+                  className="px-5 py-2 md:py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(59,130,246,0.5)] shadow-lg whitespace-nowrap"
+                >
+                  Search Now
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Navigation Controls */}
-      <div className="lg:hidden bg-white/10 backdrop-blur-sm border-t border-white/20">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-center space-x-4">
-          <button
-            onClick={goToPrevious}
-            className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 border border-white/30"
-            aria-label="Previous slide"
-          >
-            <ChevronLeftIcon className="w-5 h-5 text-white" />
-          </button>
-
-          <button
-            onClick={goToNext}
-            className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 border border-white/30"
-            aria-label="Next slide"
-          >
-            <ChevronRightIcon className="w-5 h-5 text-white" />
-          </button>
+          {/* Popular Categories/Tags */}
+          <div className={`transform transition-all duration-1000 delay-300 ease-out ${
+            showText ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <span className="text-xs md:text-sm text-white/90 font-medium drop-shadow-md">Popular:</span>
+              {['Wedding', 'Portrait', 'Event', 'Pre-Wedding', 'Baby', 'Commercial'].map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => {
+                    setSearchQuery(tag);
+                    router.push(`/search?q=${tag}`);
+                  }}
+                  className="px-2.5 py-0.5 md:px-3 md:py-1 bg-white/90 backdrop-blur-md text-gray-700 text-xs md:text-sm rounded-full hover:bg-white hover:text-blue-600 hover:shadow-lg transition-all duration-300 border border-white/50 transform hover:scale-105"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

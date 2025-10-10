@@ -8,7 +8,8 @@ interface BookingCalendarProps {
   onDateSelect: (date: Date) => void;
   selectedTimeSlots: string[];
   onTimeSlotSelect: (timeSlot: string) => void;
-}
+  compact?: boolean;
+  }
 
 const timeSlots = [
   { start: '09:00 AM', end: '10:00 AM' },
@@ -40,7 +41,8 @@ export default function BookingCalendar({
   selectedDate, 
   onDateSelect, 
   selectedTimeSlots, 
-  onTimeSlotSelect 
+  onTimeSlotSelect,
+  compact = false
 }: BookingCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -120,34 +122,34 @@ export default function BookingCalendar({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Select Date & Time</h2>
+    <div className={compact ? "" : "bg-white rounded-lg shadow-sm p-6"}>
+      {!compact && <h2 className="text-2xl font-bold text-gray-900 mb-6">Select Date & Time</h2>}
       
       {/* Calendar */}
-      <div className="mb-8">
+      <div className={compact ? "mb-4" : "mb-8"}>
         {/* Calendar Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className={`flex items-center justify-between ${compact ? 'mb-3' : 'mb-6'}`}>
           <button
             onClick={handlePrevMonth}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
           >
-            <ChevronLeftIcon className="w-5 h-5 text-gray-600" />
+            <ChevronLeftIcon className={compact ? "w-4 h-4 text-gray-600" : "w-5 h-5 text-gray-600"} />
           </button>
           
-          <h3 className="text-xl font-semibold text-gray-900">{monthYear}</h3>
+          <h3 className={compact ? "text-base font-semibold text-gray-900" : "text-xl font-semibold text-gray-900"}>{monthYear}</h3>
           
           <button
             onClick={handleNextMonth}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
           >
-            <ChevronRightIcon className="w-5 h-5 text-gray-600" />
+            <ChevronRightIcon className={compact ? "w-4 h-4 text-gray-600" : "w-5 h-5 text-gray-600"} />
           </button>
         </div>
 
         {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-1 mb-4">
+        <div className="grid grid-cols-7 gap-1 mb-2">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="p-3 text-center text-sm font-medium text-gray-500">
+            <div key={day} className={`text-center font-medium text-gray-500 ${compact ? 'p-1 text-xs' : 'p-3 text-sm'}`}>
               {day}
             </div>
           ))}
@@ -166,7 +168,7 @@ export default function BookingCalendar({
                 onClick={() => handleDateClick(date)}
                 disabled={!available}
                 className={`
-                  p-3 text-sm rounded-lg transition-all duration-200 relative
+                  ${compact ? 'p-1.5 text-xs' : 'p-3 text-sm'} rounded-lg transition-all duration-200 relative
                   ${!currentMonthDate ? 'text-gray-300' : ''}
                   ${selected 
                     ? 'bg-blue-600 text-white shadow-lg' 
@@ -181,7 +183,7 @@ export default function BookingCalendar({
                 
                 {/* Availability Indicators */}
                 {unavailable && (
-                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                  <div className={`absolute bottom-1 left-1/2 transform -translate-x-1/2 bg-red-500 rounded-full ${compact ? 'w-1 h-1' : 'w-1.5 h-1.5'}`}></div>
                 )}
               </button>
             );
@@ -189,13 +191,13 @@ export default function BookingCalendar({
         </div>
 
         {/* Legend */}
-        <div className="flex items-center justify-center space-x-6 mt-4 text-sm">
+        <div className={`flex items-center justify-center space-x-6 mt-3 ${compact ? 'text-xs' : 'text-sm'}`}>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-gray-200 rounded-full"></div>
+            <div className={`bg-gray-200 rounded-full ${compact ? 'w-2 h-2' : 'w-3 h-3'}`}></div>
             <span className="text-gray-600">Available</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <div className={`bg-red-500 rounded-full ${compact ? 'w-2 h-2' : 'w-3 h-3'}`}></div>
             <span className="text-gray-600">Unavailable</span>
           </div>
         </div>
@@ -203,11 +205,11 @@ export default function BookingCalendar({
 
       {/* Time Slots */}
       {selectedDate && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className={compact ? "mt-4" : "mt-6"}>
+          <h3 className={`font-semibold text-gray-900 ${compact ? 'text-sm mb-3' : 'text-lg mb-4'}`}>
             Select Time Slots (Multiple selection allowed)
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mr-4">
+          <div className={`grid gap-2 ${compact ? 'grid-cols-3 md:grid-cols-4 lg:grid-cols-6 max-h-32 overflow-y-auto' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mr-4'}`}>
             {timeSlots.map((timeSlot, index) => {
               const timeSlotString = `${timeSlot.start} - ${timeSlot.end}`;
               const isSelected = selectedTimeSlots.includes(timeSlotString);
@@ -217,14 +219,14 @@ export default function BookingCalendar({
                   key={index}
                   onClick={() => onTimeSlotSelect(timeSlotString)}
                   className={`
-                    py-3  text-xs font-medium rounded-md border transition-all duration-200 text-center whitespace-nowrap
+                    ${compact ? 'py-1.5 px-1 text-[10px]' : 'py-3 text-xs'} font-medium rounded-md border transition-all duration-200 text-center whitespace-nowrap
                     ${isSelected
                       ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                       : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                     }
                   `}
                 >
-                  {timeSlot.start} - {timeSlot.end}
+                  {compact ? `${timeSlot.start.split(' ')[0]}-${timeSlot.end.split(' ')[0]}` : `${timeSlot.start} - ${timeSlot.end}`}
                 </button>
               );
             })}

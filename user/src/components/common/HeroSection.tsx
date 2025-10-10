@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
 interface HeroSlide {
@@ -87,6 +87,9 @@ const heroSlides: HeroSlide[] = [
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [showText, setShowText] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [location, setLocation] = useState('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
@@ -104,6 +107,11 @@ export default function HeroSection() {
       }
     };
   }, [isAutoPlaying]);
+
+  // Show text animation on mount
+  useEffect(() => {
+    setShowText(true);
+  }, []);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -124,6 +132,32 @@ export default function HeroSection() {
 
   const handleCTAClick = () => {
     router.push(heroSlides[currentSlide].ctaLink);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleSearch = () => {
+    const query = searchQuery.trim();
+    const loc = location.trim();
+    let searchUrl = '/search';
+    const params = new URLSearchParams();
+    
+    if (query) {
+      params.append('q', query);
+    }
+    if (loc) {
+      params.append('location', loc);
+    }
+    
+    if (params.toString()) {
+      searchUrl += `?${params.toString()}`;
+    }
+    
+    router.push(searchUrl);
   };
 
   return (
@@ -164,7 +198,6 @@ export default function HeroSection() {
               Find and book professional photographers for every occasion
             </p>
           </div>
-        )}
 
           {/* Search Box */}
           <div className={`transform transition-all duration-1000 delay-200 ease-out ${
@@ -208,8 +241,6 @@ export default function HeroSection() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
           {/* Popular Categories/Tags */}
           <div className={`transform transition-all duration-1000 delay-300 ease-out ${

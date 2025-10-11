@@ -147,6 +147,46 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
         "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop",
         "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
         "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop"
+      ],
+      'Haldi': [
+        "https://images.unsplash.com/photo-1520854221256-17449cc91bf9?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop"
+      ],
+      'Reception': [
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1529636798458-92182e662485?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1460978812857-470ed1c77af0?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop"
+      ],
+      'Pre-Wedding': [
+        "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop"
+      ],
+      'Portrait': [
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=600&fit=crop"
+      ],
+      'Family': [
+        "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&h=600&fit=crop"
       ]
     };
 
@@ -305,49 +345,71 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                  </div>
                </div>
                
-               {/* Horizontal Category Cards */}
-               <div className="flex space-x-4 justify-center">
-                 {(() => {
-                   const categories = [
-                     { id: 1, name: "Mehndi", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=150&h=150&fit=crop" },
-                     { id: 2, name: "Engagement", image: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=150&h=150&fit=crop" },
-                     { id: 3, name: "Wedding", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=150&h=150&fit=crop" }
-                   ];
+               {/* Horizontal Category Cards with Carousel */}
+               <div className="relative">
+                 <div 
+                   className="flex space-x-4 overflow-x-auto scrollbar-hide pb-2"
+                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                 >
+                   {(() => {
+                     const categories = [
+                       { id: 1, name: "Mehndi", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=150&h=150&fit=crop" },
+                       { id: 2, name: "Engagement", image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=150&h=150&fit=crop" },
+                       { id: 3, name: "Wedding", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=150&h=150&fit=crop" },
+                       { id: 4, name: "Haldi", image: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=150&h=150&fit=crop" },
+                       { id: 5, name: "Reception", image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=150&h=150&fit=crop" },
+                       { id: 6, name: "Pre-Wedding", image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=150&h=150&fit=crop" },
+                       { id: 7, name: "Portrait", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop" },
+                       { id: 8, name: "Family", image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=150&h=150&fit=crop" }
+                     ];
 
-                   return categories.map((category) => (
-                     <div 
-                       key={category.id} 
-                       className={`relative w-24 h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
-                         activePortfolioCategory === category.name ? 'ring-2 ring-blue-500 scale-110' : 'hover:scale-105 hover:shadow-lg'
-                       }`}
-                       onClick={() => setActivePortfolioCategory(category.name)}
-                     >
-                       <Image
-                         src={category.image}
-                         alt={category.name}
-                         width={96}
-                         height={80}
-                         className="w-full h-full object-cover"
-                       />
-                       {/* Dark overlay */}
-                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                       
-                       {/* Category text */}
-                       <div className="absolute bottom-0 left-0 right-0 p-2 text-center">
-                         <p className="text-white text-xs font-semibold drop-shadow-lg">{category.name}</p>
-                       </div>
-                       
-                       {/* Selection Indicator */}
-                       {activePortfolioCategory === category.name && (
-                         <div className="absolute top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                           <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                           </svg>
+                     return categories.map((category) => (
+                       <div 
+                         key={category.id} 
+                         className={`relative w-24 h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 flex-shrink-0 ${
+                           activePortfolioCategory === category.name ? 'ring-2 ring-blue-500 scale-110' : 'hover:scale-105 hover:shadow-lg'
+                         }`}
+                         onClick={() => setActivePortfolioCategory(category.name)}
+                       >
+                         <Image
+                           src={category.image}
+                           alt={category.name}
+                           width={96}
+                           height={80}
+                           className="w-full h-full object-cover"
+                         />
+                         {/* Dark overlay */}
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                         
+                         {/* Category text */}
+                         <div className="absolute bottom-0 left-0 right-0 p-2 text-center">
+                           <p className="text-white text-xs font-semibold drop-shadow-lg">{category.name}</p>
                          </div>
-                       )}
-                     </div>
-                   ));
-                 })()}
+                         
+                         {/* Selection Indicator */}
+                         {activePortfolioCategory === category.name && (
+                           <div className="absolute top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                             <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                             </svg>
+                           </div>
+                         )}
+                       </div>
+                     ));
+                   })()}
+                 </div>
+                 
+                 {/* Scroll indicators */}
+                 <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-6 h-12 bg-gradient-to-r from-white to-transparent flex items-center justify-center pointer-events-none">
+                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                   </svg>
+                 </div>
+                 <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-6 h-12 bg-gradient-to-l from-white to-transparent flex items-center justify-center pointer-events-none">
+                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   </svg>
+                 </div>
                </div>
              </div>
 

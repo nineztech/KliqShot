@@ -45,30 +45,82 @@ export default function PhotographerCard({
 
   // Generate sample portfolio images based on photographer's specialty
   const generatePortfolioImages = () => {
-    const baseImages = [
-      image, // Main profile image
-      "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=300&fit=crop&crop=center&auto=format",
+    // Large pool of wedding/event images
+    const weddingImages = [
       "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1520854221256-17449cc91bf9?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1525258670393-d0b0d3a8724e?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1529636798458-92182e662485?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1460978812857-470ed1c77af0?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1545291730-faff8ca1d4b0?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=400&h=300&fit=crop&crop=center&auto=format"
+    ];
+
+    // Large pool of portrait images
+    const portraitImages = [
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=300&fit=crop&crop=center&auto=format",
-      "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop&crop=center&auto=format"
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1588392382834-a891154bca4d?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=300&fit=crop&crop=center&auto=format"
+    ];
+
+    // Large pool of general event images
+    const eventImages = [
+      "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1556125574-d7f27ec36a06?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=400&h=300&fit=crop&crop=center&auto=format",
+      "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop&crop=center&auto=format"
     ];
     
-    // Add specialty-specific images
-    if (specialty.toLowerCase().includes('wedding') || specialty.toLowerCase().includes('haldi') || specialty.toLowerCase().includes('mehendi')) {
-      return [
-        ...baseImages,
-        "https://images.unsplash.com/photo-1520854221256-17449cc91bf9?w=400&h=300&fit=crop&crop=center&auto=format",
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop&crop=center&auto=format"
-      ];
-    } else if (specialty.toLowerCase().includes('portrait') || specialty.toLowerCase().includes('headshot')) {
-      return [
-        ...baseImages,
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=center&auto=format",
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop&crop=center&auto=format"
-      ];
+    // Select image pool based on specialty
+    let imagePool = eventImages;
+    if (specialty.toLowerCase().includes('wedding') || specialty.toLowerCase().includes('haldi') || specialty.toLowerCase().includes('mehendi') || specialty.toLowerCase().includes('reception') || specialty.toLowerCase().includes('pre-wedding')) {
+      imagePool = weddingImages;
+    } else if (specialty.toLowerCase().includes('portrait') || specialty.toLowerCase().includes('headshot') || specialty.toLowerCase().includes('portfolio') || specialty.toLowerCase().includes('linkedin')) {
+      imagePool = portraitImages;
     }
     
-    return baseImages;
+    // Use photographer ID to select different images for each card
+    const startIndex = (id * 3) % imagePool.length;
+    const selectedImages = [];
+    
+    for (let i = 0; i < 5; i++) {
+      const index = (startIndex + i) % imagePool.length;
+      selectedImages.push(imagePool[index]);
+    }
+    
+    // Custom first photos for specific photographers
+    if (id === 2) { // Rajesh Kumar
+      selectedImages[0] = "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop&crop=center&auto=format";
+    } else if (id === 22) { // Meera Patel
+      selectedImages[0] = "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=300&fit=crop&crop=center&auto=format";
+    } else if (id === 27) { // Suresh Iyer
+      selectedImages[0] = "https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=400&h=300&fit=crop&crop=center&auto=format";
+    }
+    
+    return selectedImages;
   };
 
   const portfolioImages = generatePortfolioImages();

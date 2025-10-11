@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3000",
-    "build": "next build --turbopack",
-    "start": "next start --port 3000"
+    "build": "next build && next export",
+    "start": "npx serve out"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
@@ -16,7 +16,8 @@
     "next-intl": "^4.3.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-i18next": "^16.0.0"
+    "react-i18next": "^16.0.0",
+    "serve": "^14.2.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

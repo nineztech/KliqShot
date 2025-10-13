@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
 interface HeroSlide {
@@ -90,6 +90,7 @@ export default function HeroSection() {
   const [showText, setShowText] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
@@ -143,6 +144,7 @@ export default function HeroSection() {
   const handleSearch = () => {
     const query = searchQuery.trim();
     const loc = location.trim();
+    const dateValue = selectedDate.trim();
     let searchUrl = '/search';
     const params = new URLSearchParams();
     
@@ -151,6 +153,9 @@ export default function HeroSection() {
     }
     if (loc) {
       params.append('location', loc);
+    }
+    if (dateValue) {
+      params.append('date', dateValue);
     }
     
     if (params.toString()) {
@@ -203,7 +208,7 @@ export default function HeroSection() {
           <div className={`transform transition-all duration-1000 delay-200 ease-out ${
             showText ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-2 md:p-3 border border-white/80 ring-1 ring-white/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-all duration-300">
+            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-1.5 md:p-2 border border-white/80 ring-1 ring-white/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-all duration-300">
               <div className="flex flex-col md:flex-row gap-2">
                 {/* Search Input */}
                 <div className="flex-1 relative">
@@ -214,7 +219,7 @@ export default function HeroSection() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="w-full pl-10 pr-4 py-2 md:py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-1.5 md:py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
                   />
                 </div>
 
@@ -227,14 +232,27 @@ export default function HeroSection() {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="w-full pl-10 pr-4 py-2 md:py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-1.5 md:py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                  />
+                </div>
+
+                {/* Date Input */}
+                <div className="flex-1 relative">
+                  <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="date"
+                    placeholder="Select date..."
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="w-full pl-10 pr-4 py-1.5 md:py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
                   />
                 </div>
 
                 {/* Search Button */}
                 <button
                   onClick={handleSearch}
-                  className="px-5 py-2 md:py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(59,130,246,0.5)] shadow-lg whitespace-nowrap"
+                  className="px-5 py-1.5 md:py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(59,130,246,0.5)] shadow-lg whitespace-nowrap"
                 >
                   Search Now
                 </button>

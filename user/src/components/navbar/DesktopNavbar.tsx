@@ -181,6 +181,33 @@ export default function DesktopNavbar() {
 
   const handleLocationSelect = (location: string) => {
     setUserLocation(location);
+    
+    // Store the manually selected location in localStorage
+    const manualLocationData = {
+      city: location.split(',')[0]?.trim() || location,
+      country: location.split(',')[1]?.trim() || 'India',
+      state: '',
+      postcode: '',
+      locality: '',
+      principalSubdivisionCode: '',
+      countryCode: '',
+      localityInfo: {},
+      continent: '',
+      continentCode: '',
+      addressLine1: '',
+      addressLine2: '',
+      fullAddress: location,
+      detailedAddress: location,
+      coordinates: {
+        latitude: 0,
+        longitude: 0
+      },
+      timestamp: new Date().toISOString(),
+      source: 'manual_selection',
+      rawData: {}
+    };
+    
+    localStorage.setItem('userLocation', JSON.stringify(manualLocationData));
     setShowLocationDropdown(false);
   };
 
@@ -197,14 +224,75 @@ export default function DesktopNavbar() {
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           // Use reverse geocoding to get location name
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           
-          // For now, we'll use a simple approach
-          // In a real app, you'd use Google Geocoding API
-          setUserLocation('Current Location');
+           try {
+             // Use reverse geocoding to get city and country
+             const response = await fetch(
+               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+             );
+             
+             if (response.ok) {
+               const data = await response.json();
+               const city = data.city || data.locality || 'Unknown City';
+               const country = data.countryName || 'Unknown Country';
+               const fullAddress = `${city}, ${country}`;
+               
+               // Store complete address data in localStorage
+               const addressData = {
+                 // Basic location info
+                 city: data.city || data.locality || 'Unknown City',
+                 country: data.countryName || 'Unknown Country',
+                 state: data.principalSubdivision || '',
+                 postcode: data.postcode || '',
+                 
+                 // Additional address details
+                 locality: data.locality || '',
+                 principalSubdivisionCode: data.principalSubdivisionCode || '',
+                 countryCode: data.countryCode || '',
+                 localityInfo: data.localityInfo || {},
+                 
+                 // Geographic information
+                 continent: data.continent || '',
+                 continentCode: data.continentCode || '',
+                 
+                 // Complete address components
+                 addressLine1: data.plusCode || '',
+                 addressLine2: data.locality || '',
+                 
+                 // Formatted addresses
+                 fullAddress: fullAddress,
+                 detailedAddress: `${data.locality || ''}, ${data.principalSubdivision || ''}, ${data.postcode || ''}, ${data.countryName || ''}`.replace(/,\s*,/g, ',').replace(/^,\s*|,\s*$/g, ''),
+                 
+                 // Coordinates
+                 coordinates: {
+                   latitude: lat,
+                   longitude: lng
+                 },
+                 
+                 // Metadata
+                 timestamp: new Date().toISOString(),
+                 source: 'geolocation_api',
+                 
+                 // Raw API response for future use
+                 rawData: data
+               };
+               
+               localStorage.setItem('userLocation', JSON.stringify(addressData));
+               setUserLocation(fullAddress);
+             } else {
+               // Fallback to a generic location if API fails
+               setUserLocation('Current Location');
+             }
+           } catch (error) {
+             console.error('Error fetching location details:', error);
+             // Fallback to a generic location if API fails
+             setUserLocation('Current Location');
+           }
+          
           setShowLocationDropdown(false);
         },
         (error) => {
@@ -218,11 +306,23 @@ export default function DesktopNavbar() {
     }
   };
 
-  // Load recent searches from localStorage
+  // Load recent searches and saved location from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('recentSearches');
     if (saved) {
       setRecentSearches(JSON.parse(saved));
+    }
+
+    // Load saved location from localStorage
+    const savedLocation = localStorage.getItem('userLocation');
+    if (savedLocation) {
+      try {
+        const locationData = JSON.parse(savedLocation);
+        setUserLocation(locationData.fullAddress || 'Mumbai, India');
+      } catch (error) {
+        console.error('Error parsing saved location:', error);
+        setUserLocation('Mumbai, India');
+      }
     }
   }, []);
 
@@ -566,16 +666,44 @@ export default function DesktopNavbar() {
                 >
                   Cancel
                 </button>
-                <button
-                  onClick={() => {
-                    // TODO: Implement location selection from map
-                    setUserLocation('Selected Location');
-                    setShowMapModal(false);
-                  }}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200"
-                >
-                  Select Location
-                </button>
+                 <button
+                   onClick={() => {
+                     // TODO: Implement location selection from map
+                     const mapSelectedLocation = 'Selected Location';
+                     setUserLocation(mapSelectedLocation);
+                     
+                     // Store the map selected location in localStorage
+                     const mapLocationData = {
+                       city: mapSelectedLocation.split(',')[0]?.trim() || mapSelectedLocation,
+                       country: mapSelectedLocation.split(',')[1]?.trim() || 'India',
+                       state: '',
+                       postcode: '',
+                       locality: '',
+                       principalSubdivisionCode: '',
+                       countryCode: '',
+                       localityInfo: {},
+                       continent: '',
+                       continentCode: '',
+                       addressLine1: '',
+                       addressLine2: '',
+                       fullAddress: mapSelectedLocation,
+                       detailedAddress: mapSelectedLocation,
+                       coordinates: {
+                         latitude: 0,
+                         longitude: 0
+                       },
+                       timestamp: new Date().toISOString(),
+                       source: 'map_selection',
+                       rawData: {}
+                     };
+                     
+                     localStorage.setItem('userLocation', JSON.stringify(mapLocationData));
+                     setShowMapModal(false);
+                   }}
+                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                 >
+                   Select Location
+                 </button>
               </div>
             </div>
           </div>

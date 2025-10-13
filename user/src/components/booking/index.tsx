@@ -24,7 +24,7 @@ interface BookingPageProps {
 export default function BookingPage({ bookingData }: BookingPageProps) {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedAddons, setSelectedAddons] = useState<number[]>([]);
+  const [selectedAddons, setSelectedAddons] = useState<{ [key: number]: number }>({});
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
 
   const handleDateSelect = (date: Date) => {
@@ -32,12 +32,14 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     setSelectedTimeSlots([]); // Reset time slots when date changes
   };
 
-  const handleAddonToggle = (addonId: number) => {
-    setSelectedAddons(prev => 
-      prev.includes(addonId) 
-        ? prev.filter(id => id !== addonId)
-        : [...prev, addonId]
-    );
+  const handleAddonToggle = (addonId: number, quantity: number) => {
+    setSelectedAddons(prev => {
+      if (quantity === 0) {
+        const { [addonId]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [addonId]: quantity };
+    });
   };
 
   const handleTimeSlotSelect = (timeSlot: string) => {
@@ -56,30 +58,30 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-3">
-          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 w-full">
-            <div className="flex items-center mb-2">
+        <div className="mb-4">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-5 w-full">
+            <div className="flex items-center mb-3">
               <button
                 onClick={handleBackClick}
-                className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all duration-200 mr-3 group"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all duration-200 mr-4 group"
               >
-                <svg className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Book Photography Session</h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Book Photography Session</h1>
             </div>
-            <div className="flex items-center space-x-3 text-sm text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+            <div className="flex items-center space-x-4 text-gray-600 bg-gray-50 rounded-lg px-4 py-3">
               <div className="flex items-center space-x-2">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 <span className="font-semibold text-gray-700">Photographer:</span>
                 <span className="font-medium text-gray-900">{bookingData.photographerName}</span>
               </div>
               {bookingData.category && (
                 <>
-                  <div className="w-0.5 h-0.5 bg-gray-400 rounded-full"></div>
+                  <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
                   <div className="flex items-center space-x-2">
                     <span className="font-semibold text-gray-700">Service:</span>
                     <span className="capitalize font-medium text-gray-900">{bookingData.category}</span>
@@ -98,7 +100,7 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Calendar */}
-          <div>
+          <div className="h-[600px]">
             <BookingCalendar
               selectedDate={selectedDate}
               onDateSelect={handleDateSelect}
@@ -108,7 +110,7 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
           </div>
 
           {/* Right Column - Add-ons */}
-          <div>
+          <div className="h-[600px]">
             <AddonsSelection
               selectedAddons={selectedAddons}
               onAddonToggle={handleAddonToggle}

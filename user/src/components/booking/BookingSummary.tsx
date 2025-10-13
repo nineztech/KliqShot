@@ -24,7 +24,7 @@ interface BookingSummaryProps {
   bookingData: BookingData;
   selectedDate: Date | null;
   selectedTimeSlots: string[];
-  selectedAddons: number[];
+  selectedAddons: { [key: number]: number };
 }
 
 const availableAddons: Addon[] = [
@@ -79,11 +79,14 @@ export default function BookingSummary({
     const sessionHours = selectedTimeSlots.length;
     const basePrice = hourlyRate * sessionHours;
     
-    const selectedAddonDetails = availableAddons.filter(addon => 
-      selectedAddons.includes(addon.id)
-    );
+    const selectedAddonDetails = availableAddons
+      .filter(addon => selectedAddons[addon.id] > 0)
+      .map(addon => ({
+        ...addon,
+        quantity: selectedAddons[addon.id]
+      }));
     
-    const addonsTotal = selectedAddonDetails.reduce((sum, addon) => sum + addon.price, 0);
+    const addonsTotal = selectedAddonDetails.reduce((sum, addon) => sum + (addon.price * addon.quantity), 0);
     const subtotal = basePrice + addonsTotal;
     const gst = Math.round(subtotal * 0.18); // 18% GST
     const platformFee = 50; // Fixed platform fee of ₹50
@@ -125,118 +128,136 @@ export default function BookingSummary({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Booking Summary</h2>
+    <div className="bg-white rounded-lg shadow-sm p-4">
+      <h2 className="text-xl font-bold text-gray-900 mb-4">Booking Summary</h2>
       
-      {/* Session Details Grid */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Session Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-1">Photographer</div>
-            <div className="font-semibold text-gray-900">{bookingData.photographerName}</div>
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+        {/* Left Column - Session Details */}
+        <div className="lg:col-span-1">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">Session Details</h3>
+          <div className="space-y-2">
+            <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-3">
+              <div className="text-xs text-gray-500 mb-1">Photographer</div>
+              <div className="font-semibold text-gray-900 text-sm">{bookingData.photographerName}</div>
+            </div>
+            
+            {bookingData.category && (
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-3">
+                <div className="text-xs text-gray-500 mb-1">Service</div>
+                <div className="font-semibold text-gray-900 capitalize text-sm">
+                  {bookingData.category}
+                  {bookingData.subcategory && ` - ${bookingData.subcategory}`}
+                </div>
+              </div>
+            )}
+            
+            {selectedDate && (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3">
+                <div className="text-xs text-blue-600 mb-1">Date</div>
+                <div className="font-semibold text-gray-900 text-sm">
+                  {selectedDate.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric'
+                  })}
+                </div>
+              </div>
+            )}
+            
+            {selectedTimeSlots.length > 0 && (
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3">
+                <div className="text-xs text-green-600 mb-1">Duration</div>
+                <div className="font-semibold text-gray-900 text-sm">
+                  {selectedTimeSlots.length} hour{selectedTimeSlots.length > 1 ? 's' : ''}
+                </div>
+              </div>
+            )}
           </div>
-          
-          {bookingData.category && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm text-gray-600 mb-1">Service</div>
-              <div className="font-semibold text-gray-900 capitalize">
-                {bookingData.category}
-                {bookingData.subcategory && ` - ${bookingData.subcategory}`}
-              </div>
-            </div>
-          )}
-          
-          {selectedDate && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm text-gray-600 mb-1">Date</div>
-              <div className="font-semibold text-gray-900">
-                {selectedDate.toLocaleDateString('en-US', { 
-                  weekday: 'short', 
-                  month: 'short', 
-                  day: 'numeric'
-                })}
-              </div>
-            </div>
-          )}
-          
-          {selectedTimeSlots.length > 0 && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm text-gray-600 mb-1">Duration</div>
-              <div className="font-semibold text-gray-900">
-                {selectedTimeSlots.length} hour{selectedTimeSlots.length > 1 ? 's' : ''}
-              </div>
-            </div>
-          )}
         </div>
-        
-        {/* Time Slots Display */}
-        {selectedTimeSlots.length > 0 && (
-          <div className="mt-4 bg-blue-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-2">Selected Time Slots:</div>
-            <div className="flex flex-wrap gap-2">
-              {selectedTimeSlots.map((slot, index) => (
-                <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  {slot}
-                </span>
+
+        {/* Right Column - Billing Details */}
+        <div className="lg:col-span-2">
+          <h3 className="text-xs font-semibold text-gray-900 mb-2">Billing Details</h3>
+          
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-2">
+            <div className="space-y-1.5">
+              {/* Base Session */}
+              <div className="flex justify-between items-center py-1 border-b border-gray-200">
+                <div>
+                  <span className="text-xs text-gray-700 font-medium">
+                    Photography Session
+                  </span>
+                  <div className="text-[10px] text-gray-500">
+                    {sessionHours} hour{sessionHours > 1 ? 's' : ''} @ ₹{hourlyRate.toLocaleString()}/hour
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-gray-900">₹{basePrice.toLocaleString()}</span>
+              </div>
+
+              {/* Selected Add-ons */}
+              {selectedAddonDetails.map((addon) => (
+                <div key={addon.id} className="flex justify-between items-center py-1 border-b border-gray-200">
+                  <div>
+                    <span className="text-xs text-gray-700 font-medium">
+                      {addon.name}
+                      {addon.quantity > 1 && (
+                        <span className="ml-1 text-blue-600 font-semibold">× {addon.quantity}</span>
+                      )}
+                    </span>
+                    <div className="text-[10px] text-gray-500">
+                      ₹{addon.price.toLocaleString()} each
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-gray-900">₹{(addon.price * addon.quantity).toLocaleString()}</span>
+                </div>
               ))}
-            </div>
-          </div>
-        )}
-      </div>
 
-      {/* Billing Details */}
-      <div className="mb-4">
-        <h3 className="text-base font-semibold text-gray-900 mb-3">Billing Details</h3>
-        
-        <div className="bg-gray-50 rounded-md p-3">
-          <div className="text-xs">
-            {/* Base Session */}
-            <div className="flex justify-between items-center py-1 border-b border-gray-200">
-              <span className="text-gray-600">
-                Photography Session ({sessionHours} hour{sessionHours > 1 ? 's' : ''} @ ₹{hourlyRate.toLocaleString()}/hour)
-              </span>
-              <span className="font-medium">₹{basePrice.toLocaleString()}</span>
-            </div>
-
-            {/* Selected Add-ons */}
-            {selectedAddonDetails.map((addon) => (
-              <div key={addon.id} className="flex justify-between items-center py-1 border-b border-gray-200">
-                <span className="text-gray-600">{addon.name}</span>
-                <span className="font-medium">₹{addon.price.toLocaleString()}</span>
+              {/* Subtotal */}
+              <div className="flex justify-between items-center py-1 border-b-2 border-gray-300">
+                <span className="text-xs font-semibold text-gray-800">Subtotal</span>
+                <span className="text-xs font-bold text-gray-900">₹{(basePrice + addonsTotal).toLocaleString()}</span>
               </div>
-            ))}
 
-            {/* Subtotal */}
-            <div className="flex justify-between items-center py-1 border-b border-gray-300">
-              <span className="text-gray-600 font-medium">Subtotal</span>
-              <span className="font-medium">₹{(basePrice + addonsTotal).toLocaleString()}</span>
-            </div>
+              {/* GST */}
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-xs text-gray-600">GST (18%)</span>
+                <span className="text-xs font-medium text-gray-700">₹{gst.toLocaleString()}</span>
+              </div>
 
-            {/* GST */}
-            <div className="flex justify-between items-center py-1 border-b border-gray-200">
-              <span className="text-gray-600">GST (18%)</span>
-              <span className="font-medium">₹{gst.toLocaleString()}</span>
-            </div>
+              {/* Platform Fee */}
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-xs text-gray-600">Platform Fee</span>
+                <span className="text-xs font-medium text-gray-700">₹{platformFee.toLocaleString()}</span>
+              </div>
 
-            {/* Platform Fee */}
-            <div className="flex justify-between items-center py-1 border-b border-gray-200">
-              <span className="text-gray-600">Platform Fee</span>
-              <span className="font-medium">₹{platformFee.toLocaleString()}</span>
-            </div>
-
-            {/* Total */}
-            <div className="flex justify-between items-center py-1">
-              <span className="font-bold text-gray-900">Total Amount</span>
-              <span className="font-bold text-blue-600">₹{totalPrice.toLocaleString()}</span>
+              {/* Total */}
+              <div className="flex justify-between items-center py-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg px-2 mt-2">
+                <span className="text-sm font-bold text-gray-900">Total Amount</span>
+                <span className="text-lg font-bold text-blue-600">₹{totalPrice.toLocaleString()}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Time Slots Display - Compact */}
+      {selectedTimeSlots.length > 0 && (
+        <div className="mb-4 bg-blue-50 rounded-lg p-3">
+          <div className="text-xs text-blue-700 font-medium mb-2">Selected Time Slots:</div>
+          <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
+            {selectedTimeSlots.map((slot, index) => (
+              <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                {slot}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Booking Status */}
       {!isBookingReady && (
-        <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-md p-3">
+        <div className="mb-3 bg-yellow-50 border border-yellow-200 rounded-md p-2">
           <p className="text-xs text-yellow-800">
             Please select a date and time slots to proceed with booking.
           </p>
@@ -244,14 +265,14 @@ export default function BookingSummary({
       )}
 
       {/* Confirm Booking Button */}
-      <div className="mb-3">
+      <div className="mb-2">
         <button
           onClick={handleConfirmBooking}
           disabled={!isBookingReady}
           className={`
-            w-full py-3 px-4 rounded-md font-semibold text-sm transition-all duration-200
+            w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200
             ${isBookingReady
-              ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:scale-[1.02]'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }
           `}

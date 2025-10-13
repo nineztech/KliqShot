@@ -12,6 +12,16 @@ import {
 } from 'react-icons/md';
 import { categoryApi } from '@/lib/api';
 
+// Helper function to get full image URL
+const getImageUrl = (imagePath: string | undefined) => {
+  if (!imagePath) return '';
+  // If it's already a full URL, return it
+  if (imagePath.startsWith('http')) return imagePath;
+  // Otherwise, prepend the backend URL
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5006';
+  return `${backendUrl}/${imagePath}`;
+};
+
 interface SubCategory {
   id: string;
   name: string;
@@ -290,7 +300,7 @@ export default function DesktopCategoryManagement({ categories, setCategories, o
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2"
+            className="admin-button-primary text-sm px-3 py-2 flex items-center"
           >
             <MdAdd className="w-3 h-3 mr-1" />
             Add Category
@@ -317,7 +327,7 @@ export default function DesktopCategoryManagement({ categories, setCategories, o
                 {category.image && (
                   <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
                     <img
-                      src={category.image}
+                      src={getImageUrl(category.image)}
                       alt={category.name}
                       className="w-full h-full object-cover"
                     />
@@ -364,7 +374,7 @@ export default function DesktopCategoryManagement({ categories, setCategories, o
                         {subCategory.image && (
                           <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
                             <img
-                              src={subCategory.image}
+                              src={getImageUrl(subCategory.image)}
                               alt={subCategory.name}
                               className="w-full h-full object-cover"
                             />

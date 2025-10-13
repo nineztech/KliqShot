@@ -41,7 +41,6 @@ export default function PhotographerCard({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [showRatingPopup, setShowRatingPopup] = useState(false);
 
   // Generate sample portfolio images based on photographer's specialty
   const generatePortfolioImages = () => {
@@ -250,48 +249,12 @@ export default function PhotographerCard({
                      </div>
                   </div>
                 </div>
-               <div
-                 className="relative flex items-center space-x-1 ml-2 cursor-pointer"
-                 onMouseEnter={() => setShowRatingPopup(true)}
-                 onMouseLeave={() => setShowRatingPopup(false)}
-               >
-                 <span className="text-gray-600 text-sm font-medium">
-                   {rating}
-                 </span>
-                 <StarSolidIcon className="w-4 h-4 text-yellow-400" />
-                 {showRatingPopup && (
-                   <div className="absolute z-10 top-full right-0 mt-2 p-3 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px]">
-                     <div className="flex items-center mb-2">
-                       <span className="text-lg font-bold text-gray-900 mr-2">{rating}</span>
-                       <div className="flex items-center">
-                         {renderStars()}
-                       </div>
-                     </div>
-                     <div className="text-sm text-gray-600">
-                       {reviews} Ratings & Reviews
-                     </div>
-                     <div className="mt-2 space-y-1">
-                       {[5, 4, 3, 2, 1].map((star) => {
-                         const percentage = Math.random() * 100; // In real app, this would be actual data
-                         return (
-                           <div key={star} className="flex items-center text-xs">
-                             <span className="w-6">{star}★</span>
-                             <div className="flex-1 mx-2 bg-gray-200 rounded-full h-2">
-                               <div 
-                                 className={`h-2 rounded-full ${
-                                   star >= 4 ? 'bg-green-500' : star >= 3 ? 'bg-yellow-500' : 'bg-red-500'
-                                 }`}
-                                 style={{ width: `${percentage}%` }}
-                               ></div>
-                             </div>
-                             <span className="w-8 text-gray-600">{Math.floor(percentage * reviews / 100)}</span>
-                           </div>
-                         );
-                       })}
-                     </div>
-                   </div>
-                 )}
-               </div>
+               <div className="relative flex items-center space-x-1 ml-2">
+                <span className="text-gray-600 text-sm font-medium">
+                  {rating}
+                </span>
+                <StarSolidIcon className="w-4 h-4 text-yellow-400" />
+              </div>
              </div>
              <div className="flex items-center justify-between mt-1">
                <div className="flex items-center">

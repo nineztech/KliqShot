@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { 
-  MdSearch, 
   MdNotifications, 
   MdAccountCircle,
   MdChevronLeft,
@@ -16,7 +14,6 @@ import { useAuth } from '@/components/auth/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function TopNavbar() {
-  const [searchQuery, setSearchQuery] = useState('');
   const { isMinimized, toggleSidebar } = useSidebar();
   const { admin, isAuthenticated, logout } = useAuth();
   const router = useRouter();
@@ -31,8 +28,8 @@ export default function TopNavbar() {
       className="fixed top-0 right-0 h-16 bg-white border-b border-gray-200 z-30 flex items-center justify-between px-6 shadow-sm transition-all duration-300"
       style={{ left: isMinimized ? '5rem' : '16rem' }}
     >
-      {/* Left Section - Menu and Search */}
-      <div className="flex items-center space-x-4">
+      {/* Left Section - Menu */}
+      <div className="flex items-center">
         <button 
           onClick={toggleSidebar}
           className="p-2 hover:bg-gray-100 rounded-lg transition"
@@ -44,16 +41,6 @@ export default function TopNavbar() {
             <MdChevronLeft className="w-5 h-5 text-gray-600" />
           )}
         </button>
-        <div className="relative">
-          <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-2 w-80 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-          />
-        </div>
       </div>
 
       {/* Right Section - Actions & Profile */}

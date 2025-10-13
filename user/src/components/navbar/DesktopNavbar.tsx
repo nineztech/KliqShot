@@ -6,7 +6,11 @@ import Image from 'next/image';
 import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import ProfileDropdown from './ProfileDropdown';
 
-export default function DesktopNavbar() {
+interface DesktopNavbarProps {
+  showSearchBar?: boolean;
+}
+
+export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState('Mumbai, India');
@@ -392,7 +396,12 @@ export default function DesktopNavbar() {
           {/* Search Bar & Location */}
           <div className="flex-1 max-w-4xl mx-8 flex items-center gap-4">
             {/* Search Bar */}
-            <div className="flex-1 relative" ref={searchDropdownRef}>
+            <div 
+              className={`flex-1 relative transition-all duration-300 ${
+                showSearchBar ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+              }`} 
+              ref={searchDropdownRef}
+            >
               <form onSubmit={handleSearch} className="relative">
                 <div className="relative">
                   <input

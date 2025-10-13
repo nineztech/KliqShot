@@ -11,7 +11,11 @@ import {
 } from '@heroicons/react/24/outline';
 import ProfileDropdown from './ProfileDropdown';
 
-export default function MobileNavbar() {
+interface MobileNavbarProps {
+  showSearchBar?: boolean;
+}
+
+export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState('Mumbai, India');
@@ -19,7 +23,6 @@ export default function MobileNavbar() {
   const [showMapModal, setShowMapModal] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('EN');
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  const [showSearchBar, setShowSearchBar] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -136,8 +139,12 @@ export default function MobileNavbar() {
             </button>
           </div>
 
-          {/* Search Bar - Always Visible */}
-          <div className="flex-1 mx-3">
+          {/* Search Bar - Conditionally Visible */}
+          <div 
+            className={`flex-1 mx-3 transition-all duration-300 ${
+              showSearchBar ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+            }`}
+          >
             <form onSubmit={handleSearch} className="relative">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">

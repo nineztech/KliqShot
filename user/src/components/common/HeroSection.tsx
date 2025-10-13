@@ -94,6 +94,14 @@ export default function HeroSection() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
+  // Animation effect for text
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowText(true);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Auto-rotate slides every 5 seconds
   useEffect(() => {
     if (isAutoPlaying) {

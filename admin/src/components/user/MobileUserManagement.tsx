@@ -152,7 +152,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2"
+            className="admin-button-primary text-sm px-3 py-2 flex items-center"
           >
             <MdAdd className="w-4 h-4 mr-1" />
             Add
@@ -181,7 +181,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
             placeholder="Search clients..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="admin-input pl-10 w-full"
+            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
           />
         </div>
         <select

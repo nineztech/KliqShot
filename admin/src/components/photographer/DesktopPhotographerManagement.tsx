@@ -173,7 +173,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
               placeholder="Search kliqchamps..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="admin-input pl-10 w-full"
+              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
           
@@ -188,14 +188,14 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
             <option value="pending">Pending</option>
           </select>
           
-          <button className="admin-button-secondary text-sm px-3 py-2">
+          <button className="admin-button-secondary text-sm px-3 py-2 flex items-center">
             <MdFilterList className="w-3 h-3 mr-1" />
             Filters
           </button>
           
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2"
+            className="admin-button-primary text-sm px-3 py-2 flex items-center"
           >
             <MdAdd className="w-3 h-3 mr-1" />
             Add Kliqchamp

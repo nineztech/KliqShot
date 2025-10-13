@@ -290,7 +290,7 @@ export default function DesktopNavbar() {
            } catch (error) {
              console.error('Error fetching location details:', error);
              // Fallback to a generic location if API fails
-             setUserLocation('Current Location');
+          setUserLocation('Current Location');
            }
           
           setShowLocationDropdown(false);
@@ -666,9 +666,9 @@ export default function DesktopNavbar() {
                 >
                   Cancel
                 </button>
-                 <button
-                   onClick={() => {
-                     // TODO: Implement location selection from map
+                <button
+                  onClick={() => {
+                    // TODO: Implement location selection from map
                      const mapSelectedLocation = 'Selected Location';
                      setUserLocation(mapSelectedLocation);
                      
@@ -698,12 +698,12 @@ export default function DesktopNavbar() {
                      };
                      
                      localStorage.setItem('userLocation', JSON.stringify(mapLocationData));
-                     setShowMapModal(false);
-                   }}
-                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200"
-                 >
-                   Select Location
-                 </button>
+                    setShowMapModal(false);
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Select Location
+                </button>
               </div>
             </div>
           </div>

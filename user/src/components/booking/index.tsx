@@ -56,35 +56,40 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         {/* Header */}
-        <div className="mb-8">
-          <button
-            onClick={handleBackClick}
-            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200 mb-4"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
-          </button>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Book Photography Session</h1>
-            <div className="flex items-center space-x-4 text-gray-600">
-              <span className="font-medium">Photographer:</span>
-              <span>{bookingData.photographerName}</span>
+        <div className="mb-3">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 w-full">
+            <div className="flex items-center mb-2">
+              <button
+                onClick={handleBackClick}
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all duration-200 mr-3 group"
+              >
+                <svg className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Book Photography Session</h1>
+            </div>
+            <div className="flex items-center space-x-3 text-sm text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+              <div className="flex items-center space-x-2">
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                <span className="font-semibold text-gray-700">Photographer:</span>
+                <span className="font-medium text-gray-900">{bookingData.photographerName}</span>
+              </div>
               {bookingData.category && (
                 <>
-                  <span className="text-gray-400">•</span>
-                  <span className="font-medium">Service:</span>
-                  <span className="capitalize">{bookingData.category}</span>
-                  {bookingData.subcategory && (
-                    <>
-                      <span className="text-gray-400">-</span>
-                      <span className="capitalize">{bookingData.subcategory}</span>
-                    </>
-                  )}
+                  <div className="w-0.5 h-0.5 bg-gray-400 rounded-full"></div>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-semibold text-gray-700">Service:</span>
+                    <span className="capitalize font-medium text-gray-900">{bookingData.category}</span>
+                    {bookingData.subcategory && (
+                      <>
+                        <span className="text-gray-400">-</span>
+                        <span className="capitalize font-medium text-gray-900">{bookingData.subcategory}</span>
+                      </>
+                    )}
+                  </div>
                 </>
               )}
             </div>

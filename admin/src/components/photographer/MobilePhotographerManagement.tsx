@@ -87,7 +87,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
   };
 
   const handleDeletePhotographer = (photographerId: string) => {
-    if (confirm('Are you sure you want to delete this photographer?')) {
+    if (confirm('Are you sure you want to delete this KliqChamp?')) {
       setPhotographers(photographers.filter(photographer => photographer.id !== photographerId));
     }
   };
@@ -113,12 +113,12 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
       <div className="admin-card p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Photographers</h2>
-            <p className="text-gray-600 text-sm">Manage photographers</p>
+            <h2 className="text-lg font-bold text-gray-900">KliqChamps</h2>
+            <p className="text-gray-600 text-sm">Manage KliqChamps</p>
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2"
+            className="admin-button-primary text-sm px-3 py-2 flex items-center"
           >
             <MdAdd className="w-4 h-4 mr-1" />
             Add
@@ -132,10 +132,10 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
           <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search photographers..."
+            placeholder="Search KliqChamps..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="admin-input pl-10 w-full"
+            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
           />
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add Photographer</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Add KliqChamp</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -200,7 +200,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
                   value={newPhotographer.name}
                   onChange={(e) => setNewPhotographer({ ...newPhotographer, name: e.target.value })}
                   className="admin-input w-full"
-                  placeholder="Enter photographer name"
+                  placeholder="Enter KliqChamp name"
                 />
               </div>
               <div>
@@ -259,7 +259,7 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
                 onClick={handleAddPhotographer}
                 className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Add Photographer
+                Add KliqChamp
               </button>
               <button
                 onClick={() => setShowAddModal(false)}

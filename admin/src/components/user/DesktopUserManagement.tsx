@@ -106,7 +106,7 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
   };
 
   const handleDeleteUser = (userId: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
+    if (confirm('Are you sure you want to delete this client?')) {
       setUsers(users.filter(user => user.id !== userId));
     }
   };
@@ -152,18 +152,18 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
       <div className="admin-card">
         <div className="flex items-center space-x-4">
           <div className="flex-shrink-0">
-            <h2 className="text-xl font-bold text-gray-900">User Management</h2>
-            <p className="text-gray-600 text-sm">Manage users on the platform</p>
+            <h2 className="text-xl font-bold text-gray-900">Client Management</h2>
+            <p className="text-gray-600 text-sm">Manage clients on the platform</p>
           </div>
           
           <div className="flex-1 relative max-w-md">
             <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search users..."
+              placeholder="Search clients..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="admin-input pl-10 w-full"
+              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
           
@@ -189,17 +189,17 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
             <option value="suspended">Suspended</option>
           </select>
           
-          <button className="admin-button-secondary text-sm px-3 py-2">
+          <button className="admin-button-secondary text-sm px-3 py-2 flex items-center">
             <MdFilterList className="w-3 h-3 mr-1" />
             Filters
           </button>
           
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2"
+            className="admin-button-primary text-sm px-3 py-2 flex items-center"
           >
             <MdAdd className="w-3 h-3 mr-1" />
-            Add User
+            Add Client
           </button>
         </div>
       </div>
@@ -211,7 +211,7 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activity</th>
@@ -294,7 +294,7 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add New User</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Add New Client</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -385,7 +385,7 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
                 onClick={handleAddUser}
                 className="admin-button-primary"
               >
-                Add User
+                Add Client
               </button>
             </div>
           </div>
@@ -397,7 +397,7 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit User</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Edit Client</h3>
               <button
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -414,7 +414,7 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
                     value={newUser.name}
                     onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                     className="admin-input w-full"
-                    placeholder="Enter user name"
+                    placeholder="Enter client name"
                   />
                 </div>
                 <div>
@@ -488,7 +488,7 @@ export default function DesktopUserManagement({ users, setUsers }: DesktopUserMa
                 onClick={handleUpdateUser}
                 className="admin-button-primary"
               >
-                Update User
+                Update Client
               </button>
             </div>
           </div>

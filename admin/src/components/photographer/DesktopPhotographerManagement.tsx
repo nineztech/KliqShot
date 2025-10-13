@@ -126,7 +126,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
   };
 
   const handleDeletePhotographer = (photographerId: string) => {
-    if (confirm('Are you sure you want to delete this KliqChamp?')) {
+    if (confirm('Are you sure you want to delete this photographer?')) {
       setPhotographers(photographers.filter(photographer => photographer.id !== photographerId));
     }
   };
@@ -162,18 +162,18 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
       <div className="admin-card">
         <div className="flex items-center space-x-4">
           <div className="flex-shrink-0">
-            <h2 className="text-xl font-bold text-gray-900">KliqChamp Management</h2>
-            <p className="text-gray-600 text-sm">Manage KliqChamps on the platform</p>
+            <h2 className="text-xl font-bold text-gray-900">Photographer Management</h2>
+            <p className="text-gray-600 text-sm">Manage photographers on the platform</p>
           </div>
           
           <div className="flex-1 relative max-w-md">
             <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search KliqChamps..."
+              placeholder="Search photographers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="admin-input pl-10 w-full"
             />
           </div>
           
@@ -188,17 +188,17 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
             <option value="pending">Pending</option>
           </select>
           
-          <button className="admin-button-secondary text-sm px-3 py-2 flex items-center">
+          <button className="admin-button-secondary text-sm px-3 py-2">
             <MdFilterList className="w-3 h-3 mr-1" />
             Filters
           </button>
           
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2 flex items-center"
+            className="admin-button-primary text-sm px-3 py-2"
           >
             <MdAdd className="w-3 h-3 mr-1" />
-            Add KliqChamp
+            Add Photographer
           </button>
         </div>
       </div>
@@ -209,7 +209,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KliqChamp</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Photographer</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialty</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
@@ -293,7 +293,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add New KliqChamp</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Add New Photographer</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -310,7 +310,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
                     value={newPhotographer.name}
                     onChange={(e) => setNewPhotographer({ ...newPhotographer, name: e.target.value })}
                     className="admin-input w-full"
-                    placeholder="Enter KliqChamp name"
+                    placeholder="Enter photographer name"
                   />
                 </div>
                 <div>
@@ -414,7 +414,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
                 onClick={handleAddPhotographer}
                 className="admin-button-primary"
               >
-                Add KliqChamp
+                Add Photographer
               </button>
             </div>
           </div>
@@ -426,7 +426,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit KliqChamp</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Edit Photographer</h3>
               <button
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -443,7 +443,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
                     value={newPhotographer.name}
                     onChange={(e) => setNewPhotographer({ ...newPhotographer, name: e.target.value })}
                     className="admin-input w-full"
-                    placeholder="Enter KliqChamp name"
+                    placeholder="Enter photographer name"
                   />
                 </div>
                 <div>
@@ -547,7 +547,7 @@ export default function DesktopPhotographerManagement({ photographers, setPhotog
                 onClick={handleUpdatePhotographer}
                 className="admin-button-primary"
               >
-                Update KliqChamp
+                Update Photographer
               </button>
             </div>
           </div>

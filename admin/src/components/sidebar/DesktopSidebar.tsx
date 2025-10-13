@@ -32,8 +32,8 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: MdHome, href: '/' },
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
-    { id: 'photographers', label: 'Photographers', icon: MdCameraAlt, href: '/photographers' },
-    { id: 'users', label: 'Users', icon: MdPeople, href: '/users' },
+    { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
+    { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },
     { id: 'analytics', label: 'Analytics', icon: MdBarChart, href: '/analytics' },
     { id: 'notifications', label: 'Notifications', icon: MdNotifications, href: '/notifications' },
     { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },

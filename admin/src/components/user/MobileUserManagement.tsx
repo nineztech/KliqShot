@@ -103,7 +103,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
   };
 
   const handleDeleteUser = (userId: string) => {
-    if (confirm('Are you sure you want to delete this client?')) {
+    if (confirm('Are you sure you want to delete this user?')) {
       setUsers(users.filter(user => user.id !== userId));
     }
   };
@@ -147,12 +147,12 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
       <div className="admin-card p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Clients</h2>
-            <p className="text-gray-600 text-sm">Manage clients</p>
+            <h2 className="text-lg font-bold text-gray-900">Users</h2>
+            <p className="text-gray-600 text-sm">Manage users</p>
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2 flex items-center"
+            className="admin-button-primary text-sm px-3 py-2"
           >
             <MdAdd className="w-4 h-4 mr-1" />
             Add
@@ -163,7 +163,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3">
         <div className="admin-card p-3">
-          <h3 className="text-xs text-gray-600 mb-1">Total Clients</h3>
+          <h3 className="text-xs text-gray-600 mb-1">Total Users</h3>
           <p className="text-xl font-bold text-gray-900">{users.length}</p>
         </div>
         <div className="admin-card p-3">
@@ -178,10 +178,10 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
           <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search clients..."
+            placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            className="admin-input pl-10 w-full"
           />
         </div>
         <select
@@ -265,7 +265,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add Client</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Add User</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -281,7 +281,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
                   value={newUser.name}
                   onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                   className="admin-input w-full"
-                  placeholder="Enter client name"
+                  placeholder="Enter user name"
                 />
               </div>
               <div>
@@ -334,7 +334,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
                 onClick={handleAddUser}
                 className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Add Client
+                Add User
               </button>
               <button
                 onClick={() => setShowAddModal(false)}
@@ -352,7 +352,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Client</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Edit User</h3>
               <button
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -368,7 +368,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
                   value={newUser.name}
                   onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                   className="admin-input w-full"
-                  placeholder="Enter client name"
+                  placeholder="Enter user name"
                 />
               </div>
               <div>
@@ -421,7 +421,7 @@ export default function MobileUserManagement({ users, setUsers }: MobileUserMana
                 onClick={handleUpdateUser}
                 className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Update Client
+                Update User
               </button>
               <button
                 onClick={() => setShowEditModal(false)}

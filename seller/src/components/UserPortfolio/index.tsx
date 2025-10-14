@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import MobileSidebar from './MobileSIdebar';
-import Sidebar from './DesktopSIdebar';  // ✅ FIXED — default import
+ import MobilePhotographerPortfolio from './MobilePortfolio';
+ import  PhotographerPortfolio from './DesktopPortfolio';
+ 
 
-export default function SidebarSection() {
+export default function HomeSection() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -18,5 +19,9 @@ export default function SidebarSection() {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  return <>{isMobile ? <MobileSidebar /> : <Sidebar />}</>;
+  return (
+    <>
+     {isMobile ? <MobilePhotographerPortfolio /> : <PhotographerPortfolio />}
+    </>
+  );
 }

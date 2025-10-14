@@ -1,6 +1,6 @@
 import Navbar from '@/components/navbar';
 import VideoSection from '@/components/video/VideoSection';
-import AdvertisementSection from '@/components/advertisement';
+ 
 import Footer from '@/components/footer';
 import About from '@/components/About';
  
@@ -22,10 +22,7 @@ export default function Home() {
           <About />
         </div>
         
-        {/* Advertisement Section */}
-        <div className="py-4">
-          <AdvertisementSection />
-        </div>
+        
       </div>
       
       {/* Footer */}

@@ -183,7 +183,7 @@ export const loginSeller = async (req, res) => {
       });
     }
 
-    // Send response
+    // Send response with isProfileCompleted status
     res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -193,6 +193,7 @@ export const loginSeller = async (req, res) => {
         lastname: seller.lastname,
         email: seller.email,
         Phone: seller.Phone,
+        isProfileCompleted: seller.isProfileCompleted || false, // Include profile completion status
         token: generateToken(seller.id)
       }
     });

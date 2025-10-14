@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import MobileSidebar from './MobileSIdebar';
-import Sidebar from './DesktopSIdebar';  // ✅ FIXED — default import
+ import MobilePaymentsDashboard from './MobileWallet';
+ import  PaymentsDashboard from './DesktopWAllet';
 
-export default function SidebarSection() {
+export default function HomeSection() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -18,5 +18,9 @@ export default function SidebarSection() {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  return <>{isMobile ? <MobileSidebar /> : <Sidebar />}</>;
+  return (
+    <>
+     {isMobile ? <MobilePaymentsDashboard /> : <PaymentsDashboard />}
+    </>
+  );
 }

@@ -96,9 +96,9 @@ export default function DesktopSignupPage() {
           createdAt: result.data.createdAt || new Date().toISOString(),
           updatedAt: result.data.updatedAt || new Date().toISOString()
         });
-        
-        // Success! Redirect to Desktop
-        router.push('/Desktop');
+
+        // Success! Redirect to Signin
+        router.push('/signin');
       }
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');

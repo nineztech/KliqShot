@@ -1,53 +1,62 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Home, Package, Wallet, ArrowLeftRight, TrendingDown, TrendingUp, Settings, ChevronRight, ChevronDown, LogOut } from 'lucide-react';
+import { ArrowLeftRight, TrendingDown, TrendingUp,ChevronRight, ChevronDown, LogOut } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useSidebar } from './SidebarContext'; // Import the context
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { useSidebar } from './SidebarContext';
 import { useAuth } from '@/components/AuthContext';
+import { 
+  MdHome, 
+  MdPeople, 
+  MdCameraAlt, 
+  MdSettings,
+ MdPerson ,
+ MdWallet
+} from 'react-icons/md';
 
 const Sidebar = () => {
-  const [transactionsOpen, setTransactionsOpen] = useState(true);
+  const [transactionsOpen, setTransactionsOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
-  const { isMinimized } = useSidebar(); // Get the minimized state
+  const pathname = usePathname();
+  const { isMinimized } = useSidebar();
   const { logout } = useAuth();
-
+ 
   const menuItems = [
-    { icon: Home, label: 'Dashboard', active: true, href: '/' },
-    { icon: Package, label: 'Products', hasSubmenu: true, href: '/Desktop'},
-    { icon: Wallet, label: 'My Wallet', hasSubmenu: true, href: '/wallet' },
+    { id: 'dashboard', icon: MdHome, label: 'Dashboard', href: '/Desktop' },
+    { id: 'wallet', icon: MdWallet, label: 'My Wallet', href: '/Wallet' },
     { 
-      icon: ArrowLeftRight, 
-      label: 'Transactions', 
+      id: 'transactions',
+      icon: ArrowLeftRight,
+      label: 'Bookings',
       hasSubmenu: true,
-      isOpen: transactionsOpen,
       submenu: [
-        { icon: TrendingDown, label: 'Income', href: '/transactions/income' },
-        { icon: TrendingUp, label: 'Outcome', href: '/transactions/outcome' }
+        { id: 'income', icon: TrendingDown, label: 'Upcoming', href: '/transactions/income' },
+        { id: 'outcome', icon: TrendingUp, label: 'History', href: '/transactions/outcome' }
       ]
     },
+     { id: 'my_portfolio', icon: MdCameraAlt, label: 'My Portfolio', href: '/UserPortfolio' },
+     { id: 'my_profile', icon: MdPerson, label: 'My Profile', href: '/UserProfile' },
   ];
 
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      
-      // Call AuthContext logout to clear all tokens and cookies
       logout();
-      
-      // Redirect to signin page
-      router.push('/signin');
+      router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
-      // Still logout and redirect even on error
       logout();
-      router.push('/signin');
+      router.push('/');
     } finally {
       setIsLoggingOut(false);
     }
   };
+
+  // Check if current path matches the item
+  const isActive = (href: string) => pathname === href;
 
   return (
     <div className={`${isMinimized ? 'w-20' : 'w-64'} ease-in-out bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900 h-screen fixed left-0 top-0 text-white z-20 transition-all duration-300`}>
@@ -78,37 +87,58 @@ const Sidebar = () => {
 
       {/* Navigation Menu */}
       <nav className="px-4 space-y-1">
-        {menuItems.map((item, index) => (
-          <div key={index}>
-            <button
-              onClick={() => item.label === 'Transactions' && setTransactionsOpen(!transactionsOpen)}
-              className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg transition duration-200 ${
-                item.active 
-                  ? 'bg-indigo-500/50 text-white' 
-                  : 'text-indigo-100 hover:bg-indigo-500/30'
-              }`}
-              title={isMinimized ? item.label : ''}
-            >
-              <div className={`flex items-center ${isMinimized ? '' : 'gap-3'}`}>
-                <item.icon className="w-5 h-5 text-white" />
-                {!isMinimized && <span className="font-medium">{item.label}</span>}
-              </div>
-              {!isMinimized && item.hasSubmenu && (
-                item.isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
-              )}
-            </button>
+        {menuItems.map((item) => (
+          <div key={item.id}>
+            {/* Main Menu Item */}
+            {item.hasSubmenu ? (
+              // If has submenu, use button to toggle
+              <button
+                onClick={() => setTransactionsOpen(!transactionsOpen)}
+                className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg transition duration-200 text-indigo-100 hover:bg-indigo-500/30`}
+                title={isMinimized ? item.label : ''}
+              >
+                <div className={`flex items-center ${isMinimized ? '' : 'gap-3'}`}>
+                  <item.icon className={`w-6 h-6 flex-shrink-0 text-white  `} />
+                  {!isMinimized && <span className="font-medium">{item.label}</span>}
+                </div>
+                {!isMinimized && (
+                  transactionsOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
+                )}
+              </button>
+            ) : (
+              // If no submenu, use Link for navigation
+              <Link
+                href={item.href!}
+                className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg transition duration-200 ${
+                  isActive(item.href!) 
+                    ? 'bg-indigo-500/50 text-white' 
+                    : 'text-indigo-100 hover:bg-indigo-500/30'
+                }`}
+                title={isMinimized ? item.label : ''}
+              >
+                <div className={`flex items-center ${isMinimized ? '' : 'gap-3'}`}>
+                  <item.icon className={`w-6 h-6 flex-shrink-0 text-white-600`} />
+                  {!isMinimized && <span className="font-medium">{item.label}</span>}
+                </div>
+              </Link>
+            )}
             
             {/* Submenu Items */}
-            {!isMinimized && item.submenu && item.isOpen && (
+            {!isMinimized && item.submenu && transactionsOpen && (
               <div className="ml-4 mt-1 space-y-1">
-                {item.submenu.map((subitem, subIndex) => (
-                  <button
-                    key={subIndex}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-indigo-100 hover:bg-indigo-500/30 transition duration-200"
+                {item.submenu.map((subitem) => (
+                  <Link
+                    key={subitem.id}
+                    href={subitem.href}
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition duration-200 ${
+                      isActive(subitem.href)
+                        ? 'bg-indigo-500/50 text-white'
+                        : 'text-indigo-100 hover:bg-indigo-500/30'
+                    }`}
                   >
                     <subitem.icon className="w-4 h-4" />
                     <span className="text-sm font-medium">{subitem.label}</span>
-                  </button>
+                  </Link>
                 ))}
               </div>
             )}
@@ -116,13 +146,18 @@ const Sidebar = () => {
         ))}
 
         {/* Settings Button */}
-        <button 
-          className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'gap-3'} px-4 py-3 rounded-lg text-indigo-100 hover:bg-indigo-500/30 transition duration-200`}
+        <Link
+          href="/settings"
+          className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'gap-3'} px-4 py-3 rounded-lg transition duration-200 ${
+            isActive('/settings')
+              ? 'bg-indigo-500/50 text-white'
+              : 'text-indigo-100 hover:bg-indigo-500/30'
+          }`}
           title={isMinimized ? 'Settings' : ''}
         >
-          <Settings className="w-5 h-5 text-white" />
+          <MdSettings className="w-5 h-5 text-white" />
           {!isMinimized && <span className="font-medium">Settings</span>}
-        </button>
+        </Link>
       </nav>
 
       {/* Logout Button */}
@@ -130,7 +165,7 @@ const Sidebar = () => {
         <button 
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className="w-full bg-indigo-500 hover:bg-red-100 disabled:cursor-not-allowed text-white hover:text-red-500 font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
+          className="w-full bg-indigo-500 hover:bg-red-200 hover:text-red-500 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
           title={isMinimized ? 'Log out' : ''}
         >
           <div className={`flex gap-2 items-center justify-center ${isMinimized ? 'px-0' : ''}`}>

@@ -38,12 +38,12 @@ const Sidebar = () => {
       logout();
       
       // Redirect to signin page
-      router.push('/signin');
+      router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
       // Still logout and redirect even on error
       logout();
-      router.push('/signin');
+      router.push('/');
     } finally {
       setIsLoggingOut(false);
     }

@@ -402,12 +402,12 @@ export default function MobilePhotographerDetail({ photographer, category, subca
       </div>
 
       {/* Best in Category Section */}
-      <div className="px-4 py-6">
+      <div className="px-4 py-2">
         <BestInCategory category={photographer.specialty} />
       </div>
 
       {/* Inspired by Browsing History Section */}
-      <div className="px-4 py-6">
+      <div className="px-4 py-2">
         <InspiredByHistory userHistory={[photographer.specialty, "Portrait Photography", "Event Photography"]} />
       </div>
 

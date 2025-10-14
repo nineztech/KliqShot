@@ -56,7 +56,7 @@ export const deleteImageFile = (imagePath) => {
   if (!imagePath) return;
   
   try {
-    // Extract filename from path if it's a full URL
+    // Extract filename from path if it's a full URL or relative path
     const filename = imagePath.split('/').pop();
     const filePath = path.join(uploadsDir, filename);
     
@@ -67,5 +67,42 @@ export const deleteImageFile = (imagePath) => {
   } catch (error) {
     console.error('Error deleting image file:', error);
   }
+};
+
+// @desc    Upload category image handler
+// @route   POST /api/upload/category-image
+// @access  Public (should be protected in production)
+export const uploadImage = (req, res) => {
+  uploadCategoryImage(req, res, (err) => {
+    if (err) {
+      console.error('Upload error:', err);
+      return res.status(400).json({
+        success: false,
+        message: err.message || 'Error uploading image'
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No file uploaded'
+      });
+    }
+
+    // Generate the relative path for the uploaded file
+    const imagePath = `uploads/categories/${req.file.filename}`;
+
+    res.status(200).json({
+      success: true,
+      message: 'Image uploaded successfully',
+      data: {
+        filename: req.file.filename,
+        path: imagePath,
+        url: imagePath, // For backward compatibility with frontend
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      }
+    });
+  });
 };
 

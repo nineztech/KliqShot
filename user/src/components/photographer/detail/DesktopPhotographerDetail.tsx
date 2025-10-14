@@ -1086,12 +1086,12 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
       </div>
 
       {/* Best in Category Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <BestInCategory category={photographer.specialty} />
       </div>
 
       {/* Inspired by Browsing History Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <InspiredByHistory userHistory={[photographer.specialty, "Portrait Photography", "Event Photography"]} />
       </div>
 

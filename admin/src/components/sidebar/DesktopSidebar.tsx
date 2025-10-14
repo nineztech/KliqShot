@@ -9,7 +9,7 @@ import {
   MdDashboard, 
   MdPeople, 
   MdCameraAlt, 
-  MdBarChart,
+  MdCampaign,
   MdSettings,
   MdInventory,
   MdLogout
@@ -34,7 +34,7 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },
-    { id: 'analytics', label: 'Analytics', icon: MdBarChart, href: '/analytics' },
+    { id: 'analytics', label: 'Advertisements', icon: MdCampaign, href: '/analytics' },
     { id: 'packages', label: 'Packages', icon: MdInventory, href: '/packages' },
     { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },
   ];

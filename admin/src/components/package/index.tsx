@@ -5,23 +5,60 @@ import DesktopPackageManagement from './DesktopPackageManagement';
 import MobilePackageManagement from './MobilePackageManagement';
 import { useSidebar } from '@/components/sidebar/SidebarContext';
 
-interface Package {
+export interface CategoryPricing {
+  categoryId: string;
+  categoryName: string;
+  price?: number;
+  features: string[];
+  subCategories: {
+    subCategoryId: string;
+    subCategoryName: string;
+    price?: number;
+    features: string[];
+  }[];
+}
+
+export interface FixedPackage {
   id: string;
   name: string;
   description: string;
-  price: number;
-  duration: string;
-  features: string[];
   isActive: boolean;
+  packageType: 'fixed' | 'individual';
+  fixedPrice?: number;
+  selectedSubCategories: {
+    subCategoryId: string;
+    subCategoryName: string;
+    categoryId: string;
+    categoryName: string;
+  }[];
+  features: string[];
+}
+
+export interface Package {
+  id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  packageType: 'fixed' | 'individual';
+  fixedPrice?: number;
+  selectedSubCategories?: {
+    subCategoryId: string;
+    subCategoryName: string;
+    categoryId: string;
+    categoryName: string;
+  }[];
+  features?: string[];
+  categoryPricing: CategoryPricing[];
 }
 
 interface PackageManagementProps {
   packages: Package[];
   setPackages: (packages: Package[]) => void;
   onRefresh?: () => void;
+  onConfigurePackage?: (pkg: Package) => void;
 }
 
-export default function PackageManagement({ packages, setPackages, onRefresh }: PackageManagementProps) {
+export default function PackageManagement({ packages, setPackages, onRefresh, onConfigurePackage }: PackageManagementProps) {
   const [isMobile, setIsMobile] = useState(false);
   const { isMinimized } = useSidebar();
 
@@ -50,12 +87,14 @@ export default function PackageManagement({ packages, setPackages, onRefresh }: 
           packages={packages} 
           setPackages={setPackages}
           onRefresh={onRefresh}
+          onConfigurePackage={onConfigurePackage}
         />
       ) : (
         <DesktopPackageManagement 
           packages={packages} 
           setPackages={setPackages}
           onRefresh={onRefresh}
+          onConfigurePackage={onConfigurePackage}
         />
       )}
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { UserCircleIcon, HeartIcon, GiftIcon, BellIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, HeartIcon, GiftIcon, BellIcon, ArrowRightOnRectangleIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../AuthContext';
 import { useCart } from '../cart/CartContext';
 
@@ -12,7 +12,10 @@ interface ProfileDropdownProps {
 
 export default function ProfileDropdown({ isMobile = false }: ProfileDropdownProps) {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { addToCart } = useCart();
@@ -42,22 +45,39 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
     setShowDropdown(false);
   };
 
+  const handleLanguageHover = () => {
+    setShowLanguageDropdown(true);
+  };
+
+  const handleLanguageLeave = () => {
+    setShowLanguageDropdown(false);
+  };
+
+  const handleLanguageSelect = (language: string) => {
+    setSelectedLanguage(language);
+    setShowLanguageDropdown(false);
+    setShowDropdown(false);
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setShowLanguageDropdown(false);
+      }
     };
 
-    if (showDropdown) {
+    if (showDropdown || showLanguageDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showDropdown]);
+  }, [showDropdown, showLanguageDropdown]);
 
   if (isMobile) {
     return (
@@ -77,6 +97,65 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                 <div className="space-y-1">
                   <div className="px-3 py-2 text-xs text-gray-500 border-b border-gray-100">
                     New customer? <span className="text-blue-600 cursor-pointer hover:underline" onClick={handleSignupClick}>Sign Up</span>
+                  </div>
+                  {/* Language Selector - Mobile Non-Authenticated */}
+                  <div 
+                    className="relative" 
+                    ref={languageDropdownRef}
+                    onMouseEnter={handleLanguageHover}
+                    onMouseLeave={handleLanguageLeave}
+                  >
+                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2">
+                      <LanguageIcon className="h-4 w-4 text-gray-500" />
+                      <span className="flex-1">Language ({selectedLanguage})</span>
+                      <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                    {/* Language Nested Dropdown - Mobile */}
+                    {showLanguageDropdown && (
+                      <div className="absolute left-full top-0 ml-1 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                        <div className="p-3">
+                          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <LanguageIcon className="h-4 w-4 text-blue-600" />
+                            Select Language
+                          </h3>
+                          <div className="space-y-1 max-h-56 overflow-y-auto">
+                            {[
+                              { code: 'EN', name: 'English', flag: '🇺🇸' },
+                              { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
+                              { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
+                              { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
+                              { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
+                              { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
+                              { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
+                              { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+                              { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
+                              { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
+                            ].map((language) => (
+                              <button
+                                key={language.code}
+                                onClick={() => handleLanguageSelect(language.name)}
+                                className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
+                                  selectedLanguage === language.name 
+                                    ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                              >
+                                <span className="text-base">{language.flag}</span>
+                                <div className="flex-1">
+                                  <div className="font-medium text-sm">{language.name}</div>
+                                  <div className="text-xs text-gray-500">{language.code}</div>
+                                </div>
+                                {selectedLanguage === language.name && (
+                                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <button
                     onClick={() => { setShowDropdown(false); router.push('/signin'); }}
@@ -122,6 +201,65 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                 <div className="space-y-1">
                   <div className="px-3 py-2 text-sm font-medium text-gray-900 border-b border-gray-100">
                     {user?.name || 'User'}
+                  </div>
+                  {/* Language Selector - Mobile Authenticated */}
+                  <div 
+                    className="relative" 
+                    ref={languageDropdownRef}
+                    onMouseEnter={handleLanguageHover}
+                    onMouseLeave={handleLanguageLeave}
+                  >
+                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2">
+                      <LanguageIcon className="h-4 w-4 text-gray-500" />
+                      <span className="flex-1">Language ({selectedLanguage})</span>
+                      <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                    {/* Language Nested Dropdown - Mobile Authenticated */}
+                    {showLanguageDropdown && (
+                      <div className="absolute left-full top-0 ml-1 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                        <div className="p-3">
+                          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <LanguageIcon className="h-4 w-4 text-blue-600" />
+                            Select Language
+                          </h3>
+                          <div className="space-y-1 max-h-56 overflow-y-auto">
+                            {[
+                              { code: 'EN', name: 'English', flag: '🇺🇸' },
+                              { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
+                              { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
+                              { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
+                              { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
+                              { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
+                              { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
+                              { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+                              { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
+                              { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
+                            ].map((language) => (
+                              <button
+                                key={language.code}
+                                onClick={() => handleLanguageSelect(language.name)}
+                                className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
+                                  selectedLanguage === language.name 
+                                    ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                              >
+                                <span className="text-base">{language.flag}</span>
+                                <div className="flex-1">
+                                  <div className="font-medium text-sm">{language.name}</div>
+                                  <div className="text-xs text-gray-500">{language.code}</div>
+                                </div>
+                                {selectedLanguage === language.name && (
+                                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <button
                     onClick={() => { setShowDropdown(false); router.push('/profile'); }}
@@ -209,7 +347,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
       
       {/* Desktop Profile Dropdown */}
       {showDropdown && (
-        <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+        <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
           <div className="p-4">
             {!isAuthenticated ? (
               <>
@@ -219,6 +357,65 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                 </div>
                 <div className="border-t border-gray-100 pt-3">
                   <div className="space-y-1">
+                    {/* Language Selector - Desktop Non-Authenticated */}
+                    <div 
+                      className="relative" 
+                      ref={languageDropdownRef}
+                      onMouseEnter={handleLanguageHover}
+                      onMouseLeave={handleLanguageLeave}
+                    >
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <LanguageIcon className="h-4 w-4 text-gray-500" />
+                        <span className="flex-1">Language ({selectedLanguage})</span>
+                        <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                      {/* Language Nested Dropdown - Desktop */}
+                      {showLanguageDropdown && (
+                        <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                          <div className="p-4">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                              <LanguageIcon className="h-4 w-4 text-blue-600" />
+                              Select Language
+                            </h3>
+                            <div className="space-y-1 max-h-64 overflow-y-auto">
+                              {[
+                                { code: 'EN', name: 'English', flag: '🇺🇸' },
+                                { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
+                                { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
+                                { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
+                                { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
+                                { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
+                                { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
+                                { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+                                { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
+                                { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
+                              ].map((language) => (
+                                <button
+                                  key={language.code}
+                                  onClick={() => handleLanguageSelect(language.name)}
+                                  className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
+                                    selectedLanguage === language.name 
+                                      ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                                  }`}
+                                >
+                                  <span className="text-lg">{language.flag}</span>
+                                  <div className="flex-1">
+                                    <div className="font-medium">{language.name}</div>
+                                    <div className="text-xs text-gray-500">{language.code}</div>
+                                  </div>
+                                  {selectedLanguage === language.name && (
+                                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                     <button
                       onClick={() => { setShowDropdown(false); router.push('/signin'); }}
                       className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
@@ -263,6 +460,65 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
               </>
             ) : (
               <div className="space-y-1">
+                {/* Language Selector - Desktop Authenticated */}
+                <div 
+                  className="relative" 
+                  ref={languageDropdownRef}
+                  onMouseEnter={handleLanguageHover}
+                  onMouseLeave={handleLanguageLeave}
+                >
+                  <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                    <LanguageIcon className="h-4 w-4 text-gray-500" />
+                    <span className="flex-1">Language ({selectedLanguage})</span>
+                    <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  {/* Language Nested Dropdown - Desktop Authenticated */}
+                  {showLanguageDropdown && (
+                    <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                      <div className="p-4">
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                          <LanguageIcon className="h-4 w-4 text-blue-600" />
+                          Select Language
+                        </h3>
+                        <div className="space-y-1 max-h-64 overflow-y-auto">
+                          {[
+                            { code: 'EN', name: 'English', flag: '🇺🇸' },
+                            { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
+                            { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
+                            { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
+                            { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
+                            { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
+                            { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
+                            { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+                            { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
+                            { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
+                          ].map((language) => (
+                            <button
+                              key={language.code}
+                              onClick={() => handleLanguageSelect(language.name)}
+                              className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
+                                selectedLanguage === language.name 
+                                  ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                                  : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                              }`}
+                            >
+                              <span className="text-lg">{language.flag}</span>
+                              <div className="flex-1">
+                                <div className="font-medium">{language.name}</div>
+                                <div className="text-xs text-gray-500">{language.code}</div>
+                              </div>
+                              {selectedLanguage === language.name && (
+                                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <button
                   onClick={() => { setShowDropdown(false); router.push('/profile'); }}
                   className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"

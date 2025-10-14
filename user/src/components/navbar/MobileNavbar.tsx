@@ -7,7 +7,6 @@ import {
   MagnifyingGlassIcon,
   MapPinIcon,
   ChevronDownIcon,
-  LanguageIcon,
   ShoppingCartIcon
 } from '@heroicons/react/24/outline';
 import ProfileDropdown from './ProfileDropdown';
@@ -24,10 +23,7 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('EN');
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
-  const languageDropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,15 +52,6 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
     setShowLocationDropdown(false);
   };
 
-  const handleLanguageClick = () => {
-    setShowLanguageDropdown(!showLanguageDropdown);
-    console.log('Language clicked');
-  };
-
-  const handleLanguageSelect = (language: string) => {
-    setSelectedLanguage(language);
-    setShowLanguageDropdown(false);
-  };
 
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -90,19 +77,16 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
       if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) {
         setShowLocationDropdown(false);
       }
-      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
-        setShowLanguageDropdown(false);
-      }
     };
 
-    if (showLocationDropdown || showLanguageDropdown) {
+    if (showLocationDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showLocationDropdown, showLanguageDropdown]);
+  }, [showLocationDropdown]);
 
   return (
     <nav className="relative bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 shadow-lg border-b border-white/10 sticky top-0 z-50 overflow-hidden">
@@ -217,61 +201,6 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
               )}
             </div>
 
-            {/* Language Icon */}
-            <div className="relative" ref={languageDropdownRef}>
-              <button
-                onClick={handleLanguageClick}
-                className="flex items-center gap-1 px-2 py-1 text-xs text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 border border-white/30 hover:border-white/50"
-              >
-                <LanguageIcon className="h-3 w-3" />
-                <span className="text-xs font-medium">{selectedLanguage}</span>
-              </button>
-
-              {/* Mobile Language Dropdown */}
-              {showLanguageDropdown && (
-                <div className="absolute top-full right-0 mt-2 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
-                  <div className="p-3">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <LanguageIcon className="h-4 w-4 text-blue-600" />
-                      Select Language
-                    </h3>
-                    <div className="space-y-1 max-h-56 overflow-y-auto">
-                      {[
-                        { code: 'EN', name: 'English', flag: '🇺🇸' },
-                        { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
-                        { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
-                        { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
-                        { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
-                        { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
-                        { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
-                        { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
-                        { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
-                        { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
-                      ].map((language) => (
-                        <button
-                          key={language.code}
-                          onClick={() => handleLanguageSelect(language.code)}
-                          className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
-                            selectedLanguage === language.code 
-                              ? 'bg-blue-50 text-blue-700 border border-blue-200' 
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                          }`}
-                        >
-                          <span className="text-base">{language.flag}</span>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm">{language.name}</div>
-                            <div className="text-xs text-gray-500">{language.code}</div>
-                          </div>
-                          {selectedLanguage === language.code && (
-                            <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Become Seller Button */}
             <button

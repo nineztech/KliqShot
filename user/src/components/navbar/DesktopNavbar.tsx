@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, LanguageIcon, EllipsisVerticalIcon, BellIcon, PhoneIcon, ChartBarIcon, ArrowDownTrayIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, EllipsisVerticalIcon, BellIcon, PhoneIcon, ChartBarIcon, ArrowDownTrayIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import ProfileDropdown from './ProfileDropdown';
 import { useCart } from '../cart/CartContext';
 
@@ -18,8 +18,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [animatedPlaceholder, setAnimatedPlaceholder] = useState('');
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
@@ -29,7 +27,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showThreeDotMenu, setShowThreeDotMenu] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
-  const languageDropdownRef = useRef<HTMLDivElement>(null);
   const searchDropdownRef = useRef<HTMLDivElement>(null);
   const threeDotMenuRef = useRef<HTMLDivElement>(null);
 
@@ -219,15 +216,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
     setShowLocationDropdown(false);
   };
 
-  const handleLanguageClick = () => {
-    setShowLanguageDropdown(!showLanguageDropdown);
-    console.log('Language clicked');
-  };
-
-  const handleLanguageSelect = (language: string) => {
-    setSelectedLanguage(language);
-    setShowLanguageDropdown(false);
-  };
 
   const handleThreeDotMenuHover = () => {
     setShowThreeDotMenu(true);
@@ -348,9 +336,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
       if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) {
         setShowLocationDropdown(false);
       }
-      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
-        setShowLanguageDropdown(false);
-      }
       if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
         setShowSearchDropdown(false);
       }
@@ -359,14 +344,14 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
       }
     };
 
-    if (showLocationDropdown || showLanguageDropdown || showSearchDropdown || showThreeDotMenu) {
+    if (showLocationDropdown || showSearchDropdown || showThreeDotMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showLocationDropdown, showLanguageDropdown, showSearchDropdown, showThreeDotMenu]);
+  }, [showLocationDropdown, showSearchDropdown, showThreeDotMenu]);
 
   return (
     <nav className="relative bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 shadow-lg border-b border-white/10 sticky top-0 z-50">
@@ -408,11 +393,10 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
             </div>
           </div>
 
-          {/* Search Bar & Location */}
-          <div className="flex-1 max-w-4xl mx-8 flex items-center gap-4">
-            {/* Search Bar */}
+          {/* Search Bar */}
+          <div className="flex-1 max-w-4xl mx-8">
             <div 
-              className={`flex-1 relative transition-all duration-300 ${
+              className={`relative transition-all duration-300 ${
                 showSearchBar ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`} 
               ref={searchDropdownRef}
@@ -516,7 +500,10 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
                 </div>
               )}
             </div>
+          </div>
 
+          {/* Location, Profile Icon & Become Seller Button */}
+          <div className="flex items-center gap-3">
             {/* Location Selector */}
             <div className="relative" ref={locationDropdownRef}>
               <button
@@ -569,67 +556,10 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
                 </div>
               )}
             </div>
-
-            {/* Language Selector */}
-            <div className="relative" ref={languageDropdownRef}>
-              <button
-                onClick={handleLanguageClick}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 border border-white/30 hover:border-white/50"
-              >
-                <LanguageIcon className="h-4 w-4 text-white flex-shrink-0" />
-                <span className="truncate max-w-24 font-medium">{selectedLanguage}</span>
-                <ChevronDownIcon className={`h-4 w-4 text-white flex-shrink-0 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {/* Language Dropdown */}
-              {showLanguageDropdown && (
-                <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
-                  <div className="p-4">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <LanguageIcon className="h-4 w-4 text-blue-600" />
-                      Select Language
-                    </h3>
-                    <div className="space-y-1 max-h-64 overflow-y-auto">
-                      {[
-                        { code: 'EN', name: 'English', flag: '🇺🇸' },
-                        { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
-                        { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
-                        { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
-                        { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
-                        { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
-                        { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
-                        { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
-                        { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
-                        { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
-                      ].map((language) => (
-                        <button
-                          key={language.code}
-                          onClick={() => handleLanguageSelect(language.name)}
-                          className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
-                            selectedLanguage === language.name 
-                              ? 'bg-blue-50 text-blue-700 border border-blue-200' 
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                          }`}
-                        >
-                          <span className="text-lg">{language.flag}</span>
-                          <div className="flex-1">
-                            <div className="font-medium">{language.name}</div>
-                            <div className="text-xs text-gray-500">{language.code}</div>
-                          </div>
-                          {selectedLanguage === language.name && (
-                            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Become Seller Button & Profile Icon */}
-          <div className="flex items-center gap-3">
+            
+            {/* Profile Dropdown */}
+            <ProfileDropdown isMobile={false} />
+            
             {/* Become KliqChamp Button */}
             <button
               onClick={() => window.open('http://localhost:3002', '_blank')}
@@ -638,9 +568,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10">Become KliqChamp</span>
             </button>
-            
-            {/* Profile Dropdown */}
-            <ProfileDropdown isMobile={false} />
             
             {/* Cart Icon */}
             <button

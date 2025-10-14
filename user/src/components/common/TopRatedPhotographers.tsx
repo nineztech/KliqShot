@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import PhotographerCard from '@/components/photographer/PhotographerCard';
 
@@ -106,7 +105,6 @@ const topRatedPhotographers: Photographer[] = [
 ];
 
 export default function TopRatedPhotographers({ className = '' }: TopRatedPhotographersProps) {
-  const router = useRouter();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -129,14 +127,6 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900">Top Rated Photographers</h2>
           <p className="text-gray-600 mt-1">Highest rated photographers with exceptional reviews</p>
-        </div>
-        <div className="text-center mt-4 md:absolute md:right-6 md:top-6 md:mt-0">
-          <button
-            onClick={() => router.push('/photographers?sort=rating&order=desc')}
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-          >
-            View All →
-          </button>
         </div>
       </div>
 
@@ -220,16 +210,6 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
             category={photographer.category}
           />
         ))}
-      </div>
-
-      {/* Mobile View All Button */}
-      <div className="text-center mt-6 md:hidden">
-        <button
-          onClick={() => router.push('/photographers?sort=rating&order=desc')}
-          className="bg-yellow-50 text-yellow-600 px-6 py-2 rounded-lg font-medium hover:bg-yellow-100 transition-colors duration-200"
-        >
-          View All Top Rated
-        </button>
       </div>
     </div>
   );

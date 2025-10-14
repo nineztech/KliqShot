@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import BookingPage from '@/components/booking';
+import BookingPage from '@/components/bookingSession';
 
 function BookingContent() {
   const searchParams = useSearchParams();

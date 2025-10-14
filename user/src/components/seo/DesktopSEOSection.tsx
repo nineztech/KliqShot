@@ -49,7 +49,7 @@ export default function DesktopSEOSection() {
             <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
               {/* <CameraIcon className="w-6 h-6 text-blue-600" /> */}
               <Image
-                src="/Logo.png"
+                src="/LOGO.png"
                 alt="KliqShot Logo"
                 width={80}
                 height={24}

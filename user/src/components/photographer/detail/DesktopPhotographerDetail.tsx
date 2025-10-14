@@ -9,7 +9,7 @@ import Navbar from '@/components/navbar';
 import { categories, type Category, type SubCategory } from '@/data/categories';
 import { BestInCategory, InspiredByHistory } from '@/components/photographer';
 import YourSearches from '@/components/common/YourSearches';
-import BookingCalendar from '@/components/booking/BookingCalendar';
+import BookingCalendar from '@/components/bookingSession/BookingCalendar';
 
 interface PortfolioCategory {
   name: string;
@@ -210,6 +210,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
     bookingParams.append('photographerId', photographer.id.toString());
     bookingParams.append('photographerName', photographer.name);
     bookingParams.append('price', photographer.price);
+    bookingParams.append('source', 'buynow');
     
     const finalCategory = category || selectedCategory;
     const finalSubCategory = subcategory || selectedSubCategory;
@@ -236,6 +237,34 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
   const getSelectedCategoryData = () => {
     return categories.find(cat => cat.id === selectedCategory);
+  };
+
+  const handleAddToCart = () => {
+    // If no category is selected, show the category selection modal
+    if (!category && !selectedCategory) {
+      setShowCategoryModal(true);
+      return;
+    }
+
+    // Navigate to booking page with source=cart parameter
+    const bookingParams = new URLSearchParams();
+    bookingParams.append('photographerId', photographer.id.toString());
+    bookingParams.append('photographerName', photographer.name);
+    bookingParams.append('price', photographer.price);
+    bookingParams.append('source', 'cart');
+    
+    const finalCategory = category || selectedCategory;
+    const finalSubCategory = subcategory || selectedSubCategory;
+    
+    if (finalCategory) {
+      bookingParams.append('category', finalCategory);
+    }
+    
+    if (finalSubCategory) {
+      bookingParams.append('subcategory', finalSubCategory);
+    }
+
+    router.push(`/booking?${bookingParams.toString()}`);
   };
 
   return (
@@ -1023,7 +1052,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 
                 <button 
                   onClick={handleBookNow}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-3 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 mb-4 shadow-sm hover:shadow-md flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-3 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 mb-3 shadow-sm hover:shadow-md flex items-center justify-center space-x-2"
                 >
                   <Image
                     src="/Logo_Icon.png"
@@ -1033,6 +1062,16 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                     className="object-contain"
                   />
                   <span>Book Now</span>
+                </button>
+
+                <button 
+                  onClick={handleAddToCart}
+                  className="w-full py-1.5 px-2 rounded-md text-sm transition-all duration-200 mb-4 shadow-sm hover:shadow-md flex items-center justify-center space-x-1.5 bg-white border border-blue-600 text-blue-600 hover:bg-blue-50"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span>Add to Cart</span>
                 </button>
                 
                 <div className="mt-4 pt-3 border-t border-gray-200">

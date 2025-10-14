@@ -17,7 +17,7 @@ interface FilterSidebarProps {
 
 export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   const [filters, setFilters] = useState({
-    priceRange: [0, 50000],
+    userType: '',
     rating: 0,
     location: '',
     experience: '',
@@ -33,8 +33,8 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   const removeFilter = (filterKey: string) => {
     const clearedFilters = { ...filters };
     
-    if (filterKey === 'priceRange') {
-      clearedFilters.priceRange = [0, 50000];
+    if (filterKey === 'userType') {
+      clearedFilters.userType = '';
     } else if (filterKey === 'rating') {
       clearedFilters.rating = 0;
     } else {
@@ -47,7 +47,7 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
 
   const clearAllFilters = () => {
     const clearedFilters = {
-      priceRange: [0, 50000],
+      userType: '',
       rating: 0,
       location: '',
       experience: '',
@@ -60,11 +60,11 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   const getAppliedFilters = () => {
     const applied: { key: string; label: string; value: string }[] = [];
     
-    if (filters.priceRange[1] < 50000) {
+    if (filters.userType) {
       applied.push({
-        key: 'priceRange',
-        label: `Price up to ₹${filters.priceRange[1].toLocaleString()}`,
-        value: 'priceRange'
+        key: 'userType',
+        label: filters.userType,
+        value: 'userType'
       });
     }
     
@@ -106,6 +106,11 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Pune', 'Hyderabad'];
   const specialties = ['Wedding', 'Portrait', 'Corporate', 'Family', 'Events', 'Creative'];
   const experienceLevels = ['1-2 years', '3-5 years', '5+ years', '10+ years'];
+  const userTypes = [
+    { name: 'Basic', price: '₹299/hour' },
+    { name: 'Standard', price: '₹499/hour' },
+    { name: 'Premium', price: '₹799/hour' }
+  ];
 
   const appliedFilters = getAppliedFilters();
 
@@ -148,26 +153,52 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
         </div>
       )}
 
-      {/* Price Range */}
+      {/* User Type Filter */}
       <div className="mb-4">
         <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
           <CurrencyRupeeIcon className="w-4 h-4 mr-1" />
-          Price Range
+          User Type
         </h3>
         <div className="space-y-2">
-          <input
-            type="range"
-            min="0"
-            max="50000"
-            step="1000"
-            value={filters.priceRange[1]}
-            onChange={(e) => handleFilterChange('priceRange', [filters.priceRange[0], parseInt(e.target.value)])}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-          />
-          <div className="flex justify-between text-xs text-gray-600">
-            <span>₹{filters.priceRange[0].toLocaleString()}</span>
-            <span>₹{filters.priceRange[1].toLocaleString()}</span>
-          </div>
+          {userTypes.map((userType) => (
+            <label key={userType.name} className="flex items-center cursor-pointer group">
+              <input
+                type="radio"
+                name="userType"
+                value={userType.name}
+                checked={filters.userType === userType.name}
+                onChange={(e) => handleFilterChange('userType', e.target.value)}
+                className="sr-only"
+              />
+              <div className={`w-4 h-4 rounded-full border-2 mr-3 transition-all duration-200 ${
+                filters.userType === userType.name 
+                  ? 'border-blue-600 bg-blue-600' 
+                  : 'border-gray-300 group-hover:border-blue-400'
+              }`}>
+                {filters.userType === userType.name && (
+                  <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm font-medium transition-colors duration-200 ${
+                    filters.userType === userType.name 
+                      ? 'text-blue-600' 
+                      : 'text-gray-700 group-hover:text-blue-600'
+                  }`}>
+                    {userType.name}
+                  </span>
+                  <span className={`text-xs transition-colors duration-200 ${
+                    filters.userType === userType.name 
+                      ? 'text-blue-500' 
+                      : 'text-gray-500'
+                  }`}>
+                    {userType.price}
+                  </span>
+                </div>
+              </div>
+            </label>
+          ))}
         </div>
       </div>
 

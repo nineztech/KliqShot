@@ -18,15 +18,21 @@ export default function DesktopPhotographerGrid({
 }: DesktopPhotographerGridProps) {
   const [filteredPhotographers, setFilteredPhotographers] = useState(photographers);
   const [sortBy, setSortBy] = useState('relevance');
+  const [expandedPremium, setExpandedPremium] = useState(false);
+  const [expandedStandard, setExpandedStandard] = useState(false);
+  const [expandedBasic, setExpandedBasic] = useState(false);
 
   const handleFilterChange = (filters: any) => {
     let filtered = [...photographers];
 
-    // Apply price filter
-    if (filters.priceRange) {
+    // Apply user type filter
+    if (filters.userType) {
       filtered = filtered.filter(photographer => {
-        const price = parseInt(photographer.price.replace(/[₹,]/g, ''));
-        return price >= filters.priceRange[0] && price <= filters.priceRange[1];
+        // Get tier based on photographer ID (same logic as in PhotographerCard)
+        const tiers = ['Basic', 'Standard', 'Premium'];
+        const tierIndex = photographer.id % 3;
+        const photographerTier = tiers[tierIndex];
+        return photographerTier === filters.userType;
       });
     }
 
@@ -83,6 +89,87 @@ export default function DesktopPhotographerGrid({
     setFilteredPhotographers(sorted);
   };
 
+  // Group photographers by tier
+  const getPhotographerTier = (photographerId: number) => {
+    const tiers = ['Basic', 'Standard', 'Premium'];
+    return tiers[photographerId % 3];
+  };
+
+  const groupedPhotographers = {
+    Premium: filteredPhotographers.filter(p => getPhotographerTier(p.id) === 'Premium'),
+    Standard: filteredPhotographers.filter(p => getPhotographerTier(p.id) === 'Standard'),
+    Basic: filteredPhotographers.filter(p => getPhotographerTier(p.id) === 'Basic')
+  };
+
+  const renderTierSection = (
+    tier: 'Premium' | 'Standard' | 'Basic',
+    photographers: Photographer[],
+    expanded: boolean,
+    setExpanded: (value: boolean) => void,
+    colorClass: string
+  ) => {
+    if (photographers.length === 0) return null;
+
+    const displayedPhotographers = expanded ? photographers : photographers.slice(0, 3);
+    const hasMore = photographers.length >= 4;
+
+    // Get price for each tier
+    const getTierPrice = (tier: string) => {
+      switch (tier) {
+        case 'Premium': return '₹799/hour';
+        case 'Standard': return '₹499/hour';
+        case 'Basic': return '₹299/hour';
+        default: return '';
+      }
+    };
+
+    return (
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <h2 className={`text-2xl font-bold ${colorClass}`}>{tier} Photographers</h2>
+            <span className={`text-sm font-medium ${colorClass} bg-opacity-10 px-2 py-1 rounded-md`} style={{backgroundColor: `${tier === 'Premium' ? '#f3e8ff' : tier === 'Standard' ? '#dbeafe' : '#f3f4f6'}`}}>
+              {getTierPrice(tier)}
+            </span>
+          </div>
+          {hasMore && (
+            <button
+              onClick={() => {
+                setExpanded(!expanded);
+                if (!expanded) {
+                  // Scroll down when expanding
+                  setTimeout(() => {
+                    window.scrollBy({
+                      top: 300,
+                      behavior: 'smooth'
+                    });
+                  }, 100);
+                }
+              }}
+              className={`text-sm font-medium ${colorClass} hover:underline transition-colors duration-200`}
+            >
+              {expanded ? 'View Less' : 'View More'}
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          {displayedPhotographers.map((photographer, index) => (
+            <div 
+              key={photographer.id}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${index * 30}ms` }}
+            >
+              <PhotographerCard
+                {...photographer}
+                onClick={() => onPhotographerClick(photographer)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -136,19 +223,33 @@ export default function DesktopPhotographerGrid({
           {/* Right Content - Photographer Cards */}
           <div className="flex-1 bg-white min-h-screen p-6">
             {filteredPhotographers.length > 0 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                {filteredPhotographers.map((photographer, index) => (
-                  <div 
-                    key={photographer.id}
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: `${index * 30}ms` }}
-                  >
-                    <PhotographerCard
-                      {...photographer}
-                      onClick={() => onPhotographerClick(photographer)}
-                    />
-                  </div>
-                ))}
+              <div>
+                {/* Premium Section */}
+                {renderTierSection(
+                  'Premium',
+                  groupedPhotographers.Premium,
+                  expandedPremium,
+                  setExpandedPremium,
+                  'text-purple-600'
+                )}
+
+                {/* Standard Section */}
+                {renderTierSection(
+                  'Standard',
+                  groupedPhotographers.Standard,
+                  expandedStandard,
+                  setExpandedStandard,
+                  'text-blue-600'
+                )}
+
+                {/* Basic Section */}
+                {renderTierSection(
+                  'Basic',
+                  groupedPhotographers.Basic,
+                  expandedBasic,
+                  setExpandedBasic,
+                  'text-gray-600'
+                )}
               </div>
             ) : (
               <div className="text-center py-16">
@@ -163,7 +264,7 @@ export default function DesktopPhotographerGrid({
                 </p>
                 <button
                   onClick={() => handleFilterChange({
-                    priceRange: [0, 50000],
+                    userType: '',
                     rating: 0,
                     location: '',
                     experience: '',
@@ -172,15 +273,6 @@ export default function DesktopPhotographerGrid({
                   className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
                 >
                   Clear All Filters
-                </button>
-              </div>
-            )}
-
-            {/* Load More Button */}
-            {filteredPhotographers.length > 0 && (
-              <div className="text-center mt-12">
-                <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-                  Load More Photographers
                 </button>
               </div>
             )}

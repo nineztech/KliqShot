@@ -74,6 +74,24 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
 
+  // Generate tier label based on photographer ID
+  const getTierLabel = () => {
+    const tiers = ['Basic', 'Standard', 'Premium'];
+    const tierColors = [
+      'bg-gray-100 text-gray-600 border-gray-200',
+      'bg-blue-100 text-blue-600 border-blue-200', 
+      'bg-purple-100 text-purple-600 border-purple-200'
+    ];
+    
+    const tierIndex = photographer.id % 3;
+    return {
+      label: tiers[tierIndex],
+      colorClass: tierColors[tierIndex]
+    };
+  };
+
+  const tierInfo = getTierLabel();
+
   // Auto-scroll carousel
   useEffect(() => {
     if (isPaused) return;
@@ -986,9 +1004,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
           {/* Right Column - Photographer Detail & Booking Card */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg border border-gray-100 p-5 sticky top-24 relative">
+             <div className="bg-white rounded-lg shadow-lg border border-gray-100 p-4 pt-3 sticky top-24 relative">
               {/* Trusted Badge at Top Left */}
-              <div className="absolute top-2 left-2">
+              <div className="absolute top-1 left-2">
                 <div className="bg-purple-500/90 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
                   <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -997,21 +1015,26 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 </div>
               </div>
               
-              {/* Photographer Header */}
-              <div className="text-center mb-4">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <h1 className="text-xl font-bold text-gray-900">{photographer.name}</h1>
-                  <div className="relative group/verified">
-                    <svg className="w-5 h-5 text-green-500 flex-shrink-0 cursor-help" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-900 text-xs rounded-lg opacity-0 group-hover/verified:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-200">
-                      All details of this photographer are <span className="font-bold">verified</span>
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-white"></div>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-lg text-blue-600 font-medium mb-3">{photographer.specialty}</p>
+               {/* Photographer Header */}
+               <div className="text-center mb-4">
+                 <div className="flex items-center justify-center gap-2 mb-2">
+                   <h1 className="text-xl font-bold text-gray-900">{photographer.name}</h1>
+                   <div className="relative group/verified">
+                     <svg className="w-5 h-5 text-green-500 flex-shrink-0 cursor-help" fill="currentColor" viewBox="0 0 20 20">
+                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                     </svg>
+                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-900 text-xs rounded-lg opacity-0 group-hover/verified:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-200">
+                       All details of this photographer are <span className="font-bold">verified</span>
+                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-white"></div>
+                     </div>
+                   </div>
+                 </div>
+                 <div className="mb-2">
+                   <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold tracking-wider border ${tierInfo.colorClass} transition-all duration-200`}>
+                     {tierInfo.label}
+                   </span>
+                 </div>
+                 <p className="text-lg text-blue-600 font-medium mb-3">{photographer.specialty}</p>
                 
                 <div className="flex items-center justify-center space-x-1 mb-2">
                   {renderStars()}
@@ -1166,49 +1189,73 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
               <p className="text-gray-600 mb-6">Please select a category to continue with your booking:</p>
               
               {/* Categories Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="space-y-4">
                 {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      setSelectedCategory(cat.id);
-                      setSelectedSubCategory('');
-                    }}
-                    className={`border rounded-lg p-4 text-left transition-all duration-200 ${
-                      selectedCategory === cat.id
-                        ? 'border-blue-500 bg-blue-50 shadow-md'
-                        : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-                    }`}
-                  >
-                    <h3 className="font-semibold text-gray-900 mb-1">{cat.name}</h3>
-                    <p className="text-sm text-gray-600">{cat.description}</p>
-                    <p className="text-xs text-blue-600 mt-2">{cat.photographerCount} photographers</p>
-                  </button>
+                  <div key={cat.id}>
+                    <button
+                      onClick={() => {
+                        if (selectedCategory === cat.id) {
+                          setSelectedCategory('');
+                          setSelectedSubCategory('');
+                        } else {
+                          setSelectedCategory(cat.id);
+                          setSelectedSubCategory('');
+                        }
+                      }}
+                      className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
+                        selectedCategory === cat.id
+                          ? 'border-blue-500 bg-blue-50 shadow-md'
+                          : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat.name}</h3>
+                          <p className="text-xs text-gray-600">{cat.description}</p>
+                          <p className="text-[10px] text-blue-600 mt-1">{cat.photographerCount} photographers</p>
+                        </div>
+                        {selectedCategory === cat.id && (
+                          <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                    
+                    {/* Subcategories - Show only for selected category */}
+                    {selectedCategory === cat.id && cat.subCategories && (
+                      <div className="mt-3 ml-4 pl-4 border-l-2 border-blue-300">
+                        <h4 className="font-medium text-gray-900 mb-3 text-sm">Select a Subcategory (Required):</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {cat.subCategories.map((subCat) => (
+                            <button
+                              key={subCat.id}
+                              onClick={() => setSelectedSubCategory(subCat.id)}
+                              className={`border rounded-lg p-3 text-left transition-all duration-200 ${
+                                selectedSubCategory === subCat.id
+                                  ? 'border-blue-500 bg-blue-100 shadow-sm'
+                                  : 'border-gray-200 hover:border-blue-300 bg-white'
+                              }`}
+                            >
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <h5 className="font-medium text-gray-900 text-sm mb-1">{subCat.name}</h5>
+                                  <p className="text-xs text-gray-600">{subCat.description}</p>
+                                </div>
+                                {selectedSubCategory === subCat.id && (
+                                  <svg className="w-5 h-5 text-blue-500 flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                  </svg>
+                                )}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
-
-              {/* Subcategories */}
-              {selectedCategory && getSelectedCategoryData()?.subCategories && (
-                <div className="mt-6">
-                  <h3 className="font-semibold text-gray-900 mb-3">Select a Subcategory (Required):</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {getSelectedCategoryData()?.subCategories.map((subCat) => (
-                      <button
-                        key={subCat.id}
-                        onClick={() => setSelectedSubCategory(subCat.id)}
-                        className={`border rounded-lg p-3 text-left transition-all duration-200 ${
-                          selectedSubCategory === subCat.id
-                            ? 'border-blue-500 bg-blue-50 shadow-sm'
-                            : 'border-gray-200 hover:border-blue-300'
-                        }`}
-                      >
-                        <h4 className="font-medium text-gray-900 text-sm mb-1">{subCat.name}</h4>
-                        <p className="text-xs text-gray-600">{subCat.description}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               {/* Action Buttons */}
               <div className="mt-6 flex items-center justify-end space-x-3">

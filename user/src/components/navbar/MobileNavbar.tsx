@@ -7,9 +7,11 @@ import {
   MagnifyingGlassIcon,
   MapPinIcon,
   ChevronDownIcon,
-  LanguageIcon
+  LanguageIcon,
+  ShoppingCartIcon
 } from '@heroicons/react/24/outline';
 import ProfileDropdown from './ProfileDropdown';
+import { useCart } from '../cart/CartContext';
 
 interface MobileNavbarProps {
   showSearchBar?: boolean;
@@ -17,6 +19,7 @@ interface MobileNavbarProps {
 
 export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps) {
   const router = useRouter();
+  const { itemCount } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -276,6 +279,19 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
               className="bg-white text-purple-600 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-white/90 transition-all duration-200 shadow-sm"
             >
               Sell
+            </button>
+
+            {/* Cart Icon */}
+            <button
+              onClick={() => router.push('/cart')}
+              className="relative p-1 text-white hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
+            >
+              <ShoppingCartIcon className="h-5 w-5" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium">
+                  {itemCount > 9 ? '9+' : itemCount}
+                </span>
+              )}
             </button>
 
             {/* Profile Dropdown */}

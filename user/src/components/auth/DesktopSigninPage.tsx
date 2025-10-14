@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../AuthContext';
 
 export default function DesktopSigninPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -28,11 +30,20 @@ export default function DesktopSigninPage() {
     e.preventDefault();
     setIsLoading(true);
     
-    // TODO: Implement signin logic
+    // TODO: Implement actual signin logic with API
     console.log('Signin data:', formData);
     
     // Simulate API call
     setTimeout(() => {
+      // Mock user data - replace with actual API response
+      const mockUser = {
+        id: '1',
+        name: 'John Doe',
+        email: formData.email,
+        avatar: undefined
+      };
+      
+      login(mockUser);
       setIsLoading(false);
       router.push('/');
     }, 2000);

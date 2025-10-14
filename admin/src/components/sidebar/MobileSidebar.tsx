@@ -11,7 +11,7 @@ import {
   MdCameraAlt, 
   MdBarChart,
   MdSettings,
-  MdNotifications,
+  MdInventory,
   MdMenu,
   MdClose,
   MdLogout
@@ -36,7 +36,7 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },
     { id: 'analytics', label: 'Analytics', icon: MdBarChart, href: '/analytics' },
-    { id: 'notifications', label: 'Notifications', icon: MdNotifications, href: '/notifications' },
+    { id: 'packages', label: 'Packages', icon: MdInventory, href: '/packages' },
     { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },
   ];
 

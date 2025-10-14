@@ -2,7 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, HeartIcon, GiftIcon, BellIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../AuthContext';
+import { useCart } from '../cart/CartContext';
 
 interface ProfileDropdownProps {
   isMobile?: boolean;
@@ -12,6 +14,8 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuth();
+  const { addToCart } = useCart();
 
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
@@ -22,9 +26,20 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
     router.push('/signup');
   };
 
-  const handleSigninClick = () => {
+  const handleLogout = () => {
+    logout();
     setShowDropdown(false);
-    router.push('/signin');
+    router.push('/');
+  };
+
+  const handleAddDemoItem = () => {
+    addToCart({
+      id: `demo-${Date.now()}`,
+      name: 'Demo Photography Package',
+      price: 299,
+      image: '/demo-image.jpg'
+    });
+    setShowDropdown(false);
   };
 
   // Close dropdown when clicking outside
@@ -58,20 +73,120 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
         {showDropdown && (
           <div className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
             <div className="p-2">
-              <div className="space-y-1">
-                <button
-                  onClick={handleSignupClick}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  Sign Up
-                </button>
-                <button
-                  onClick={handleSigninClick}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  Sign In
-                </button>
-              </div>
+              {!isAuthenticated ? (
+                <div className="space-y-1">
+                  <div className="px-3 py-2 text-xs text-gray-500 border-b border-gray-100">
+                    New customer? <span className="text-blue-600 cursor-pointer hover:underline" onClick={handleSignupClick}>Sign Up</span>
+                  </div>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <UserCircleIcon className="h-4 w-4 text-gray-500" />
+                    My Profile
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    Orders
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <HeartIcon className="h-4 w-4 text-gray-500" />
+                    Wishlist
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                    Rewards
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <GiftIcon className="h-4 w-4 text-gray-500" />
+                    Gift Cards
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="px-3 py-2 text-sm font-medium text-gray-900 border-b border-gray-100">
+                    {user?.name || 'User'}
+                  </div>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/profile'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <UserCircleIcon className="h-4 w-4 text-gray-500" />
+                    My Profile
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/orders'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    Orders
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/wishlist'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <HeartIcon className="h-4 w-4 text-gray-500" />
+                    Wishlist (42)
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/coupons'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Coupons
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/giftcards'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <GiftIcon className="h-4 w-4 text-gray-500" />
+                    Gift Cards
+                  </button>
+                  <button
+                    onClick={() => { setShowDropdown(false); router.push('/notifications'); }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <BellIcon className="h-4 w-4 text-gray-500" />
+                    Notifications
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <ArrowRightOnRectangleIcon className="h-4 w-4 text-gray-500" />
+                    Logout
+                  </button>
+                  <button
+                    onClick={handleAddDemoItem}
+                    className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-200 flex items-center gap-2 border-t border-gray-100 mt-2 pt-2"
+                  >
+                    <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Add Demo Item to Cart
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -83,50 +198,135 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleProfileClick}
-        className="bg-white/20 p-2 rounded-full text-white hover:text-white hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white/50 transition-colors duration-200"
+        className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200"
       >
-        <span className="sr-only">Open user menu</span>
-        <UserCircleIcon className="h-8 w-8" />
+        <UserCircleIcon className="h-5 w-5 text-white flex-shrink-0" />
+        <span className="text-sm font-medium">{isAuthenticated ? user?.name || 'User' : 'Login'}</span>
+        <svg className="h-4 w-4 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
       
       {/* Desktop Profile Dropdown */}
       {showDropdown && (
         <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
           <div className="p-4">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <UserCircleIcon className="h-4 w-4 text-blue-600" />
-              Account
-            </h3>
-            <div className="space-y-1">
-              <button
-                onClick={handleSignupClick}
-                className="w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-              >
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            {!isAuthenticated ? (
+              <>
+                <div className="text-xs text-gray-500 mb-3 flex items-center justify-between">
+                  <span>New customer?</span>
+                  <span className="text-blue-600 cursor-pointer hover:underline" onClick={handleSignupClick}>Sign Up</span>
+                </div>
+                <div className="border-t border-gray-100 pt-3">
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                    >
+                      <UserCircleIcon className="h-4 w-4 text-gray-500" />
+                      My Profile
+                    </button>
+                    <button
+                      onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                    >
+                      <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      Orders
+                    </button>
+                    <button
+                      onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                    >
+                      <HeartIcon className="h-4 w-4 text-gray-500" />
+                      Wishlist
+                    </button>
+                    <button
+                      onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                    >
+                      <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                      </svg>
+                      Rewards
+                    </button>
+                    <button
+                      onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                    >
+                      <GiftIcon className="h-4 w-4 text-gray-500" />
+                      Gift Cards
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-1">
+                <button
+                  onClick={() => { setShowDropdown(false); router.push('/profile'); }}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                >
+                  <UserCircleIcon className="h-4 w-4 text-gray-500" />
+                  My Profile
+                </button>
+                <button
+                  onClick={() => { setShowDropdown(false); router.push('/orders'); }}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                >
+                  <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium">Sign Up</div>
-                  <div className="text-xs text-gray-500">Create new account</div>
-                </div>
-              </button>
-              <button
-                onClick={handleSigninClick}
-                className="w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-              >
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  Orders
+                </button>
+                <button
+                  onClick={() => { setShowDropdown(false); router.push('/wishlist'); }}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                >
+                  <HeartIcon className="h-4 w-4 text-gray-500" />
+                  Wishlist (42)
+                </button>
+                <button
+                  onClick={() => { setShowDropdown(false); router.push('/coupons'); }}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                >
+                  <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                   </svg>
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium">Sign In</div>
-                  <div className="text-xs text-gray-500">Access your account</div>
-                </div>
-              </button>
-            </div>
+                  Coupons
+                </button>
+                <button
+                  onClick={() => { setShowDropdown(false); router.push('/giftcards'); }}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                >
+                  <GiftIcon className="h-4 w-4 text-gray-500" />
+                  Gift Cards
+                </button>
+                <button
+                  onClick={() => { setShowDropdown(false); router.push('/notifications'); }}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                >
+                  <BellIcon className="h-4 w-4 text-gray-500" />
+                  Notifications
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                >
+                  <ArrowRightOnRectangleIcon className="h-4 w-4 text-gray-500" />
+                  Logout
+                </button>
+                <button
+                  onClick={handleAddDemoItem}
+                  className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-200 flex items-center gap-3 border-t border-gray-100 mt-2 pt-2"
+                >
+                  <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Add Demo Item to Cart
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

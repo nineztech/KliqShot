@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
@@ -37,7 +37,7 @@ interface BookingSummaryData {
   selectedAddons: Addon[];
 }
 
-export default function BookingSummaryPage() {
+function BookingSummaryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [couponCode, setCouponCode] = useState('');
@@ -610,6 +610,27 @@ function CameraIcon({ className }: { className: string }) {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
+  );
+}
+
+// Loading component
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading booking details...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main export function with Suspense
+export default function BookingSummaryPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <BookingSummaryContent />
+    </Suspense>
   );
 }
 

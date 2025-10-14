@@ -560,15 +560,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
             {/* Profile Dropdown */}
             <ProfileDropdown isMobile={false} />
             
-            {/* Become KliqChamp Button */}
-            <button
-              onClick={() => window.open('http://localhost:3002', '_blank')}
-              className="bg-gradient-to-r from-orange-300 to-red-400 text-white px-4 py-2 rounded-full text-sm font-bold hover:from-orange-400 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 hover:border-white/30 relative overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="relative z-10">Become KliqChamp</span>
-            </button>
-            
             {/* Cart Icon */}
             <button
               onClick={() => router.push('/cart')}
@@ -583,6 +574,15 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
                 )}
               </div>
               <span className="text-sm font-medium">Cart</span>
+            </button>
+            
+            {/* Become KliqChamp Button */}
+            <button
+              onClick={() => window.open('http://localhost:3002', '_blank')}
+              className="bg-gradient-to-r from-orange-300 to-red-400 text-white px-4 py-2 rounded-full text-sm font-bold hover:from-orange-400 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 hover:border-white/30 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">Become KliqChamp</span>
             </button>
             
             {/* Three Dot Menu */}

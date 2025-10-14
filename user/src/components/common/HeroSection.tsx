@@ -26,7 +26,7 @@ const heroSlides: HeroSlide[] = [
         title: "Wedding Photography Excellence",
         subtitle: "Capture Your Special Day",
         description: "Professional wedding photographers with years of experience. From candid moments to traditional ceremonies, we preserve your memories beautifully.",
-        image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1920&q=80",
+        image: "/Images/Haldi.jpg",
         ctaText: "Book Wedding Photographer",
         ctaLink: "/categories/wedding-photography",
         badge: "Trending",
@@ -41,7 +41,7 @@ const heroSlides: HeroSlide[] = [
     title: "Find Your Perfect Photographer",
     subtitle: "Professional Photography Services",
     description: "Discover top-rated photographers for weddings, portraits, events, and more. Book with confidence and capture your precious moments with style.",
-    image: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1920&q=80",
+    image: "/Images/Travel4.jpg",
     ctaText: "Explore Photographers",
     ctaLink: "/photographers",
     badge: "Most Popular",
@@ -57,7 +57,7 @@ const heroSlides: HeroSlide[] = [
     title: "Portrait & Studio Sessions",
     subtitle: "Professional Portraits Made Easy",
     description: "Transform your look with professional portrait photography. From corporate headshots to creative portraits, our photographers deliver stunning results.",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1920&q=80",
+    image: "/Images/Travel5.jpg",
     ctaText: "Book Portrait Session",
     ctaLink: "/categories/portrait-photography",
     badge: "Featured",
@@ -72,7 +72,7 @@ const heroSlides: HeroSlide[] = [
     title: "Event Photography Services",
     subtitle: "Document Your Important Moments",
     description: "From corporate events to birthday parties, our photographers capture every detail with professional expertise and artistic flair.",
-    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1920&q=80",
+    image: "/Images/Pre-Wedding6.jpeg",
     ctaText: "Book Event Photographer",
     ctaLink: "/categories/event-photography",
     badge: "New",
@@ -191,20 +191,11 @@ export default function HeroSection() {
           className="absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out"
           style={{
             backgroundImage: `url(${heroSlides[currentSlide].image})`,
-            filter: 'blur(2px) brightness(1.1)',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
           }}
         />
-        
-        {/* Multi-layer Professional Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/40 via-indigo-500/30 to-purple-600/40"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-transparent to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-transparent"></div>
-        
-        {/* Glassmorphism Effect */}
-        <div className="absolute inset-0 backdrop-blur-[0.5px]"></div>
       </div>
 
       {/* Content Overlay */}
@@ -214,12 +205,12 @@ export default function HeroSection() {
           <div className={`transform transition-all duration-1000 ease-out ${
             showText ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
           }`}>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3 leading-tight drop-shadow-lg">
-              <span className="block bg-gradient-to-r from-white via-blue-50 to-white bg-clip-text text-transparent filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3 leading-tight">
+              <span className="block text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
                 Capture Your Perfect Moment
               </span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-white mb-4 md:mb-6 font-medium drop-shadow-md">
+            <p className="text-sm sm:text-base md:text-lg text-white mb-4 md:mb-6 font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
               Find and book professional photographers for every occasion
             </p>
           </div>
@@ -285,7 +276,7 @@ export default function HeroSection() {
             showText ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
-              <span className="text-xs md:text-sm text-white/90 font-medium drop-shadow-md">Popular:</span>
+              <span className="text-xs md:text-sm text-white font-semibold drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">Popular:</span>
               {['Wedding', 'Portrait', 'Event', 'Pre-Wedding', 'Baby', 'Commercial'].map((tag) => (
                 <button
                   key={tag}
@@ -293,7 +284,7 @@ export default function HeroSection() {
                     setSearchQuery(tag);
                     router.push(`/search?q=${tag}`);
                   }}
-                  className="px-2.5 py-0.5 md:px-3 md:py-1 bg-white/90 backdrop-blur-md text-gray-700 text-xs md:text-sm rounded-full hover:bg-white hover:text-blue-600 hover:shadow-lg transition-all duration-300 border border-white/50 transform hover:scale-105"
+                  className="px-2.5 py-0.5 md:px-3 md:py-1 bg-white/95 text-gray-800 text-xs md:text-sm rounded-full hover:bg-white hover:text-blue-600 hover:shadow-lg transition-all duration-300 border border-white transform hover:scale-105"
                 >
                   {tag}
                 </button>

@@ -26,7 +26,7 @@ const heroSlides: HeroSlide[] = [
         title: "Wedding Photography Excellence",
         subtitle: "Capture Your Special Day",
         description: "Professional wedding photographers with years of experience. From candid moments to traditional ceremonies, we preserve your memories beautifully.",
-        image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
+        image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1920&q=80",
         ctaText: "Book Wedding Photographer",
         ctaLink: "/categories/wedding-photography",
         badge: "Trending",
@@ -41,7 +41,7 @@ const heroSlides: HeroSlide[] = [
     title: "Find Your Perfect Photographer",
     subtitle: "Professional Photography Services",
     description: "Discover top-rated photographers for weddings, portraits, events, and more. Book with confidence and capture your precious moments with style.",
-    image: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
+    image: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1920&q=80",
     ctaText: "Explore Photographers",
     ctaLink: "/photographers",
     badge: "Most Popular",
@@ -57,7 +57,7 @@ const heroSlides: HeroSlide[] = [
     title: "Portrait & Studio Sessions",
     subtitle: "Professional Portraits Made Easy",
     description: "Transform your look with professional portrait photography. From corporate headshots to creative portraits, our photographers deliver stunning results.",
-    image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1920&q=80",
     ctaText: "Book Portrait Session",
     ctaLink: "/categories/portrait-photography",
     badge: "Featured",
@@ -72,7 +72,7 @@ const heroSlides: HeroSlide[] = [
     title: "Event Photography Services",
     subtitle: "Document Your Important Moments",
     description: "From corporate events to birthday parties, our photographers capture every detail with professional expertise and artistic flair.",
-    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&h=1080&fit=crop&crop=center&auto=format&q=85",
+    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1920&q=80",
     ctaText: "Book Event Photographer",
     ctaLink: "/categories/event-photography",
     badge: "New",
@@ -94,6 +94,14 @@ export default function HeroSection() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
+  // Preload all images for smooth transitions
+  useEffect(() => {
+    heroSlides.forEach((slide) => {
+      const img = new window.Image();
+      img.src = slide.image;
+    });
+  }, []);
+
   // Animation effect for text
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -102,12 +110,12 @@ export default function HeroSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-rotate slides every 5 seconds
+  // Auto-rotate slides every 10 seconds
   useEffect(() => {
     if (isAutoPlaying) {
       intervalRef.current = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-      }, 5000);
+      }, 10000);
     }
 
     return () => {
@@ -174,15 +182,19 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[26rem] overflow-hidden rounded-xl shadow-2xl" data-hero-section>
+    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[26rem] overflow-hidden shadow-2xl" data-hero-section>
       {/* Professional Background with Enhanced Blur Effect */}
       <div className="absolute inset-0 w-full h-full">
         {/* Background Image Layer */}
         <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center scale-110 transition-transform duration-700 hover:scale-105"
+          key={currentSlide}
+          className="absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out"
           style={{
-            backgroundImage: 'url(/Banner.jpeg)',
+            backgroundImage: `url(${heroSlides[currentSlide].image})`,
             filter: 'blur(2px) brightness(1.1)',
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
           }}
         />
         

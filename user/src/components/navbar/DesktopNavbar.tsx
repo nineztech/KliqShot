@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, LanguageIcon, EllipsisVerticalIcon, BellIcon, PhoneIcon, ChartBarIcon, ArrowDownTrayIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import ProfileDropdown from './ProfileDropdown';
+import { useCart } from '../cart/CartContext';
 
 interface DesktopNavbarProps {
   showSearchBar?: boolean;
@@ -12,6 +13,7 @@ interface DesktopNavbarProps {
 
 export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarProps) {
   const router = useRouter();
+  const { itemCount } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -25,9 +27,11 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [showThreeDotMenu, setShowThreeDotMenu] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
   const searchDropdownRef = useRef<HTMLDivElement>(null);
+  const threeDotMenuRef = useRef<HTMLDivElement>(null);
 
   const categories = [
     'haldi',
@@ -225,6 +229,14 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
     setShowLanguageDropdown(false);
   };
 
+  const handleThreeDotMenuHover = () => {
+    setShowThreeDotMenu(true);
+  };
+
+  const handleThreeDotMenuLeave = () => {
+    setShowThreeDotMenu(false);
+  };
+
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -342,16 +354,19 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
       if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
         setShowSearchDropdown(false);
       }
+      if (threeDotMenuRef.current && !threeDotMenuRef.current.contains(event.target as Node)) {
+        setShowThreeDotMenu(false);
+      }
     };
 
-    if (showLocationDropdown || showLanguageDropdown || showSearchDropdown) {
+    if (showLocationDropdown || showLanguageDropdown || showSearchDropdown || showThreeDotMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showLocationDropdown, showLanguageDropdown, showSearchDropdown]);
+  }, [showLocationDropdown, showLanguageDropdown, showSearchDropdown, showThreeDotMenu]);
 
   return (
     <nav className="relative bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 shadow-lg border-b border-white/10 sticky top-0 z-50">
@@ -626,6 +641,63 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
             
             {/* Profile Dropdown */}
             <ProfileDropdown isMobile={false} />
+            
+            {/* Cart Icon */}
+            <button
+              onClick={() => router.push('/cart')}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 relative"
+            >
+              <div className="relative">
+                <ShoppingCartIcon className="h-5 w-5 text-white flex-shrink-0" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                    {itemCount > 99 ? '99+' : itemCount}
+                  </span>
+                )}
+              </div>
+              <span className="text-sm font-medium">Cart</span>
+            </button>
+            
+            {/* Three Dot Menu */}
+            <div className="relative" ref={threeDotMenuRef}>
+              <button
+                onMouseEnter={handleThreeDotMenuHover}
+                onMouseLeave={handleThreeDotMenuLeave}
+                className="flex items-center justify-center w-8 h-8 text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200"
+              >
+                <EllipsisVerticalIcon className="h-5 w-5" />
+              </button>
+              
+              {/* Three Dot Menu Dropdown */}
+              {showThreeDotMenu && (
+                <div 
+                  className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+                  onMouseEnter={handleThreeDotMenuHover}
+                  onMouseLeave={handleThreeDotMenuLeave}
+                >
+                  <div className="p-2">
+                    <div className="space-y-1">
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <BellIcon className="h-4 w-4 text-gray-500" />
+                        <span>Notification Preferences</span>
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <PhoneIcon className="h-4 w-4 text-gray-500" />
+                        <span>24x7 Customer Care</span>
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <ChartBarIcon className="h-4 w-4 text-gray-500" />
+                        <span>Advertise</span>
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <ArrowDownTrayIcon className="h-4 w-4 text-gray-500" />
+                        <span>Download App</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

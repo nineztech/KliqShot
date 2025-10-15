@@ -73,6 +73,8 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const [showAvailabilityCalendar, setShowAvailabilityCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
+  const [showMoreExpertise, setShowMoreExpertise] = useState(false);
+  const [showMoreCertificates, setShowMoreCertificates] = useState(false);
 
   // Generate tier label based on photographer ID
   const getTierLabel = () => {
@@ -512,6 +514,39 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 </div>
                 
                 <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Expertise</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      "Wedding Photography",
+                      "Portrait Photography", 
+                      "Event Photography",
+                      "Pre-Wedding Shoots",
+                      "Corporate Events",
+                      "Fashion Photography"
+                    ].slice(0, showMoreExpertise ? 6 : 3).map((expertise, index) => (
+                      <span key={index} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                        {expertise}
+                      </span>
+                    ))}
+                    {[
+                      "Wedding Photography",
+                      "Portrait Photography", 
+                      "Event Photography",
+                      "Pre-Wedding Shoots",
+                      "Corporate Events",
+                      "Fashion Photography"
+                    ].length > 3 && (
+                      <button
+                        onClick={() => setShowMoreExpertise(!showMoreExpertise)}
+                        className="bg-gray-50 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-100 transition-colors duration-200"
+                      >
+                        {showMoreExpertise ? "Show less" : "+3 more"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Languages</h3>
                   <div className="flex flex-wrap gap-2">
                     {photographer.languages.map((language, index) => (
@@ -530,6 +565,42 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         {item}
                       </span>
                     ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Certificates</h3>
+                  <div className="space-y-2">
+                    {[
+                      "Professional Photography Certification (PPC)",
+                      "Wedding Photography Masterclass",
+                      "Adobe Lightroom Expert",
+                      "Canon Professional Services Member",
+                      "FAA Part 107 Drone License",
+                      "CPP - Certified Professional Photographer"
+                    ].slice(0, showMoreCertificates ? 6 : 3).map((certificate, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-sm text-gray-700">{certificate}</span>
+                      </div>
+                    ))}
+                    {[
+                      "Professional Photography Certification (PPC)",
+                      "Wedding Photography Masterclass",
+                      "Adobe Lightroom Expert",
+                      "Canon Professional Services Member",
+                      "FAA Part 107 Drone License",
+                      "CPP - Certified Professional Photographer"
+                    ].length > 3 && (
+                      <button
+                        onClick={() => setShowMoreCertificates(!showMoreCertificates)}
+                        className="bg-gray-50 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-100 transition-colors duration-200 mt-2"
+                      >
+                        {showMoreCertificates ? "Show less" : "+3 more"}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1073,29 +1144,31 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                   </div>
                 </div>
                 
-                <button 
-                  onClick={handleBookNow}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-3 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 mb-3 shadow-sm hover:shadow-md flex items-center justify-center space-x-2"
-                >
-                  <Image
-                    src="/Logo_Icon.png"
-                    alt="KliqShot Logo"
-                    width={16}
-                    height={16}
-                    className="object-contain"
-                  />
-                  <span>Book Now</span>
-                </button>
+                <div className="flex gap-2 mb-4">
+                  <button 
+                    onClick={handleBookNow}
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-1.5 px-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center space-x-1.5"
+                  >
+                    <Image
+                      src="/Logo_Icon.png"
+                      alt="KliqShot Logo"
+                      width={14}
+                      height={14}
+                      className="object-contain"
+                    />
+                    <span>Book Now</span>
+                  </button>
 
-                <button 
-                  onClick={handleAddToCart}
-                  className="w-full py-1.5 px-2 rounded-md text-sm transition-all duration-200 mb-4 shadow-sm hover:shadow-md flex items-center justify-center space-x-1.5 bg-white border border-blue-600 text-blue-600 hover:bg-blue-50"
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <span>Add to Cart</span>
-                </button>
+                  <button 
+                    onClick={handleAddToCart}
+                    className="flex-1 py-1.5 px-2 rounded-md text-xs transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center space-x-1 bg-white border border-blue-600 text-blue-600 hover:bg-blue-50"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span>Add to Cart</span>
+                  </button>
+                </div>
                 
                 <div className="mt-4 pt-3 border-t border-gray-200">
                   <p className="text-xs text-gray-500 text-center">
@@ -1190,71 +1263,116 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
               
               {/* Categories Grid */}
               <div className="space-y-4">
-                {categories.map((cat) => (
-                  <div key={cat.id}>
-                    <button
-                      onClick={() => {
-                        if (selectedCategory === cat.id) {
-                          setSelectedCategory('');
-                          setSelectedSubCategory('');
-                        } else {
-                          setSelectedCategory(cat.id);
-                          setSelectedSubCategory('');
-                        }
-                      }}
-                      className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
-                        selectedCategory === cat.id
-                          ? 'border-blue-500 bg-blue-50 shadow-md'
-                          : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat.name}</h3>
-                          <p className="text-xs text-gray-600">{cat.description}</p>
-                          <p className="text-[10px] text-blue-600 mt-1">{cat.photographerCount} photographers</p>
-                        </div>
-                        {selectedCategory === cat.id && (
-                          <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                        )}
-                      </div>
-                    </button>
+                {/* Categories arranged to show subcategories inline */}
+                {(() => {
+                  const rows = [];
+                  for (let i = 0; i < categories.length; i += 2) {
+                    const cat1 = categories[i];
+                    const cat2 = categories[i + 1];
                     
-                    {/* Subcategories - Show only for selected category */}
-                    {selectedCategory === cat.id && cat.subCategories && (
-                      <div className="mt-3 ml-4 pl-4 border-l-2 border-blue-300">
-                        <h4 className="font-medium text-gray-900 mb-3 text-sm">Select a Subcategory (Required):</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {cat.subCategories.map((subCat) => (
+                    rows.push(
+                      <div key={`row-${i}`} className="space-y-4">
+                        {/* Category Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <button
+                            onClick={() => {
+                              if (selectedCategory === cat1.id) {
+                                setSelectedCategory('');
+                                setSelectedSubCategory('');
+                              } else {
+                                setSelectedCategory(cat1.id);
+                                setSelectedSubCategory('');
+                              }
+                            }}
+                            className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
+                              selectedCategory === cat1.id
+                                ? 'border-blue-500 bg-blue-50 shadow-md'
+                                : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h3 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat1.name}</h3>
+                                <p className="text-xs text-gray-600">{cat1.description}</p>
+                                <p className="text-[10px] text-blue-600 mt-1">{cat1.photographerCount} photographers</p>
+                              </div>
+                              {selectedCategory === cat1.id && (
+                                <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </div>
+                          </button>
+                          
+                          {cat2 && (
                             <button
-                              key={subCat.id}
-                              onClick={() => setSelectedSubCategory(subCat.id)}
-                              className={`border rounded-lg p-3 text-left transition-all duration-200 ${
-                                selectedSubCategory === subCat.id
-                                  ? 'border-blue-500 bg-blue-100 shadow-sm'
-                                  : 'border-gray-200 hover:border-blue-300 bg-white'
+                              onClick={() => {
+                                if (selectedCategory === cat2.id) {
+                                  setSelectedCategory('');
+                                  setSelectedSubCategory('');
+                                } else {
+                                  setSelectedCategory(cat2.id);
+                                  setSelectedSubCategory('');
+                                }
+                              }}
+                              className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
+                                selectedCategory === cat2.id
+                                  ? 'border-blue-500 bg-blue-50 shadow-md'
+                                  : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
                               }`}
                             >
-                              <div className="flex items-start justify-between">
+                              <div className="flex items-center justify-between">
                                 <div>
-                                  <h5 className="font-medium text-gray-900 text-sm mb-1">{subCat.name}</h5>
-                                  <p className="text-xs text-gray-600">{subCat.description}</p>
+                                  <h3 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat2.name}</h3>
+                                  <p className="text-xs text-gray-600">{cat2.description}</p>
+                                  <p className="text-[10px] text-blue-600 mt-1">{cat2.photographerCount} photographers</p>
                                 </div>
-                                {selectedSubCategory === subCat.id && (
-                                  <svg className="w-5 h-5 text-blue-500 flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                {selectedCategory === cat2.id && (
+                                  <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                   </svg>
                                 )}
                               </div>
                             </button>
-                          ))}
+                          )}
                         </div>
+                        
+                        {/* Subcategories - Show directly below if either category in this row is selected */}
+                        {((selectedCategory === cat1.id && cat1.subCategories) || (cat2 && selectedCategory === cat2.id && cat2.subCategories)) && (
+                          <div className="ml-4 pl-4 border-l-2 border-blue-300">
+                            <h4 className="font-medium text-gray-900 mb-3 text-sm">Select a Subcategory (Required):</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {(selectedCategory === cat1.id ? cat1.subCategories : cat2?.subCategories)?.map((subCat) => (
+                                <button
+                                  key={subCat.id}
+                                  onClick={() => setSelectedSubCategory(subCat.id)}
+                                  className={`border rounded-lg p-3 text-left transition-all duration-200 ${
+                                    selectedSubCategory === subCat.id
+                                      ? 'border-blue-500 bg-blue-100 shadow-sm'
+                                      : 'border-gray-200 hover:border-blue-300 bg-white'
+                                  }`}
+                                >
+                                  <div className="flex items-start justify-between">
+                                    <div>
+                                      <h5 className="font-medium text-gray-900 text-sm mb-1">{subCat.name}</h5>
+                                      <p className="text-xs text-gray-600">{subCat.description}</p>
+                                    </div>
+                                    {selectedSubCategory === subCat.id && (
+                                      <svg className="w-5 h-5 text-blue-500 flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                      </svg>
+                                    )}
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ))}
+                    );
+                  }
+                  return rows;
+                })()}
               </div>
 
               {/* Action Buttons */}

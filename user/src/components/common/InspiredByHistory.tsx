@@ -18,6 +18,7 @@ interface Photographer {
   experience: string;
   lastViewed?: string;
   similarity?: string;
+  categories: string[];
 }
 
 interface InspiredByHistoryProps {
@@ -68,7 +69,8 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "5 years",
       lastViewed: "2 hours ago",
-      similarity: "Similar to Sarah Johnson"
+      similarity: "Similar to Sarah Johnson",
+      categories: ["Portrait", "Headshot", "Fashion"]
     },
     {
       id: 9,
@@ -81,7 +83,8 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "8 years",
       lastViewed: "1 day ago",
-      similarity: "Based on your wedding searches"
+      similarity: "Based on your wedding searches",
+      categories: ["Event", "Corporate", "Birthday"]
     },
     {
       id: 10,
@@ -94,7 +97,8 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "6 years",
       lastViewed: "3 days ago",
-      similarity: "Popular in your area"
+      similarity: "Popular in your area",
+      categories: ["Wedding", "Pre-Wedding", "Engagement"]
     },
     {
       id: 11,
@@ -107,7 +111,8 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "7 years",
       lastViewed: "4 days ago",
-      similarity: "Matches your style preferences"
+      similarity: "Matches your style preferences",
+      categories: ["Portrait", "Corporate", "Headshot"]
     },
     {
       id: 12,
@@ -120,7 +125,8 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "6 years",
       lastViewed: "5 days ago",
-      similarity: "Similar to your recent bookings"
+      similarity: "Similar to your recent bookings",
+      categories: ["Event", "Wedding", "Corporate"]
     },
     {
       id: 13,
@@ -133,7 +139,8 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
       image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop&crop=center&auto=format",
       experience: "9 years",
       lastViewed: "1 week ago",
-      similarity: "Top rated in your searches"
+      similarity: "Top rated in your searches",
+      categories: ["Wedding", "Reception", "Mehendi"]
     }
   ];
 
@@ -225,6 +232,7 @@ const InspiredByHistory = ({ userHistory = ["Wedding Photography", "Portrait Pho
                 experience={photographer.experience}
                 image={photographer.image}
                 category="portrait"
+                categories={photographer.categories}
                 onClick={() => router.push(`/photographer/${photographer.id}`)}
               />
             </div>

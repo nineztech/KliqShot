@@ -26,13 +26,13 @@ export default function DesktopPhotographerGrid({
     let filtered = [...photographers];
 
     // Apply user type filter
-    if (filters.userType) {
+    if (filters.userType && filters.userType.length > 0) {
       filtered = filtered.filter(photographer => {
         // Get tier based on photographer ID (same logic as in PhotographerCard)
         const tiers = ['Basic', 'Standard', 'Premium'];
         const tierIndex = photographer.id % 3;
         const photographerTier = tiers[tierIndex];
-        return photographerTier === filters.userType;
+        return filters.userType.includes(photographerTier);
       });
     }
 
@@ -264,7 +264,7 @@ export default function DesktopPhotographerGrid({
                 </p>
                 <button
                   onClick={() => handleFilterChange({
-                    userType: '',
+                    userType: [],
                     rating: 0,
                     location: '',
                     experience: '',

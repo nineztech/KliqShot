@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon, MapPinIcon, ClockIcon, CameraIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import CategoryTags from '../common/CategoryTags';
 
 interface PhotographerCardProps {
   id: number;
@@ -293,25 +294,7 @@ export default function PhotographerCard({
        </div>
 
        {/* Category Tags */}
-         {categories && categories.length > 0 && (
-           <div className="mb-3">
-             <div className="flex flex-wrap gap-1">
-               {categories.slice(0, 3).map((cat, index) => (
-                 <span
-                   key={index}
-                   className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200"
-                 >
-                   {cat}
-                 </span>
-               ))}
-               {categories.length > 3 && (
-                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200">
-                   +{categories.length - 3} more
-                 </span>
-               )}
-             </div>
-           </div>
-         )}
+         <CategoryTags categories={categories || []} />
 
          {/* View Details and Book Button */}
          <div className="flex items-center gap-2 pt-2 border-t border-gray-100">

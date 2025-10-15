@@ -26,10 +26,11 @@ export const categories: Category[] = [
     photographerCount: 420,
     subCategories: [
       { id: 'haldi', name: 'Haldi', description: 'Traditional haldi ceremony', imageUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 45 },
-      { id: 'mehendi', name: 'Mehendi', description: 'Beautiful mehendi designs', imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 38 },
+      { id: 'wedding', name: 'Wedding', description: 'Sacred wedding ceremony', imageUrl: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 95 },
+      { id: 'mehendi', name: 'Mehendi', description: 'Beautiful mehendi designs', imageUrl: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 38 },
       { id: 'sangeet', name: 'Sangeet/Party Event', description: 'Musical celebrations', imageUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 52 },
       { id: 'reception', name: 'Reception', description: 'Grand reception celebrations', imageUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 67 },
-      { id: 'pre-wedding', name: 'Pre-Wedding Shoot', description: 'Romantic pre-wedding sessions', imageUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 89 },
+      { id: 'pre-wedding', name: 'Pre-Wedding Shoot', description: 'Romantic pre-wedding sessions', imageUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 89 },
       { id: 'court-marriage', name: 'Court Marriage', description: 'Simple court ceremonies', imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=200&fit=crop&crop=center&auto=format', photographerCount: 23 }
     ]
   },

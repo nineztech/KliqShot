@@ -22,7 +22,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <HeartIcon className="w-12 h-12 text-pink-600" />,
       category: "Wedding",
-      photographerCount: 420
+      photographerCount: 420,
+      subcategories: ["Pre-Wedding", "Reception", "Haldi", "Mehendi", "Engagement"]
     },
     {
       title: "Portrait",
@@ -30,7 +31,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <CameraIcon className="w-12 h-12 text-indigo-600" />,
       category: "Portrait",
-      photographerCount: 380
+      photographerCount: 380,
+      subcategories: ["Professional", "Headshots", "LinkedIn", "Fashion", "Studio"]
     },
     {
       title: "Events",
@@ -38,7 +40,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <BriefcaseIcon className="w-12 h-12 text-green-600" />,
       category: "Events",
-      photographerCount: 290
+      photographerCount: 290,
+      subcategories: ["Corporate", "Birthday", "Anniversary", "Conference", "Party"]
     },
     {
       title: "Family",
@@ -46,7 +49,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <UserGroupIcon className="w-12 h-12 text-blue-600" />,
       category: "Family",
-      photographerCount: 350
+      photographerCount: 350,
+      subcategories: ["Kids", "Couple", "Newborn", "Extended Family", "Holiday"]
     },
     {
       title: "Product",
@@ -54,7 +58,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <SparklesIcon className="w-12 h-12 text-purple-600" />,
       category: "Product",
-      photographerCount: 240
+      photographerCount: 240,
+      subcategories: ["E-commerce", "Food", "Jewelry", "Fashion", "Advertising"]
     },
     {
       title: "Maternity",
@@ -62,7 +67,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <SparklesIcon className="w-12 h-12 text-pink-500" />,
       category: "Maternity",
-      photographerCount: 180
+      photographerCount: 180,
+      subcategories: ["Studio", "Outdoor", "Couples", "Newborn", "Family"]
     },
     {
       title: "Interior",
@@ -70,7 +76,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <AcademicCapIcon className="w-12 h-12 text-orange-600" />,
       category: "Interior",
-      photographerCount: 160
+      photographerCount: 160,
+      subcategories: ["Real Estate", "Architecture", "Commercial", "Home", "Design"]
     },
     {
       title: "Fashion",
@@ -78,7 +85,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <SparklesIcon className="w-12 h-12 text-purple-500" />,
       category: "Fashion",
-      photographerCount: 200
+      photographerCount: 200,
+      subcategories: ["Editorial", "Commercial", "Street", "Beauty", "Runway"]
     },
     {
       title: "Sports",
@@ -86,7 +94,8 @@ export default function DesktopCategorySection() {
       imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center&auto=format",
       icon: <AcademicCapIcon className="w-12 h-12 text-red-600" />,
       category: "Sports",
-      photographerCount: 120
+      photographerCount: 120,
+      subcategories: ["Action", "Team", "Individual", "Event", "Fitness"]
     },
     // {
     //   title: "Video",
@@ -94,7 +103,8 @@ export default function DesktopCategorySection() {
     //   imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop&crop=center&auto=format",
     //   icon: <CameraIcon className="w-12 h-12 text-blue-500" />,
     //   category: "Cinematography",
-    //   photographerCount: 150
+    //   photographerCount: 150,
+    //   subcategories: ["Wedding", "Corporate", "Documentary", "Music", "Commercial"]
     // }
   ];
 
@@ -128,6 +138,7 @@ export default function DesktopCategorySection() {
                 icon={category.icon}
                 photographerCount={category.photographerCount}
                 category={category.category}
+                subcategories={category.subcategories}
                 onClick={() => handleCategoryClick(category.title)}
               />
           ))}

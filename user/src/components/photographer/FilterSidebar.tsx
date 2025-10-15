@@ -17,7 +17,7 @@ interface FilterSidebarProps {
 
 export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   const [filters, setFilters] = useState({
-    userType: '',
+    userType: [] as string[],
     rating: 0,
     location: '',
     experience: '',
@@ -30,11 +30,13 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
     onFilterChange(newFilters);
   };
 
-  const removeFilter = (filterKey: string) => {
+  const removeFilter = (filterKey: string, value?: string) => {
     const clearedFilters = { ...filters };
     
-    if (filterKey === 'userType') {
-      clearedFilters.userType = '';
+    if (filterKey === 'userType' && value) {
+      clearedFilters.userType = clearedFilters.userType.filter(t => t !== value);
+    } else if (filterKey === 'userType') {
+      clearedFilters.userType = [];
     } else if (filterKey === 'rating') {
       clearedFilters.rating = 0;
     } else {
@@ -47,7 +49,7 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
 
   const clearAllFilters = () => {
     const clearedFilters = {
-      userType: '',
+      userType: [] as string[],
       rating: 0,
       location: '',
       experience: '',
@@ -60,11 +62,13 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   const getAppliedFilters = () => {
     const applied: { key: string; label: string; value: string }[] = [];
     
-    if (filters.userType) {
-      applied.push({
-        key: 'userType',
-        label: filters.userType,
-        value: 'userType'
+    if (filters.userType && filters.userType.length > 0) {
+      filters.userType.forEach(type => {
+        applied.push({
+          key: 'userType',
+          label: type,
+          value: type
+        });
       });
     }
     
@@ -135,14 +139,14 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
-            {appliedFilters.map((filter) => (
+            {appliedFilters.map((filter, index) => (
               <div
-                key={filter.key}
+                key={`${filter.key}-${index}`}
                 className="flex items-center bg-blue-50 border border-blue-200 rounded-full px-3 py-1 text-xs"
               >
                 <span className="text-blue-700 font-medium">{filter.label}</span>
                 <button
-                  onClick={() => removeFilter(filter.key)}
+                  onClick={() => removeFilter(filter.key, filter.value)}
                   className="ml-2 text-blue-600 hover:text-blue-800"
                 >
                   <XMarkIcon className="w-3 h-3" />
@@ -163,33 +167,38 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
           {userTypes.map((userType) => (
             <label key={userType.name} className="flex items-center cursor-pointer group">
               <input
-                type="radio"
-                name="userType"
-                value={userType.name}
-                checked={filters.userType === userType.name}
-                onChange={(e) => handleFilterChange('userType', e.target.value)}
+                type="checkbox"
+                checked={filters.userType.includes(userType.name)}
+                onChange={(e) => {
+                  const newUserTypes = e.target.checked
+                    ? [...filters.userType, userType.name]
+                    : filters.userType.filter(t => t !== userType.name);
+                  handleFilterChange('userType', newUserTypes);
+                }}
                 className="sr-only"
               />
-              <div className={`w-4 h-4 rounded-full border-2 mr-3 transition-all duration-200 ${
-                filters.userType === userType.name 
+              <div className={`w-4 h-4 rounded border-2 mr-3 transition-all duration-200 ${
+                filters.userType.includes(userType.name)
                   ? 'border-blue-600 bg-blue-600' 
                   : 'border-gray-300 group-hover:border-blue-400'
               }`}>
-                {filters.userType === userType.name && (
-                  <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                {filters.userType.includes(userType.name) && (
+                  <svg className="w-2 h-2 text-white m-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
                 )}
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <span className={`text-sm font-medium transition-colors duration-200 ${
-                    filters.userType === userType.name 
+                    filters.userType.includes(userType.name)
                       ? 'text-blue-600' 
                       : 'text-gray-700 group-hover:text-blue-600'
                   }`}>
                     {userType.name}
                   </span>
                   <span className={`text-xs transition-colors duration-200 ${
-                    filters.userType === userType.name 
+                    filters.userType.includes(userType.name)
                       ? 'text-blue-500' 
                       : 'text-gray-500'
                   }`}>

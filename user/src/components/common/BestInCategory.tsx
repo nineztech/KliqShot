@@ -16,6 +16,7 @@ interface Photographer {
   price: string;
   image: string;
   experience: string;
+  categories: string[];
 }
 
 interface BestInCategoryProps {
@@ -64,7 +65,8 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       reviews: 234,
       price: "₹450",
       image: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=300&fit=crop&crop=center&auto=format",
-      experience: "9 years"
+      experience: "9 years",
+      categories: ["Wedding", "Reception", "Pre-Wedding"]
     },
     {
       id: 6,
@@ -75,7 +77,8 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       reviews: 189,
       price: "₹380",
       image: "https://images.unsplash.com/photo-1556155092-490a1ba16284?w=400&h=300&fit=crop&crop=center&auto=format",
-      experience: "7 years"
+      experience: "7 years",
+      categories: ["Wedding", "Engagement", "Haldi"]
     },
     {
       id: 7,
@@ -86,7 +89,8 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       reviews: 156,
       price: "₹320",
       image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop&crop=center&auto=format",
-      experience: "6 years"
+      experience: "6 years",
+      categories: ["Wedding", "Mehendi", "Sangam"]
     },
     {
       id: 8,
@@ -97,7 +101,8 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       reviews: 201,
       price: "₹400",
       image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop&crop=center&auto=format",
-      experience: "8 years"
+      experience: "8 years",
+      categories: ["Wedding", "Portrait", "Event"]
     },
     {
       id: 9,
@@ -108,7 +113,8 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       reviews: 178,
       price: "₹360",
       image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=300&fit=crop&crop=center&auto=format",
-      experience: "7 years"
+      experience: "7 years",
+      categories: ["Wedding", "Pre-Wedding", "Reception"]
     },
     {
       id: 10,
@@ -119,7 +125,8 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
       reviews: 145,
       price: "₹340",
       image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop&crop=center&auto=format",
-      experience: "6 years"
+      experience: "6 years",
+      categories: ["Wedding", "Ring Ceremony", "Baraat"]
     }
   ];
 
@@ -192,6 +199,7 @@ const BestInCategory = ({ category = "Wedding Photography" }: BestInCategoryProp
                 experience={photographer.experience}
                 image={photographer.image}
                 category="wedding"
+                categories={photographer.categories}
                 onClick={() => router.push(`/photographer/${photographer.id}`)}
               />
             </div>

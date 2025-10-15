@@ -18,36 +18,11 @@ export interface CategoryPricing {
   }[];
 }
 
-export interface FixedPackage {
-  id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  packageType: 'fixed' | 'individual';
-  fixedPrice?: number;
-  selectedSubCategories: {
-    subCategoryId: string;
-    subCategoryName: string;
-    categoryId: string;
-    categoryName: string;
-  }[];
-  features: string[];
-}
-
 export interface Package {
   id: string;
   name: string;
   description: string;
   isActive: boolean;
-  packageType: 'fixed' | 'individual';
-  fixedPrice?: number;
-  selectedSubCategories?: {
-    subCategoryId: string;
-    subCategoryName: string;
-    categoryId: string;
-    categoryName: string;
-  }[];
-  features?: string[];
   categoryPricing: CategoryPricing[];
 }
 

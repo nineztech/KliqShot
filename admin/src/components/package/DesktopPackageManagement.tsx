@@ -21,7 +21,6 @@ export default function DesktopPackageManagement({
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    packageType: 'individual' as 'fixed' | 'individual',
     isActive: true
   });
 
@@ -31,13 +30,7 @@ export default function DesktopPackageManagement({
       name: formData.name,
       description: formData.description,
       isActive: formData.isActive,
-      packageType: formData.packageType,
-      categoryPricing: [],
-      ...(formData.packageType === 'fixed' && {
-        fixedPrice: 0,
-        selectedSubCategories: [],
-        features: []
-      })
+      categoryPricing: []
     };
     setPackages([...packages, newPackage]);
     setShowAddModal(false);
@@ -60,7 +53,6 @@ export default function DesktopPackageManagement({
     setFormData({
       name: '',
       description: '',
-      packageType: 'individual',
       isActive: true
     });
   };
@@ -108,23 +100,13 @@ export default function DesktopPackageManagement({
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <MdSettings className="w-4 h-4" />
                   <span>
-                    {pkg.packageType === 'fixed' 
-                      ? `${pkg.selectedSubCategories?.length || 0} subcategories selected`
-                      : `${pkg.categoryPricing?.length || 0} categories configured`
-                    }
+                    {pkg.categoryPricing?.length || 0} categories configured
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    pkg.packageType === 'fixed' 
-                      ? 'bg-blue-100 text-blue-800' 
-                      : 'bg-green-100 text-green-800'
-                  }`}>
-                    {pkg.packageType === 'fixed' ? 'Fixed Package' : 'Individual Pricing'}
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Individual Pricing
                   </span>
-                  {pkg.packageType === 'fixed' && pkg.fixedPrice && (
-                    <span className="font-medium">${pkg.fixedPrice}</span>
-                  )}
                 </div>
               </div>
 
@@ -205,35 +187,6 @@ export default function DesktopPackageManagement({
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Package Type
-                </label>
-                <div className="space-y-2">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="packageType"
-                      value="individual"
-                      checked={formData.packageType === 'individual'}
-                      onChange={(e) => setFormData({ ...formData, packageType: e.target.value as 'fixed' | 'individual' })}
-                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Individual Pricing</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="packageType"
-                      value="fixed"
-                      checked={formData.packageType === 'fixed'}
-                      onChange={(e) => setFormData({ ...formData, packageType: e.target.value as 'fixed' | 'individual' })}
-                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Fixed Package</span>
-                  </label>
-                </div>
-              </div>
 
               <div className="flex items-center">
                 <input
@@ -247,12 +200,9 @@ export default function DesktopPackageManagement({
                 </label>
               </div>
 
-              <div className={`p-3 rounded-lg ${formData.packageType === 'fixed' ? 'bg-blue-50' : 'bg-green-50'}`}>
-                <p className={`text-sm ${formData.packageType === 'fixed' ? 'text-blue-800' : 'text-green-800'}`}>
-                  {formData.packageType === 'fixed' 
-                    ? 'Fixed Package: Set one price for the entire package and select multiple subcategories from the same category.'
-                    : 'Individual Pricing: Configure pricing and features for each category and subcategory separately.'
-                  }
+              <div className="p-3 rounded-lg bg-green-50">
+                <p className="text-sm text-green-800">
+                  Individual Pricing: Configure pricing and features for each category and subcategory separately.
                 </p>
               </div>
             </div>

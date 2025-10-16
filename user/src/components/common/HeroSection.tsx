@@ -26,7 +26,7 @@ const heroSlides: HeroSlide[] = [
         title: "Wedding Photography Excellence",
         subtitle: "Capture Your Special Day",
         description: "Professional wedding photographers with years of experience. From candid moments to traditional ceremonies, we preserve your memories beautifully.",
-        image: "/banner1.jpeg",
+        image: "/banner2.jpeg",
         ctaText: "Book Wedding Photographer",
         ctaLink: "/categories/wedding-photography",
         badge: "Trending",
@@ -182,7 +182,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[26rem] overflow-hidden shadow-2xl" data-hero-section>
+    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[30rem] overflow-hidden shadow-2xl" data-hero-section>
       {/* Professional Background with Enhanced Blur Effect */}
       <div className="absolute inset-0 w-full h-full">
         {/* Background Image Layer */}

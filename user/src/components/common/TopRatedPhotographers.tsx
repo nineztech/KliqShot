@@ -138,11 +138,11 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
       </div>
 
       {/* Desktop Slider - 4 cards per row */}
-      <div className="hidden lg:block relative">
+      <div className="hidden lg:block relative" style={{ isolation: 'auto' }}>
         {/* Left Arrow */}
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-[1] p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
           aria-label="Scroll left"
         >
           <ChevronLeftIcon className="w-6 h-6 text-gray-600" />
@@ -151,7 +151,7 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
         {/* Right Arrow */}
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-[1] p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
           aria-label="Scroll right"
         >
           <ChevronRightIcon className="w-6 h-6 text-gray-600" />

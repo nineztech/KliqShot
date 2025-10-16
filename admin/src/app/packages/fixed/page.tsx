@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Sidebar from '@/components/sidebar';
 import FixedPackageManagement from '@/components/package/FixedPackageManagement';
+import FixedPackageDetailManagement from '@/components/package/FixedPackageDetailManagement';
 import { PackageGroup } from '@/components/package/FixedPackageTypes';
 
 export default function FixedPackagesPage() {
@@ -61,14 +62,45 @@ export default function FixedPackagesPage() {
     }
   ]);
 
+  const [selectedPackageGroup, setSelectedPackageGroup] = useState<PackageGroup | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
+
+  const handleConfigurePackage = (pkg: PackageGroup) => {
+    setSelectedPackageGroup(pkg);
+    setViewMode('detail');
+  };
+
+  const handleBackToList = () => {
+    setSelectedPackageGroup(null);
+    setViewMode('list');
+  };
+
+  const handleSavePackage = (updatedPackage: PackageGroup) => {
+    setPackageGroups(packageGroups.map(pkg => 
+      pkg.id === updatedPackage.id ? updatedPackage : pkg
+    ));
+    handleBackToList();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar activeTab="packages-fixed" onTabChange={(tab) => window.location.href = `/${tab}`} />
       
-      <FixedPackageManagement 
-        packageGroups={packageGroups} 
-        setPackageGroups={setPackageGroups}
-      />
+      {viewMode === 'list' ? (
+        <FixedPackageManagement 
+          packageGroups={packageGroups} 
+          setPackageGroups={setPackageGroups}
+          onConfigurePackage={handleConfigurePackage}
+        />
+      ) : (
+        selectedPackageGroup && (
+          <FixedPackageDetailManagement
+            packageData={selectedPackageGroup}
+            onBack={handleBackToList}
+            onSave={handleSavePackage}
+          />
+        )
+      )}
     </div>
   );
 }

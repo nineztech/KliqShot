@@ -1,18 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import DesktopFixedPackageManagement from './DesktopFixedPackageManagement';
-import MobileFixedPackageManagement from './MobileFixedPackageManagement';
+import DesktopFixedPackageDetailManagement from './DesktopFixedPackageDetailManagement';
+import MobileFixedPackageDetailManagement from './MobileFixedPackageDetailManagement';
 import { useSidebar } from '@/components/sidebar/SidebarContext';
 import { PackageGroup } from './FixedPackageTypes';
 
-interface FixedPackageManagementProps {
-  packageGroups: PackageGroup[];
-  setPackageGroups: (groups: PackageGroup[]) => void;
-  onConfigurePackage?: (pkg: PackageGroup) => void;
+interface FixedPackageDetailManagementProps {
+  packageData: PackageGroup;
+  onBack: () => void;
+  onSave: (updatedPackage: PackageGroup) => void;
 }
 
-export default function FixedPackageManagement({ packageGroups, setPackageGroups, onConfigurePackage }: FixedPackageManagementProps) {
+export default function FixedPackageDetailManagement({
+  packageData,
+  onBack,
+  onSave
+}: FixedPackageDetailManagementProps) {
   const [isMobile, setIsMobile] = useState(false);
   const { isMinimized } = useSidebar();
 
@@ -37,16 +41,16 @@ export default function FixedPackageManagement({ packageGroups, setPackageGroups
       style={{ marginLeft: isMobile ? '0' : (isMinimized ? '5rem' : '16rem') }}
     >
       {isMobile ? (
-        <MobileFixedPackageManagement 
-          packageGroups={packageGroups} 
-          setPackageGroups={setPackageGroups}
-          onConfigurePackage={onConfigurePackage}
+        <MobileFixedPackageDetailManagement
+          packageData={packageData}
+          onBack={onBack}
+          onSave={onSave}
         />
       ) : (
-        <DesktopFixedPackageManagement 
-          packageGroups={packageGroups} 
-          setPackageGroups={setPackageGroups}
-          onConfigurePackage={onConfigurePackage}
+        <DesktopFixedPackageDetailManagement
+          packageData={packageData}
+          onBack={onBack}
+          onSave={onSave}
         />
       )}
     </div>

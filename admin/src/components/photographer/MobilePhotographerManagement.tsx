@@ -6,7 +6,9 @@ import {
   MdEdit, 
   MdDelete, 
   MdSearch,
-  MdClose
+  MdClose,
+  MdCheckCircle,
+  MdCheck
 } from 'react-icons/md';
 
 interface Photographer {
@@ -24,6 +26,8 @@ interface Photographer {
   status: 'active' | 'inactive' | 'pending';
   joinDate: string;
   categories: string[];
+  isVerified?: boolean;
+  verifiedAt?: string;
 }
 
 interface MobilePhotographerManagementProps {
@@ -34,6 +38,7 @@ interface MobilePhotographerManagementProps {
 export default function MobilePhotographerManagement({ photographers, setPhotographers }: MobilePhotographerManagementProps) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<'pending' | 'verified'>('pending');
   const [newPhotographer, setNewPhotographer] = useState({
     name: '',
     email: '',
@@ -92,11 +97,26 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
     }
   };
 
+  const handleVerifyPhotographer = (photographerId: string) => {
+    if (confirm('Are you sure you want to verify this KliqChamp? This action cannot be undone.')) {
+      setPhotographers(photographers.map(photographer => 
+        photographer.id === photographerId 
+          ? { ...photographer, isVerified: true, verifiedAt: new Date().toISOString() }
+          : photographer
+      ));
+    }
+  };
+
   const filteredPhotographers = photographers.filter(photographer => {
-    return photographer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = photographer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
            photographer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
            photographer.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTab = activeTab === 'pending' ? !photographer.isVerified : photographer.isVerified;
+    return matchesSearch && matchesTab;
   });
+
+  const pendingCount = photographers.filter(p => !p.isVerified).length;
+  const verifiedCount = photographers.filter(p => p.isVerified).length;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -109,74 +129,151 @@ export default function MobilePhotographerManagement({ photographers, setPhotogr
 
   return (
     <div className="space-y-4 p-4">
-      {/* Header */}
+      {/* Section 1: Header + Search */}
       <div className="admin-card p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Kliqchamps</h2>
-            <p className="text-gray-600 text-sm">Manage kliqchamps</p>
+            <h2 className="text-xl font-bold text-gray-900">KliqChamps</h2>
+            <p className="text-gray-600 text-xs mt-1">Verify and manage</p>
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary text-sm px-3 py-2 flex items-center"
+            className="admin-button-primary text-xs px-3 py-2 flex items-center shadow-sm"
           >
             <MdAdd className="w-4 h-4 mr-1" />
             Add
           </button>
         </div>
-      </div>
 
-      {/* Search */}
-      <div className="admin-card p-4">
+        {/* Search */}
         <div className="relative">
           <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search kliqchamps..."
+            placeholder="Search by name, email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            className="pl-10 pr-4 py-2.5 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm"
           />
         </div>
       </div>
 
-      {/* Photographers List */}
-      <div className="space-y-3">
-        {filteredPhotographers.map((photographer) => (
-          <div key={photographer.id} className="admin-card p-4">
-            <div className="flex items-start space-x-3">
-              <img
-                className="h-12 w-12 rounded-full object-cover flex-shrink-0"
-                src={photographer.image}
-                alt={photographer.name}
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-gray-900 text-sm truncate">{photographer.name}</h3>
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(photographer.status)}`}>
-                    {photographer.status}
-                  </span>
+      {/* Section 2: Tabs + Content */}
+      <div className="admin-card p-4">
+        {/* Tabs */}
+        <div className="flex space-x-2 mb-4">
+          <button
+            onClick={() => setActiveTab('pending')}
+            className={`flex-1 py-2.5 px-3 rounded-lg font-medium text-sm transition-all ${
+              activeTab === 'pending'
+                ? 'bg-orange-500 text-white shadow-sm'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Pending
+            <span className={`ml-1.5 px-2 py-0.5 rounded-full text-xs font-semibold ${
+              activeTab === 'pending' 
+                ? 'bg-orange-600 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}>
+              {pendingCount}
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab('verified')}
+            className={`flex-1 py-2.5 px-3 rounded-lg font-medium text-sm transition-all ${
+              activeTab === 'verified'
+                ? 'bg-green-500 text-white shadow-sm'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Verified
+            <span className={`ml-1.5 px-2 py-0.5 rounded-full text-xs font-semibold ${
+              activeTab === 'verified' 
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}>
+              {verifiedCount}
+            </span>
+          </button>
+        </div>
+
+        {/* Content - Photographers List */}
+        <div className="space-y-3">
+          {filteredPhotographers.length === 0 ? (
+            <div className="p-8 text-center">
+              <div className="text-gray-400 text-base mb-2">No KliqChamps found</div>
+              <p className="text-gray-500 text-xs">
+                {activeTab === 'pending' 
+                  ? 'All KliqChamps have been verified!'
+                  : 'No verified KliqChamps yet.'}
+              </p>
+            </div>
+          ) : (
+            filteredPhotographers.map((photographer) => (
+              <div key={photographer.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-start space-x-3 mb-3">
+                  <div className="relative flex-shrink-0">
+                    <img
+                      className="h-14 w-14 rounded-full object-cover ring-2 ring-gray-200"
+                      src={photographer.image}
+                      alt={photographer.name}
+                    />
+                    {photographer.isVerified && (
+                      <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
+                        <MdCheck className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900 text-sm mb-1">{photographer.name}</h3>
+                    <p className="text-xs text-gray-600 mb-0.5">{photographer.specialty}</p>
+                    <p className="text-xs text-gray-500 mb-1">{photographer.location}</p>
+                    <p className="text-xs text-gray-500">
+                      {activeTab === 'pending' 
+                        ? `Joined: ${new Date(photographer.joinDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                        : photographer.verifiedAt 
+                          ? `Verified: ${new Date(photographer.verifiedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                          : 'Verification date N/A'
+                      }
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-600 mb-1">{photographer.specialty}</p>
-                <p className="text-xs text-gray-500 mb-2">{photographer.location}</p>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-gray-600">
-                    <span className="font-medium">{photographer.rating}</span> ({photographer.reviews} reviews)
-                  </div>
-                  <div className="flex items-center space-x-2">
+
+                {/* Contact Info */}
+                <div className="mb-3 pb-3 border-b border-gray-100">
+                  <p className="text-xs text-gray-600 mb-0.5">{photographer.email}</p>
+                  <p className="text-xs text-gray-500">{photographer.phone}</p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-between gap-2">
+                  {activeTab === 'pending' && !photographer.isVerified ? (
                     <button
-                      onClick={() => handleDeletePhotographer(photographer.id)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded"
-                      title="Delete"
+                      onClick={() => handleVerifyPhotographer(photographer.id)}
+                      className="flex-1 inline-flex items-center justify-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors shadow-sm text-xs font-medium"
                     >
-                      <MdDelete className="w-4 h-4" />
+                      <MdCheckCircle className="w-4 h-4 mr-1.5" />
+                      Verify KliqChamp
                     </button>
-                  </div>
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center text-green-600 text-xs font-medium py-2">
+                      <MdCheckCircle className="w-4 h-4 mr-1" />
+                      Verified
+                    </div>
+                  )}
+                  <button
+                    onClick={() => handleDeletePhotographer(photographer.id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Delete"
+                  >
+                    <MdDelete className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))
+          )}
+        </div>
       </div>
 
       {/* Add Photographer Modal */}

@@ -49,6 +49,16 @@ const Seller = sequelize.define(
       defaultValue: false,
       allowNull: false,
     },
+    // ✅ Verification fields
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
+    verifiedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,

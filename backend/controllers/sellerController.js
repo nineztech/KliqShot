@@ -306,3 +306,78 @@ export const updateSellerProfile = async (req, res) => {
     });
   }
 };
+
+// @desc    Get all sellers (Admin only)
+// @route   GET /api/sellers/all
+// @access  Admin
+export const getAllSellers = async (req, res) => {
+  try {
+    const sellers = await Seller.findAll({
+      attributes: { exclude: ['password'] },
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).json({
+      success: true,
+      data: sellers
+    });
+  } catch (error) {
+    console.error('Get all sellers error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Verify a seller (Admin only)
+// @route   PUT /api/sellers/verify/:id
+// @access  Admin
+export const verifySeller = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const seller = await Seller.findByPk(id);
+
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: 'Seller not found'
+      });
+    }
+
+    // Check if already verified
+    if (seller.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Seller is already verified'
+      });
+    }
+
+    // Verify the seller
+    seller.isVerified = true;
+    seller.verifiedAt = new Date();
+    await seller.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Seller verified successfully',
+      data: {
+        id: seller.id,
+        firstname: seller.firstname,
+        lastname: seller.lastname,
+        email: seller.email,
+        isVerified: seller.isVerified,
+        verifiedAt: seller.verifiedAt
+      }
+    });
+  } catch (error) {
+    console.error('Verify seller error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};

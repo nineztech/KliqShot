@@ -23,7 +23,7 @@ export default function Home() {
 
       {/* Main Content Container */}
       <div className="max-w-7xl mx-auto">
-        <div className='py-[0.5px]'>
+        <div >
           <HeroSection/>
         </div>
 

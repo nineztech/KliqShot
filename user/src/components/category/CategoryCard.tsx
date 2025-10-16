@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 interface CategoryCardProps {
   title: string;
@@ -9,6 +10,7 @@ interface CategoryCardProps {
   icon?: React.ReactNode;
   photographerCount?: number;
   category?: string;
+  subcategories?: string[];
   onClick?: () => void;
 }
 
@@ -19,9 +21,29 @@ export default function CategoryCard({
   icon, 
   photographerCount = 0,
   category,
+  subcategories = [],
   onClick 
 }: CategoryCardProps) {
   const router = useRouter();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(subcategories.length);
+
+  // Calculate how many subcategories fit in one line
+  useEffect(() => {
+    if (subcategories.length <= 3) {
+      setVisibleCount(subcategories.length);
+    } else {
+      // Show first 3 items if there are more than 3
+      setVisibleCount(3);
+    }
+  }, [subcategories]);
+
+  const handleMoreClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('More button clicked, expanding:', !isExpanded);
+    setIsExpanded(!isExpanded);
+  };
 
   const handleClick = () => {
     if (category) {
@@ -65,9 +87,55 @@ export default function CategoryCard({
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
         <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-          <h3 className="text-white font-bold text-lg md:text-xl mb-2 group-hover:text-blue-300 transition-colors duration-300 drop-shadow-lg">
+          <h3 className="text-white font-bold text-lg md:text-xl mb-1 group-hover:text-blue-300 transition-colors duration-300 drop-shadow-lg">
             {title}
           </h3>
+           {subcategories.length > 0 && (
+             <div className="mb-2" onClick={(e) => e.stopPropagation()}>
+               <div className="text-white/80 text-xs md:text-sm drop-shadow-md">
+                 {isExpanded ? (
+                   // Show all subcategories in multiple lines when expanded
+                   <div>
+                     {subcategories.map((sub, index) => (
+                       <span key={index}>
+                         {sub}
+                         {index < subcategories.length - 1 && (
+                           <span className="mx-1">|</span>
+                         )}
+                         {/* Add line break every 3 items when expanded */}
+                         {(index + 1) % 3 === 0 && index < subcategories.length - 1 && (
+                           <br />
+                         )}
+                       </span>
+                     ))}
+                   </div>
+                 ) : (
+                   // Show limited subcategories in one line
+                   <span>
+                     {subcategories.slice(0, visibleCount).join(' | ')}
+                     {subcategories.length > visibleCount && (
+                       <button
+                         onClick={handleMoreClick}
+                         className="text-white/90 text-xs md:text-sm font-medium hover:text-blue-300 transition-colors duration-200 ml-2 cursor-pointer relative z-10"
+                         style={{ pointerEvents: 'auto' }}
+                       >
+                         +{subcategories.length - visibleCount} more
+                       </button>
+                     )}
+                   </span>
+                 )}
+               </div>
+               {isExpanded && subcategories.length > visibleCount && (
+                 <button
+                   onClick={handleMoreClick}
+                   className="text-white/90 text-xs md:text-sm font-medium hover:text-blue-300 transition-colors duration-200 mt-1 cursor-pointer relative z-10"
+                   style={{ pointerEvents: 'auto' }}
+                 >
+                   Show less
+                 </button>
+               )}
+             </div>
+           )}
           <p className="text-white/90 text-sm md:text-base mb-3 line-clamp-2 drop-shadow-md">
             {description}
           </p>

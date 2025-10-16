@@ -16,6 +16,7 @@ interface Photographer {
   experience: string;
   category: string;
   verified: boolean;
+  categories: string[];
 }
 
 interface TopRatedPhotographersProps {
@@ -35,7 +36,8 @@ const topRatedPhotographers: Photographer[] = [
     location: 'Mumbai, MH',
     experience: '12 years',
     category: 'Wedding Photography',
-    verified: true
+    verified: true,
+    categories: ['Wedding', 'Pre-Wedding', 'Reception']
   },
   {
     id: 2,
@@ -48,7 +50,8 @@ const topRatedPhotographers: Photographer[] = [
     location: 'Delhi, DL',
     experience: '8 years',
     category: 'Portrait Photography',
-    verified: true
+    verified: true,
+    categories: ['Portrait', 'Headshot', 'Fashion']
   },
   {
     id: 3,
@@ -61,7 +64,8 @@ const topRatedPhotographers: Photographer[] = [
     location: 'Ahmedabad, GJ',
     experience: '10 years',
     category: 'Event Photography',
-    verified: true
+    verified: true,
+    categories: ['Event', 'Corporate', 'Birthday']
   },
   {
     id: 4,
@@ -74,7 +78,8 @@ const topRatedPhotographers: Photographer[] = [
     location: 'Hyderabad, TS',
     experience: '6 years',
     category: 'Pre Wedding Photography',
-    verified: true
+    verified: true,
+    categories: ['Pre-Wedding', 'Engagement', 'Couple']
   },
   {
     id: 5,
@@ -87,7 +92,8 @@ const topRatedPhotographers: Photographer[] = [
     location: 'Bangalore, KA',
     experience: '15 years',
     category: 'Commercial Photography',
-    verified: true
+    verified: true,
+    categories: ['Commercial', 'Product', 'Business']
   },
   {
     id: 6,
@@ -100,7 +106,8 @@ const topRatedPhotographers: Photographer[] = [
     location: 'Pune, MH',
     experience: '7 years',
     category: 'Baby Photography',
-    verified: true
+    verified: true,
+    categories: ['Baby', 'Newborn', 'Family']
   }
 ];
 
@@ -168,6 +175,7 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
                 experience={photographer.experience}
                 image={photographer.image}
                 category={photographer.category}
+                categories={photographer.categories}
               />
             </div>
           ))}

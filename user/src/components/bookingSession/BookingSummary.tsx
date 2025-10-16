@@ -145,9 +145,15 @@ export default function BookingSummary({
             {bookingData.category && (
               <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-3">
                 <div className="text-xs text-gray-500 mb-1">Service</div>
-                <div className="font-semibold text-gray-900 capitalize text-sm">
-                  {bookingData.category}
-                  {bookingData.subcategory && ` - ${bookingData.subcategory}`}
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold text-gray-900 capitalize text-sm">
+                    {bookingData.category}
+                    {bookingData.subcategory && ` - ${bookingData.subcategory}`}
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-bold text-blue-600">₹{basePrice.toLocaleString()}</div>
+                    <div className="text-xs text-gray-500">Base Price</div>
+                  </div>
                 </div>
               </div>
             )}

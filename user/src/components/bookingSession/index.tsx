@@ -190,29 +190,35 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Book Photography Session</h1>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Book Photography Session</h1>
             </div>
-            <div className="flex items-center space-x-4 text-gray-600 bg-gray-50 rounded-lg px-4 py-3">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="font-semibold text-gray-700">Photographer:</span>
-                <span className="font-medium text-gray-900">{bookingData.photographerName}</span>
+            <div className="flex items-center justify-between text-gray-600 bg-gray-50 rounded-lg px-4 py-3">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="font-semibold text-gray-700">Photographer:</span>
+                  <span className="font-medium text-gray-900">{bookingData.photographerName}</span>
+                </div>
+                {bookingData.category && (
+                  <>
+                    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-gray-700">Service:</span>
+                      <span className="capitalize font-medium text-gray-900">{bookingData.category}</span>
+                      {bookingData.subcategory && (
+                        <>
+                          <span className="text-gray-400">-</span>
+                          <span className="capitalize font-medium text-gray-900">{bookingData.subcategory}</span>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
-              {bookingData.category && (
-                <>
-                  <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                  <div className="flex items-center space-x-2">
-                    <span className="font-semibold text-gray-700">Service:</span>
-                    <span className="capitalize font-medium text-gray-900">{bookingData.category}</span>
-                    {bookingData.subcategory && (
-                      <>
-                        <span className="text-gray-400">-</span>
-                        <span className="capitalize font-medium text-gray-900">{bookingData.subcategory}</span>
-                      </>
-                    )}
-                  </div>
-                </>
-              )}
+              <div className="text-right">
+                <div className="text-lg font-bold text-blue-600">{bookingData.price}</div>
+                <div className="text-xs text-gray-500">Base Price</div>
+              </div>
             </div>
           </div>
         </div>

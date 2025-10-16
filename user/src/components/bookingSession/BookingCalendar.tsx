@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface BookingCalendarProps {
@@ -51,6 +51,13 @@ export default function BookingCalendar({
   compact = false
 }: BookingCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  // Auto-select current date if no date is selected
+  useEffect(() => {
+    if (!selectedDate && isDateAvailable(new Date())) {
+      onDateSelect(new Date());
+    }
+  }, [selectedDate, onDateSelect]);
 
   const monthYear = useMemo(() => {
     return currentMonth.toLocaleDateString('en-US', { 

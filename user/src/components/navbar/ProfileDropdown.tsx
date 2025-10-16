@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { UserCircleIcon, HeartIcon, GiftIcon, BellIcon, ArrowRightOnRectangleIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../AuthContext';
 import { useCart } from '../cart/CartContext';
+import { useWishlist } from '../wishlist/WishlistContext';
 
 interface ProfileDropdownProps {
   isMobile?: boolean;
@@ -19,6 +20,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { addToCart } = useCart();
+  const { items: wishlistItems } = useWishlist();
 
   const handleProfileClick = () => {
     // When not authenticated, clicking should navigate to login page
@@ -200,11 +202,11 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                     Orders
                   </button>
                   <button
-                    onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                    onClick={() => { setShowDropdown(false); router.push('/wishlist'); }}
                     className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
                   >
                     <HeartIcon className="h-4 w-4 text-gray-500" />
-                    Wishlist
+                    Wishlist ({wishlistItems.length})
                   </button>
                   <button
                     onClick={() => { setShowDropdown(false); router.push('/signin'); }}
@@ -308,7 +310,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                     className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
                   >
                     <HeartIcon className="h-4 w-4 text-gray-500" />
-                    Wishlist (42)
+                    Wishlist ({wishlistItems.length})
                   </button>
                   <button
                     onClick={() => { setShowDropdown(false); router.push('/coupons'); }}
@@ -468,11 +470,11 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                       Orders
                     </button>
                     <button
-                      onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                      onClick={() => { setShowDropdown(false); router.push('/wishlist'); }}
                       className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
                     >
                       <HeartIcon className="h-4 w-4 text-gray-500" />
-                      Wishlist
+                      Wishlist ({wishlistItems.length})
                     </button>
                     <button
                       onClick={() => { setShowDropdown(false); router.push('/signin'); }}
@@ -575,7 +577,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                   className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
                 >
                   <HeartIcon className="h-4 w-4 text-gray-500" />
-                  Wishlist (42)
+                  Wishlist ({wishlistItems.length})
                 </button>
                 <button
                   onClick={() => { setShowDropdown(false); router.push('/coupons'); }}

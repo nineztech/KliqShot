@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Camera, Upload, Heart, UserRound, Mountain, PartyPopper, Box, Sparkles, Image, X, Plus, Trash2, Save, Award, Calendar, MapPin, Briefcase, FolderOpen, Image as ImageIcon, Star, Eye } from 'lucide-react';
+import { Camera, Upload, Heart, UserRound, Mountain, PartyPopper, UploadIcon, Box, Sparkles, Image, X, Plus, Trash2, Save, Award, Calendar, MapPin, Briefcase, FolderOpen, Image as ImageIcon, Star, Eye } from 'lucide-react';
 import { useSidebar } from '@/components/Sidebar/SidebarContext';
 interface PortfolioImage {
   id: string;
@@ -42,7 +42,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
   const [editingName, setEditingName] = useState('');
   
   const categories = [
-    { id: 'wedding', name: 'Wedding Photography', icon: <Heart /> },
+    { id: 'wedding', name: 'Wedding', icon: <Heart /> },
     { id: 'portrait', name: 'Portrait Sessions', icon: <UserRound /> },
     { id: 'landscape', name: 'Landscape & Nature', icon: <Mountain /> },
     { id: 'event', name: 'Event Coverage', icon: <PartyPopper />},
@@ -249,7 +249,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
   const currentImages = portfolioImages[selectedCategory] || [];
   const currentExperiences = getCategoryExperiences(selectedCategory);
  const { isMinimized } = useSidebar();
-  const [activeTab, setActiveTab] = useState('all');
+   
   return (
      <div className="mt-8 p-4 md:p-6 lg:p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 min-h-screen">
       <div 
@@ -364,6 +364,13 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                     : 'hover:scale-105 hover:shadow-xl'
                 }`}
               >
+                {/* Count badge positioned outside the card */}
+                <div className="absolute -top-2 -left-2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 flex items-center justify-center shadow-lg z-10 border-2 border-white">
+                  <span className="text-white text-xs md:text-sm font-bold">
+                    {String(portfolioImages[category.id]?.length || 0).padStart(2, '0')}
+                  </span>
+                </div>
+
                 <div
                   className={`relative p-2 md:p-3 bg-gradient-to-br ${
                     gradients[categories.indexOf(category) % gradients.length]
@@ -373,21 +380,13 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                       : 'opacity-90 group-hover:opacity-100'
                   }`}
                 >
-                  <div className="relative text-center space-y-1.5">
+                  <div className="relative text-center p-2 space-y-1.5">
                     <div className="text-white">
-                      <p className="font-bold text-xs md:text-sm lg:text-base leading-tight">
+                      <p className="font-bold text-xs ml-2 md:text-sm lg:text-base leading-tight">
                         {category.name}
                       </p>
                     </div>
-
-                    <div className="inline-flex items-center gap-2 px-2 md:px-3 py-1 bg-white/25 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
-                      <Image className="w-3 h-3 md:w-3.5 md:h-3.5 text-white" />
-                      <span className="text-xs md:text-sm font-bold text-white">
-                        {portfolioImages[category.id]?.length || 0}
-                      </span>
-                    </div>
                   </div>
-
                   {selectedCategory === category.id && (
                     <>
                       <div className="absolute top-6 md:top-10 right-2 w-5 h-5 md:w-6 md:h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
@@ -413,7 +412,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
             <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
               <h3 className="text-base md:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <Upload className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
-                Upload Photos
+                Upload Photos to <br /> {currentCategory?.name}
               </h3>
               
               <div
@@ -429,7 +428,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
               >
                 <div className="flex flex-col items-center gap-2 md:gap-3">
                   <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 rounded-full flex items-center justify-center shadow-lg">
-                    <span className="text-2xl md:text-3xl text-white">{currentCategory?.icon}</span>
+                     <UploadIcon className="w-6 h-6 md:w-8 md:h-8 text-white" />
                   </div>
                   <div>
                     <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1">

@@ -33,7 +33,7 @@ const Sidebar = () => {
       label: 'Bookings',
       hasSubmenu: true,
       submenu: [
-        { id: 'income', icon: TrendingDown, label: 'Upcoming', href: '/transactions/income' },
+        { id: 'income', icon: TrendingDown, label: 'Upcoming', href: '/Booking' },
         { id: 'outcome', icon: TrendingUp, label: 'History', href: '/transactions/outcome' }
       ]
     },

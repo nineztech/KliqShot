@@ -12,7 +12,10 @@ import {
   MdCampaign,
   MdSettings,
   MdInventory,
-  MdLogout
+  MdLogout,
+  MdExpandMore,
+  MdExpandLess,
+  MdEventNote
 } from 'react-icons/md';
 import { useSidebar } from './SidebarContext';
 import { useAuth } from '@/components/auth/AuthContext';
@@ -28,14 +31,18 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
   const { logout, isAuthenticated } = useAuth();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  
+  // Auto-expand packages submenu when on packages page
+  const isPackagesActive = activeTab === 'packages' || activeTab === 'packages-individual' || activeTab === 'packages-fixed';
+  const [isPackagesOpen, setIsPackagesOpen] = useState(isPackagesActive);
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: MdHome, href: '/' },
+    { id: 'bookings', label: 'Bookings', icon: MdEventNote, href: '/bookings' },
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },
     { id: 'analytics', label: 'Advertisements', icon: MdCampaign, href: '/analytics' },
-    { id: 'packages', label: 'Packages', icon: MdInventory, href: '/packages' },
     { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },
   ];
 
@@ -56,47 +63,97 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
   };
 
   return (
-    <div className={`admin-sidebar ${isMinimized ? 'w-20' : 'w-64'} min-h-screen fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900`}>
-      <div className="p-4">
-        {/* Logo Section */}
-        <div className="flex items-center justify-center mb-2">
-          <div className={`${isMinimized ? 'w-16 h-16' : 'w-40 h-16'} rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300`}>
-            {isMinimized ? (
-              <Image src="/Logo_Icon2.png" alt="KliqShot Icon" width={36} height={36} className="object-contain" />
-            ) : (
-              <Image src="/main Logo.png" alt="KliqShot Logo" width={160} height={64} className="object-contain" />
-            )}
+    <div className={`admin-sidebar ${isMinimized ? 'w-20' : 'w-64'} h-screen fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900 flex flex-col`}>
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4">
+          {/* Logo Section */}
+          <div className="flex items-center justify-center mb-2">
+            <div className={`${isMinimized ? 'w-16 h-16' : 'w-40 h-16'} rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300`}>
+              {isMinimized ? (
+                <Image src="/Logo_Icon2.png" alt="KliqShot Icon" width={36} height={36} className="object-contain" />
+              ) : (
+                <Image src="/main Logo.png" alt="KliqShot Logo" width={160} height={64} className="object-contain" />
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Navigation Menu */}
-        <nav className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            
-            return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} px-3 py-3 rounded-lg text-left transition-all duration-200 ${
-                  isActive
+          {/* Navigation Menu */}
+          <nav className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+              
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} px-3 py-3 rounded-lg text-left transition-all duration-200 ${
+                    isActive
+                      ? 'bg-white/20 text-white backdrop-blur-sm'
+                      : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                  }`}
+                  title={isMinimized ? item.label : ''}
+                >
+                  <Icon className={`w-6 h-6 flex-shrink-0 ${isActive ? 'text-white' : 'text-blue-200'}`} />
+                  {!isMinimized && <span className="font-medium whitespace-nowrap">{item.label}</span>}
+                </Link>
+              );
+            })}
+
+            {/* Packages Menu with Submenu */}
+            <div className="space-y-1">
+              <button
+                onClick={() => setIsPackagesOpen(!isPackagesOpen)}
+                className={`w-full flex items-center ${isMinimized ? 'justify-center' : 'justify-between'} px-3 py-3 rounded-lg text-left transition-all duration-200 ${
+                  activeTab === 'packages' || activeTab === 'packages-individual' || activeTab === 'packages-fixed'
                     ? 'bg-white/20 text-white backdrop-blur-sm'
                     : 'text-blue-100 hover:bg-white/10 hover:text-white'
                 }`}
-                title={isMinimized ? item.label : ''}
+                title={isMinimized ? 'Packages' : ''}
               >
-                <Icon className={`w-6 h-6 flex-shrink-0 ${isActive ? 'text-white' : 'text-blue-200'}`} />
-                {!isMinimized && <span className="font-medium whitespace-nowrap">{item.label}</span>}
-              </Link>
-            );
-          })}
-        </nav>
+                <div className={`flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'}`}>
+                  <MdInventory className={`w-6 h-6 flex-shrink-0 ${(activeTab === 'packages' || activeTab === 'packages-individual' || activeTab === 'packages-fixed') ? 'text-white' : 'text-blue-200'}`} />
+                  {!isMinimized && <span className="font-medium whitespace-nowrap">Packages</span>}
+                </div>
+                {!isMinimized && (
+                  isPackagesOpen ? <MdExpandLess className="w-5 h-5" /> : <MdExpandMore className="w-5 h-5" />
+                )}
+              </button>
+              
+              {/* Submenu */}
+              {isPackagesOpen && !isMinimized && (
+                <div className="ml-6 space-y-1">
+                  <Link
+                    href="/packages/individual"
+                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'packages-individual'
+                        ? 'bg-white/20 text-white backdrop-blur-sm'
+                        : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-sm font-medium whitespace-nowrap">Individual Packages</span>
+                  </Link>
+                  <Link
+                    href="/packages/fixed"
+                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'packages-fixed'
+                        ? 'bg-white/20 text-white backdrop-blur-sm'
+                        : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-sm font-medium whitespace-nowrap">Fixed Packages</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </nav>
+        </div>
       </div>
 
-      {/* Logout Button - Only show when authenticated */}
+      {/* Fixed Logout Button - Only show when authenticated */}
       {isAuthenticated && (
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/20">
+        <div className="flex-shrink-0 p-4 border-t border-white/20">
           <button 
             onClick={handleLogout}
             disabled={isLoggingOut}

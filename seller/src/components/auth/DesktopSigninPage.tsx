@@ -32,39 +32,53 @@ export default function DesktopSigninPage() {
     if (error) setError('');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
-    
-    try {
-      const result = await api.login({
-        email: formData.email,
-        password: formData.password
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
+  setIsLoading(true);
+  
+  try {
+    const result = await api.login({
+      email: formData.email,
+      password: formData.password
+    });
+
+    if (result.success && result.data) {
+      // Call AuthContext login to update global state and set cookies
+      login(result.data.token, {
+        id: result.data.id,
+        firstname: result.data.firstname,
+        lastname: result.data.lastname,
+        email: result.data.email,
+        createdAt: result.data.createdAt || new Date().toISOString(),
+        updatedAt: result.data.updatedAt || new Date().toISOString()
       });
 
-      if (result.success && result.data) {
-        // Call AuthContext login to update global state and set cookies
-        login(result.data.token, {
-          id: result.data.id,
-          firstname: result.data.firstname,
-          lastname: result.data.lastname,
-          email: result.data.email,
-          createdAt: result.data.createdAt || new Date().toISOString(),
-          updatedAt: result.data.updatedAt || new Date().toISOString()
-        });
-        
-        // Get redirect URL from query params or default to Desktop
-        const redirectUrl = searchParams.get('redirect') || '/Desktop';
-        router.push(redirectUrl);
-      }
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      // Get redirect URL from query params
+      const redirectUrl = searchParams.get('redirect');
 
+      if (redirectUrl) {
+        // If there's a specific redirect URL, use it
+        router.push(redirectUrl);
+      } else {
+        // Check isProfileCompleted value
+        const isProfileCompleted = result.data.isProfileCompleted;
+        
+        if (isProfileCompleted === 1 || isProfileCompleted === true) {
+          // Profile is completed, redirect to Desktop
+          router.push('/Desktop');
+        } else {
+          // Profile is not completed (0 or false), redirect to Profile
+          router.push('/Profile');
+        }
+      }
+    }
+  } catch (err: any) {
+    setError(err.message || 'Login failed. Please try again.');
+  } finally {
+    setIsLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-orange-50 flex items-center justify-center p-4">
       {/* Decorative Background Elements */}
@@ -77,7 +91,7 @@ export default function DesktopSigninPage() {
       <div className="relative w-full max-w-md">
         {/* Back Button */}
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push('/')}
           className="mb-6 flex items-center text-gray-600 hover:text-purple-700 transition-all duration-200 group"
         >
           <ArrowLeftIcon className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />

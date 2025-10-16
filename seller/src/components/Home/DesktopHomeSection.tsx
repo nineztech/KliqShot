@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { ChevronDown, MoreVertical } from 'lucide-react';
+import {MdHome} from 'react-icons/md';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useSidebar } from '@/components/Sidebar/SidebarContext';
+import Home from '@/app/page';
 
 export default function DesktopHomeSection() {
   const { isMinimized } = useSidebar();
@@ -45,8 +47,90 @@ export default function DesktopHomeSection() {
     <div 
       className="mt-20 p-8 bg-gray-50 min-h-screen transition-all duration-300"
       style={{ marginLeft: isMinimized ? '5rem' : '16rem' }}
-    >
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard</h1>
+    ><style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .animate-fadeInDown {
+          animation: fadeInDown 0.5s ease-out forwards;
+        }
+
+        .animate-fadeInLeft {
+          animation: fadeInLeft 0.3s ease-out forwards;
+        }
+
+        .animate-scaleIn {
+          animation: scaleIn 0.4s ease-out forwards;
+        }
+
+        @media (max-width: 768px) {
+          .portfolio-container {
+            margin-left: 0 !important;
+            width: 100% !important;
+          }
+        }
+      `}</style>
+
+      <div className="mb-6 md:mb-8 opacity-0 animate-fadeInDown"> 
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 rounded-2xl flex items-center justify-center shadow-xl">
+                 <MdHome className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-xs md:text-sm lg:text-base text-gray-600 flex items-center gap-2 mt-1">
+                  Your space to manage photos, sales, and earnings.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6">

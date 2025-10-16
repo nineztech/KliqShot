@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { userApi } from '@/lib/api';
 
 export default function DesktopSignupPage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function DesktopSignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -27,20 +29,46 @@ export default function DesktopSignupPage() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
-    // TODO: Implement signup logic
-    console.log('Signup data:', formData);
-    
-    // Simulate API call
-    setTimeout(() => {
+    // Validate password match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
       setIsLoading(false);
-      router.push('/signin');
-    }, 2000);
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setIsLoading(false);
+      return;
+    }
+    
+    try {
+      const response = await userApi.register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone || undefined,
+        role: 'user'
+      });
+
+      if (response.success) {
+        router.push('/signin');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to create account. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -224,6 +252,13 @@ export default function DesktopSignupPage() {
                 </Link>
               </label>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="rounded-md bg-red-50 p-3">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            )}
 
             {/* Submit Button */}
             <button

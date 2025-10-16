@@ -52,10 +52,10 @@ export default function MobileSigninPage() {
           createdAt: result.data.createdAt || new Date().toISOString(),
           updatedAt: result.data.updatedAt || new Date().toISOString()
         });
-        
-        // Get redirect URL from query params or default to Desktop
-        const redirectUrl = searchParams.get('redirect') || '/Desktop';
-        router.push(redirectUrl);
+
+        // Get redirect URL from query params or default to Profile
+        const redirectUrl = searchParams.get('redirect') || '/Profile';
+        router.push('/Profile');
       }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');
@@ -76,7 +76,7 @@ export default function MobileSigninPage() {
       <div className="relative w-full max-w-md">
         {/* Back Button */}
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push('/')}
           className="mb-6 flex items-center text-gray-600 hover:text-purple-700 transition-all duration-200 group"
         >
           <ArrowLeftIcon className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />

@@ -43,6 +43,12 @@ const Seller = sequelize.define(
         len: [6, 100],
       }
     },
+      // ✅ New field added here
+    isProfileCompleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
   },
   {
     timestamps: true,

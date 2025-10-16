@@ -1,6 +1,8 @@
 import express from 'express';
 import userRoutes from './userRoutes.js';
 import sellerRoutes from './sellerRoutes.js';
+import vendorProfileRoutes from './VendorRoutes.js';
+ 
 import adminRoutes from './adminRoutes.js';
 import categoryRoutes from './categoryRoutes.js';
 import uploadRoutes from './uploadRoutes.js';
@@ -18,6 +20,7 @@ router.get('/health', (req, res) => {
 // API routes
 router.use('/users', userRoutes);
 router.use('/sellers', sellerRoutes);
+router.use('/vendors', vendorProfileRoutes);
 router.use('/admins', adminRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/upload', uploadRoutes);

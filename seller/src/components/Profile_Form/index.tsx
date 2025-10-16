@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import MobileAdvertisementSection from './MobileAdvertisementSection';
-import DesktopAdvertisementSection from './DesktopAdvertisementSection';
+ import MobileVendorRegistrationForm from './MobileProfile';
+ import  DesktopVendorRegistrationForm from './DesktopProfile';
 
-export default function AdvertisementSection() {
+export default function HomeSection() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function AdvertisementSection() {
 
   return (
     <>
-    666  {isMobile ? <MobileAdvertisementSection /> : <DesktopAdvertisementSection />}
+     {isMobile ? <MobileVendorRegistrationForm /> : <DesktopVendorRegistrationForm />}
     </>
   );
 }

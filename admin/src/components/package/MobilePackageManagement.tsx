@@ -21,7 +21,6 @@ export default function MobilePackageManagement({
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    packageType: 'individual' as 'fixed' | 'individual',
     isActive: true
   });
 
@@ -31,13 +30,7 @@ export default function MobilePackageManagement({
       name: formData.name,
       description: formData.description,
       isActive: formData.isActive,
-      packageType: formData.packageType,
-      categoryPricing: [],
-      ...(formData.packageType === 'fixed' && {
-        fixedPrice: 0,
-        selectedSubCategories: [],
-        features: []
-      })
+      categoryPricing: []
     };
     setPackages([...packages, newPackage]);
     setShowAddModal(false);
@@ -60,7 +53,6 @@ export default function MobilePackageManagement({
     setFormData({
       name: '',
       description: '',
-      packageType: 'individual',
       isActive: true
     });
   };
@@ -108,23 +100,13 @@ export default function MobilePackageManagement({
                 <div className="flex items-center gap-2 text-xs text-gray-600">
                   <MdSettings className="w-4 h-4" />
                   <span>
-                    {pkg.packageType === 'fixed' 
-                      ? `${pkg.selectedSubCategories?.length || 0} subcategories selected`
-                      : `${pkg.categoryPricing?.length || 0} categories configured`
-                    }
+                    {pkg.categoryPricing?.length || 0} categories configured
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    pkg.packageType === 'fixed' 
-                      ? 'bg-blue-100 text-blue-800' 
-                      : 'bg-green-100 text-green-800'
-                  }`}>
-                    {pkg.packageType === 'fixed' ? 'Fixed' : 'Individual'}
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Individual Pricing
                   </span>
-                  {pkg.packageType === 'fixed' && pkg.fixedPrice && (
-                    <span className="font-medium">${pkg.fixedPrice}</span>
-                  )}
                 </div>
               </div>
 
@@ -247,12 +229,9 @@ export default function MobilePackageManagement({
                 </label>
               </div>
 
-              <div className={`p-3 rounded-lg ${formData.packageType === 'fixed' ? 'bg-blue-50' : 'bg-green-50'}`}>
-                <p className={`text-sm ${formData.packageType === 'fixed' ? 'text-blue-800' : 'text-green-800'}`}>
-                  {formData.packageType === 'fixed' 
-                    ? 'Fixed Package: Set one price and select multiple subcategories from the same category.'
-                    : 'Individual Pricing: Configure pricing and features for each category separately.'
-                  }
+              <div className="p-3 rounded-lg bg-green-50">
+                <p className="text-sm text-green-800">
+                  Individual Pricing: Configure pricing and features for each category separately.
                 </p>
               </div>
             </div>

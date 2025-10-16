@@ -16,7 +16,8 @@ import {
   MdClose,
   MdLogout,
   MdExpandMore,
-  MdExpandLess
+  MdExpandLess,
+  MdEventNote
 } from 'react-icons/md';
 import { useAuth } from '@/components/auth/AuthContext';
 import { adminApi } from '@/lib/api';
@@ -38,6 +39,7 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: MdHome, href: '/' },
+    { id: 'bookings', label: 'Bookings', icon: MdEventNote, href: '/bookings' },
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },

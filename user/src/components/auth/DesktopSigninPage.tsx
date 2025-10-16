@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../AuthContext';
+import { userApi } from '@/lib/api';
 
 export default function DesktopSigninPage() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function DesktopSigninPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -24,29 +26,36 @@ export default function DesktopSigninPage() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
-    // TODO: Implement actual signin logic with API
-    console.log('Signin data:', formData);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Mock user data - replace with actual API response
-      const mockUser = {
-        id: '1',
-        name: 'John Doe',
+    try {
+      const response = await userApi.login({
         email: formData.email,
-        avatar: undefined
-      };
-      
-      login(mockUser);
+        password: formData.password
+      });
+
+      if (response.success && response.data?.user) {
+        const userData = {
+          id: response.data.user.id,
+          name: `${response.data.user.firstName} ${response.data.user.lastName}`,
+          email: response.data.user.email,
+          avatar: response.data.user.profileImage
+        };
+        
+        login(userData);
+        router.push('/');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to sign in. Please try again.');
+    } finally {
       setIsLoading(false);
-      router.push('/');
-    }, 2000);
+    }
   };
 
   return (
@@ -154,6 +163,13 @@ export default function DesktopSigninPage() {
                 Forgot password?
               </Link>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="rounded-md bg-red-50 p-3">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            )}
 
             {/* Submit Button */}
             <button

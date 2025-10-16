@@ -325,29 +325,6 @@ export default function PhotographerCard({
 
        {/* Category Tags */}
          <CategoryTags categories={categories || []} />
-
-         {/* View Details and Book Button */}
-         <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-          <button 
-            className="flex-1 bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/photographer/${id}`);
-            }}
-          >
-            View 
-          </button>
-          <button 
-            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Navigate to photographer detail page where booking logic will handle category selection
-              router.push(`/photographer/${id}`);
-            }}
-          >
-            Book Now
-          </button>
-         </div>
        </div>
     </div>
   );

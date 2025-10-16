@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { createPortal } from 'react-dom';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon, MapPinIcon, ClockIcon, CameraIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
@@ -45,6 +46,9 @@ export default function PhotographerCard({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [showRatingHover, setShowRatingHover] = useState(false);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+  const [isMounted, setIsMounted] = useState(false);
 
   // Generate sample portfolio images based on photographer's specialty
   const generatePortfolioImages = () => {
@@ -146,6 +150,48 @@ export default function PhotographerCard({
 
   const tierInfo = getTierLabel();
 
+  // Generate realistic rating breakdown based on overall rating
+  const generateRatingBreakdown = () => {
+    const totalReviews = reviews;
+    const breakdown = [0, 0, 0, 0, 0]; // 1-star to 5-star counts
+    
+    // Distribute reviews based on rating
+    if (rating >= 4.5) {
+      breakdown[4] = Math.floor(totalReviews * 0.6); // 60% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.25); // 25% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.1);  // 10% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.03); // 3% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    } else if (rating >= 4.0) {
+      breakdown[4] = Math.floor(totalReviews * 0.45); // 45% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.35); // 35% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.15); // 15% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.03); // 3% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    } else if (rating >= 3.5) {
+      breakdown[4] = Math.floor(totalReviews * 0.3);  // 30% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.35); // 35% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.25); // 25% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.07); // 7% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    } else {
+      breakdown[4] = Math.floor(totalReviews * 0.2);  // 20% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.25); // 25% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.3);  // 30% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.15); // 15% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    }
+    
+    return breakdown;
+  };
+
+  const ratingBreakdown = generateRatingBreakdown();
+
+  // Check if component is mounted for portal
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Auto-rotate images when hovered
   useEffect(() => {
     if (isHovered && portfolioImages.length > 1) {
@@ -220,7 +266,7 @@ export default function PhotographerCard({
 
   return (
     <div 
-      className="bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer  group transform hover:-translate-y-2 hover:scale-[1.02]"
+      className="bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group"
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -299,10 +345,68 @@ export default function PhotographerCard({
                  </div>
                </div>
               <div className="relative flex items-center space-x-1 ml-2">
-               <span className="text-gray-600 text-sm font-medium">
-                 {rating}
-               </span>
-               <StarSolidIcon className="w-4 h-4 text-yellow-400" />
+               <div 
+                 className="flex items-center space-x-1 cursor-pointer"
+                 onMouseEnter={(e) => {
+                   const rect = e.currentTarget.getBoundingClientRect();
+                   setHoverPosition({
+                     x: rect.left,
+                     y: rect.top - 10
+                   });
+                   setShowRatingHover(true);
+                 }}
+                 onMouseLeave={() => setShowRatingHover(false)}
+               >
+                 <span className="text-gray-600 text-sm font-medium">
+                   {rating}
+                 </span>
+                 <StarSolidIcon className="w-4 h-4 text-yellow-400" />
+               </div>
+               
+               {/* Rating Hover Component - Portal */}
+               {showRatingHover && isMounted && createPortal(
+                 <div 
+                   className="fixed bg-white border border-gray-200 rounded-lg shadow-xl p-3 w-64 z-[999999] backdrop-blur-sm"
+                   style={{ 
+                     left: `${hoverPosition.x}px`,
+                     top: `${hoverPosition.y}px`,
+                     transform: 'translateY(-100%)'
+                   }}
+                 >
+                   {/* Overall Rating */}
+                   <div className="flex items-center mb-2">
+                     <span className="text-lg font-semibold text-gray-900 mr-1">{rating}</span>
+                     <StarSolidIcon className="w-4 h-4 text-yellow-400" />
+                     <span className="text-sm text-gray-600 ml-2">{reviews} Ratings & Reviews</span>
+                   </div>
+                   
+                   {/* Star Breakdown */}
+                   <div className="space-y-1">
+                     {[5, 4, 3, 2, 1].map((star, index) => {
+                       const count = ratingBreakdown[4 - index];
+                       const percentage = reviews > 0 ? (count / reviews) * 100 : 0;
+                       const barColor = star >= 4 ? 'bg-green-500' : star >= 3 ? 'bg-yellow-500' : 'bg-red-500';
+                       
+                       return (
+                         <div key={star} className="flex items-center space-x-2">
+                           <span className="text-xs text-gray-600 w-3">{star}★</span>
+                           <div className="flex-1 bg-gray-200 rounded-full h-2">
+                             <div 
+                               className={`h-2 rounded-full ${barColor} transition-all duration-300`}
+                               style={{ width: `${percentage}%` }}
+                             />
+                           </div>
+                           <span className="text-xs text-gray-600 w-8 text-right">{count}</span>
+                         </div>
+                       );
+                     })}
+                   </div>
+                   
+                   {/* Arrow pointing down */}
+                   <div className="absolute top-full left-4 border-4 border-transparent border-t-white"></div>
+                 </div>,
+                 document.body
+               )}
              </div>
             </div>
             <div className="mb-1">

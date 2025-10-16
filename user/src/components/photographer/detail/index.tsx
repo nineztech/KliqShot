@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import DesktopPhotographerDetail from './DesktopPhotographerDetail';
 import MobilePhotographerDetail from './MobilePhotographerDetail';
 
@@ -24,11 +25,13 @@ interface Photographer {
 
 interface PhotographerDetailProps {
   photographerId: string;
-  category?: string;
-  subcategory?: string;
 }
 
-export default function PhotographerDetail({ photographerId, category, subcategory }: PhotographerDetailProps) {
+export default function PhotographerDetail({ photographerId }: PhotographerDetailProps) {
+  const searchParams = useSearchParams();
+  const category = searchParams.get('category') || undefined;
+  const subcategory = searchParams.get('subcategory') || undefined;
+  
   const [isMobile, setIsMobile] = useState(false);
   const [photographer, setPhotographer] = useState<Photographer | null>(null);
   const [loading, setLoading] = useState(true);

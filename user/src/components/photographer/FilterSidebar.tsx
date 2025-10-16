@@ -7,7 +7,8 @@ import {
   MapPinIcon, 
   CurrencyRupeeIcon,
   ClockIcon,
-  CameraIcon
+  CameraIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 
 interface FilterSidebarProps {
@@ -16,7 +17,7 @@ interface FilterSidebarProps {
 
 export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   const [filters, setFilters] = useState({
-    priceRange: [0, 50000],
+    userType: '',
     rating: 0,
     location: '',
     experience: '',
@@ -29,9 +30,89 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
     onFilterChange(newFilters);
   };
 
+  const removeFilter = (filterKey: string) => {
+    const clearedFilters = { ...filters };
+    
+    if (filterKey === 'userType') {
+      clearedFilters.userType = '';
+    } else if (filterKey === 'rating') {
+      clearedFilters.rating = 0;
+    } else {
+      (clearedFilters as any)[filterKey] = '';
+    }
+    
+    setFilters(clearedFilters);
+    onFilterChange(clearedFilters);
+  };
+
+  const clearAllFilters = () => {
+    const clearedFilters = {
+      userType: '',
+      rating: 0,
+      location: '',
+      experience: '',
+      specialty: ''
+    };
+    setFilters(clearedFilters);
+    onFilterChange(clearedFilters);
+  };
+
+  const getAppliedFilters = () => {
+    const applied: { key: string; label: string; value: string }[] = [];
+    
+    if (filters.userType) {
+      applied.push({
+        key: 'userType',
+        label: filters.userType,
+        value: 'userType'
+      });
+    }
+    
+    if (filters.rating > 0) {
+      applied.push({
+        key: 'rating',
+        label: `${filters.rating}+ Stars`,
+        value: 'rating'
+      });
+    }
+    
+    if (filters.location) {
+      applied.push({
+        key: 'location',
+        label: filters.location,
+        value: 'location'
+      });
+    }
+    
+    if (filters.experience) {
+      applied.push({
+        key: 'experience',
+        label: filters.experience,
+        value: 'experience'
+      });
+    }
+    
+    if (filters.specialty) {
+      applied.push({
+        key: 'specialty',
+        label: filters.specialty,
+        value: 'specialty'
+      });
+    }
+    
+    return applied;
+  };
+
   const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Pune', 'Hyderabad'];
   const specialties = ['Wedding', 'Portrait', 'Corporate', 'Family', 'Events', 'Creative'];
   const experienceLevels = ['1-2 years', '3-5 years', '5+ years', '10+ years'];
+  const userTypes = [
+    { name: 'Basic', price: '₹299/hour' },
+    { name: 'Standard', price: '₹499/hour' },
+    { name: 'Premium', price: '₹799/hour' }
+  ];
+
+  const appliedFilters = getAppliedFilters();
 
   return (
     <div className="w-64 bg-gray-50 border-r border-gray-200 p-4 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-hide">
@@ -41,26 +122,83 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
         <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
       </div>
 
-      {/* Price Range */}
+      {/* Applied Filters */}
+      {appliedFilters.length > 0 && (
+        <div className="mb-6 pb-4 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">Applied Filters</h3>
+            <button
+              onClick={clearAllFilters}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+            >
+              CLEAR ALL
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {appliedFilters.map((filter) => (
+              <div
+                key={filter.key}
+                className="flex items-center bg-blue-50 border border-blue-200 rounded-full px-3 py-1 text-xs"
+              >
+                <span className="text-blue-700 font-medium">{filter.label}</span>
+                <button
+                  onClick={() => removeFilter(filter.key)}
+                  className="ml-2 text-blue-600 hover:text-blue-800"
+                >
+                  <XMarkIcon className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* User Type Filter */}
       <div className="mb-4">
         <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
           <CurrencyRupeeIcon className="w-4 h-4 mr-1" />
-          Price Range
+          User Type
         </h3>
         <div className="space-y-2">
-          <input
-            type="range"
-            min="0"
-            max="50000"
-            step="1000"
-            value={filters.priceRange[1]}
-            onChange={(e) => handleFilterChange('priceRange', [filters.priceRange[0], parseInt(e.target.value)])}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-          />
-          <div className="flex justify-between text-xs text-gray-600">
-            <span>₹{filters.priceRange[0].toLocaleString()}</span>
-            <span>₹{filters.priceRange[1].toLocaleString()}</span>
-          </div>
+          {userTypes.map((userType) => (
+            <label key={userType.name} className="flex items-center cursor-pointer group">
+              <input
+                type="radio"
+                name="userType"
+                value={userType.name}
+                checked={filters.userType === userType.name}
+                onChange={(e) => handleFilterChange('userType', e.target.value)}
+                className="sr-only"
+              />
+              <div className={`w-4 h-4 rounded-full border-2 mr-3 transition-all duration-200 ${
+                filters.userType === userType.name 
+                  ? 'border-blue-600 bg-blue-600' 
+                  : 'border-gray-300 group-hover:border-blue-400'
+              }`}>
+                {filters.userType === userType.name && (
+                  <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm font-medium transition-colors duration-200 ${
+                    filters.userType === userType.name 
+                      ? 'text-blue-600' 
+                      : 'text-gray-700 group-hover:text-blue-600'
+                  }`}>
+                    {userType.name}
+                  </span>
+                  <span className={`text-xs transition-colors duration-200 ${
+                    filters.userType === userType.name 
+                      ? 'text-blue-500' 
+                      : 'text-gray-500'
+                  }`}>
+                    {userType.price}
+                  </span>
+                </div>
+              </div>
+            </label>
+          ))}
         </div>
       </div>
 
@@ -210,17 +348,7 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
 
       {/* Clear Filters */}
       <button
-        onClick={() => {
-          const clearedFilters = {
-            priceRange: [0, 50000],
-            rating: 0,
-            location: '',
-            experience: '',
-            specialty: ''
-          };
-          setFilters(clearedFilters);
-          onFilterChange(clearedFilters);
-        }}
+        onClick={clearAllFilters}
         className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
       >
         Clear All Filters

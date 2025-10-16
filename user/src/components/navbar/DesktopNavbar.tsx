@@ -3,25 +3,171 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, EllipsisVerticalIcon, BellIcon, PhoneIcon, ChartBarIcon, ArrowDownTrayIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import ProfileDropdown from './ProfileDropdown';
+import { useCart } from '../cart/CartContext';
 
-export default function DesktopNavbar() {
+interface DesktopNavbarProps {
+  showSearchBar?: boolean;
+}
+
+export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarProps) {
   const router = useRouter();
+  const { itemCount } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState('Mumbai, India');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState('');
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [showThreeDotMenu, setShowThreeDotMenu] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
-  const languageDropdownRef = useRef<HTMLDivElement>(null);
+  const searchDropdownRef = useRef<HTMLDivElement>(null);
+  const threeDotMenuRef = useRef<HTMLDivElement>(null);
+
+  const categories = [
+    'haldi',
+    'mehendi',
+    'wedding',
+    'portrait',
+    'family',
+    'events',
+    'maternity',
+    'product',
+    'interior',
+    'fashion',
+    'sports',
+    'cinematography'
+  ];
+
+  // Sample search suggestions based on categories
+  const allSuggestions = [
+    'haldi photography',
+    'mehendi ceremony',
+    'wedding photographer',
+    'portrait session',
+    'family photoshoot',
+    'corporate events',
+    'maternity shoot',
+    'product photography',
+    'interior design',
+    'fashion photography',
+    'sports photography',
+    'cinematography',
+    'pre-wedding shoot',
+    'reception photography',
+    'newborn photos',
+    'headshot photographer',
+    'linkedin profile',
+    'professional branding',
+    'birthday party',
+    'house warming',
+    'festival photography',
+    'fitness photography',
+    'swimming photography',
+    'documentary video',
+    'social media content'
+  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement search functionality
-    console.log('Searching for:', searchQuery);
+    if (searchQuery.trim()) {
+      // Add to recent searches
+      addToRecentSearches(searchQuery.trim());
+      setShowSearchDropdown(false);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
   };
+
+  const addToRecentSearches = (query: string) => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(item => item !== query);
+      const newRecent = [query, ...filtered].slice(0, 5); // Keep only 5 recent searches
+      localStorage.setItem('recentSearches', JSON.stringify(newRecent));
+      return newRecent;
+    });
+  };
+
+  const removeFromRecentSearches = (query: string) => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(item => item !== query);
+      localStorage.setItem('recentSearches', JSON.stringify(filtered));
+      return filtered;
+    });
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    addToRecentSearches(suggestion);
+    setShowSearchDropdown(false);
+    router.push(`/search?q=${encodeURIComponent(suggestion)}`);
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    if (value.trim()) {
+      // Filter suggestions based on input
+      const filtered = allSuggestions.filter(suggestion => 
+        suggestion.toLowerCase().includes(value.toLowerCase())
+      ).slice(0, 8);
+      setSearchSuggestions(filtered);
+    }
+  };
+
+  const handleSearchFocus = () => {
+    setIsSearchFocused(true);
+    setShowSearchDropdown(true);
+  };
+
+  const handleSearchBlur = () => {
+    setIsSearchFocused(false);
+    // Delay hiding dropdown to allow clicks on suggestions
+    setTimeout(() => {
+      setShowSearchDropdown(false);
+    }, 200);
+  };
+
+  // Animated placeholder effect
+  useEffect(() => {
+    const currentCategory = categories[currentCategoryIndex];
+    const baseText = 'Search for ';
+    const fullText = baseText + currentCategory + '...';
+
+    if (isTyping) {
+      // Typing effect
+      if (animatedPlaceholder.length < fullText.length) {
+        const timeout = setTimeout(() => {
+          setAnimatedPlaceholder(fullText.substring(0, animatedPlaceholder.length + 1));
+        }, 100);
+        return () => clearTimeout(timeout);
+      } else {
+        // Wait before starting to delete
+        const timeout = setTimeout(() => {
+          setIsTyping(false);
+        }, 2000);
+        return () => clearTimeout(timeout);
+      }
+    } else {
+      // Deleting effect
+      if (animatedPlaceholder.length > baseText.length) {
+        const timeout = setTimeout(() => {
+          setAnimatedPlaceholder(animatedPlaceholder.substring(0, animatedPlaceholder.length - 1));
+        }, 50);
+        return () => clearTimeout(timeout);
+      } else {
+        // Move to next category
+        setCurrentCategoryIndex((prev) => (prev + 1) % categories.length);
+        setIsTyping(true);
+      }
+    }
+  }, [animatedPlaceholder, isTyping, currentCategoryIndex, categories]);
 
 
   const handleLocationClick = () => {
@@ -40,30 +186,117 @@ export default function DesktopNavbar() {
 
   const handleLocationSelect = (location: string) => {
     setUserLocation(location);
+    
+    // Store the manually selected location in localStorage
+    const manualLocationData = {
+      city: location.split(',')[0]?.trim() || location,
+      country: location.split(',')[1]?.trim() || 'India',
+      state: '',
+      postcode: '',
+      locality: '',
+      principalSubdivisionCode: '',
+      countryCode: '',
+      localityInfo: {},
+      continent: '',
+      continentCode: '',
+      addressLine1: '',
+      addressLine2: '',
+      fullAddress: location,
+      detailedAddress: location,
+      coordinates: {
+        latitude: 0,
+        longitude: 0
+      },
+      timestamp: new Date().toISOString(),
+      source: 'manual_selection',
+      rawData: {}
+    };
+    
+    localStorage.setItem('userLocation', JSON.stringify(manualLocationData));
     setShowLocationDropdown(false);
   };
 
-  const handleLanguageClick = () => {
-    setShowLanguageDropdown(!showLanguageDropdown);
-    console.log('Language clicked');
+
+  const handleThreeDotMenuHover = () => {
+    setShowThreeDotMenu(true);
   };
 
-  const handleLanguageSelect = (language: string) => {
-    setSelectedLanguage(language);
-    setShowLanguageDropdown(false);
+  const handleThreeDotMenuLeave = () => {
+    setShowThreeDotMenu(false);
   };
 
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           // Use reverse geocoding to get location name
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           
-          // For now, we'll use a simple approach
-          // In a real app, you'd use Google Geocoding API
+           try {
+             // Use reverse geocoding to get city and country
+             const response = await fetch(
+               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+             );
+             
+             if (response.ok) {
+               const data = await response.json();
+               const city = data.city || data.locality || 'Unknown City';
+               const country = data.countryName || 'Unknown Country';
+               const fullAddress = `${city}, ${country}`;
+               
+               // Store complete address data in localStorage
+               const addressData = {
+                 // Basic location info
+                 city: data.city || data.locality || 'Unknown City',
+                 country: data.countryName || 'Unknown Country',
+                 state: data.principalSubdivision || '',
+                 postcode: data.postcode || '',
+                 
+                 // Additional address details
+                 locality: data.locality || '',
+                 principalSubdivisionCode: data.principalSubdivisionCode || '',
+                 countryCode: data.countryCode || '',
+                 localityInfo: data.localityInfo || {},
+                 
+                 // Geographic information
+                 continent: data.continent || '',
+                 continentCode: data.continentCode || '',
+                 
+                 // Complete address components
+                 addressLine1: data.plusCode || '',
+                 addressLine2: data.locality || '',
+                 
+                 // Formatted addresses
+                 fullAddress: fullAddress,
+                 detailedAddress: `${data.locality || ''}, ${data.principalSubdivision || ''}, ${data.postcode || ''}, ${data.countryName || ''}`.replace(/,\s*,/g, ',').replace(/^,\s*|,\s*$/g, ''),
+                 
+                 // Coordinates
+                 coordinates: {
+                   latitude: lat,
+                   longitude: lng
+                 },
+                 
+                 // Metadata
+                 timestamp: new Date().toISOString(),
+                 source: 'geolocation_api',
+                 
+                 // Raw API response for future use
+                 rawData: data
+               };
+               
+               localStorage.setItem('userLocation', JSON.stringify(addressData));
+               setUserLocation(fullAddress);
+             } else {
+               // Fallback to a generic location if API fails
+               setUserLocation('Current Location');
+             }
+           } catch (error) {
+             console.error('Error fetching location details:', error);
+             // Fallback to a generic location if API fails
           setUserLocation('Current Location');
+           }
+          
           setShowLocationDropdown(false);
         },
         (error) => {
@@ -77,25 +310,48 @@ export default function DesktopNavbar() {
     }
   };
 
+  // Load recent searches and saved location from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('recentSearches');
+    if (saved) {
+      setRecentSearches(JSON.parse(saved));
+    }
+
+    // Load saved location from localStorage
+    const savedLocation = localStorage.getItem('userLocation');
+    if (savedLocation) {
+      try {
+        const locationData = JSON.parse(savedLocation);
+        setUserLocation(locationData.fullAddress || 'Mumbai, India');
+      } catch (error) {
+        console.error('Error parsing saved location:', error);
+        setUserLocation('Mumbai, India');
+      }
+    }
+  }, []);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) {
         setShowLocationDropdown(false);
       }
-      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
-        setShowLanguageDropdown(false);
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
+        setShowSearchDropdown(false);
+      }
+      if (threeDotMenuRef.current && !threeDotMenuRef.current.contains(event.target as Node)) {
+        setShowThreeDotMenu(false);
       }
     };
 
-    if (showLocationDropdown || showLanguageDropdown) {
+    if (showLocationDropdown || showSearchDropdown || showThreeDotMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showLocationDropdown, showLanguageDropdown]);
+  }, [showLocationDropdown, showSearchDropdown, showThreeDotMenu]);
 
   return (
     <nav className="relative bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 shadow-lg border-b border-white/10 sticky top-0 z-50">
@@ -137,26 +393,117 @@ export default function DesktopNavbar() {
             </div>
           </div>
 
-          {/* Search Bar & Location */}
-          <div className="flex-1 max-w-4xl mx-8 flex items-center gap-4">
-            {/* Search Bar */}
-            <div className="flex-1">
+          {/* Search Bar */}
+          <div className="flex-1 max-w-4xl mx-8">
+            <div 
+              className={`relative transition-all duration-300 ${
+                showSearchBar ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+              }`} 
+              ref={searchDropdownRef}
+            >
               <form onSubmit={handleSearch} className="relative">
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-                  </div>
                   <input
                     type="text"
-                    placeholder="Search products, brands, categories..."
+                    placeholder={isSearchFocused ? "Search for Products, Brands and More" : animatedPlaceholder}
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-white/30 rounded-full leading-5 bg-white/90 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-white/50 focus:border-white text-sm"
+                    onChange={handleSearchInputChange}
+                    onFocus={handleSearchFocus}
+                    onBlur={handleSearchBlur}
+                    className="block w-full pl-4 pr-10 py-2 border border-white/30 rounded-full leading-5 bg-white/90 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-white/50 focus:border-white text-sm"
                   />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                  </div>
                 </div>
               </form>
-            </div>
 
+              {/* Search Dropdown */}
+              {showSearchDropdown && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                  {/* Recent Searches */}
+                  {recentSearches.length > 0 && !searchQuery && (
+                    <div className="p-3 border-b border-gray-100">
+                      <h3 className="text-sm font-medium text-gray-900 mb-2">Recent</h3>
+                      <div className="space-y-1">
+                        {recentSearches.map((search, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 text-gray-600 hover:bg-gray-50 p-2 rounded group"
+                          >
+                            <div
+                              onClick={() => handleSuggestionClick(search)}
+                              className="flex items-center gap-2 flex-1 cursor-pointer"
+                            >
+                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span className="text-sm">{search}</span>
+                              <span className="text-xs text-blue-600 ml-auto">in Photography</span>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeFromRecentSearches(search);
+                              }}
+                              className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-600 transition-opacity duration-200 p-1"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Search Suggestions */}
+                  <div className="p-3">
+                    {searchQuery ? (
+                      <>
+                        <h3 className="text-sm font-medium text-gray-900 mb-2">Suggestions</h3>
+                        <div className="space-y-1">
+                          {searchSuggestions.map((suggestion, index) => (
+                            <div
+                              key={index}
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                            >
+                              <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
+                              <span className="text-sm text-gray-700">{suggestion}</span>
+                            </div>
+                          ))}
+                          {searchSuggestions.length === 0 && (
+                            <div className="text-sm text-gray-500 p-2">No suggestions found</div>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h3 className="text-sm font-medium text-gray-900 mb-2">Trending</h3>
+                        <div className="space-y-1">
+                          {allSuggestions.slice(0, 8).map((suggestion, index) => (
+                            <div
+                              key={index}
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                            >
+                              <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
+                              <span className="text-sm text-gray-700">{suggestion}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Location, Profile Icon & Become Seller Button */}
+          <div className="flex items-center gap-3">
             {/* Location Selector */}
             <div className="relative" ref={locationDropdownRef}>
               <button
@@ -209,77 +556,75 @@ export default function DesktopNavbar() {
                 </div>
               )}
             </div>
-
-            {/* Language Selector */}
-            <div className="relative" ref={languageDropdownRef}>
+            
+            {/* Profile Dropdown */}
+            <ProfileDropdown isMobile={false} />
+            
+            {/* Cart Icon */}
+            <button
+              onClick={() => router.push('/cart')}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 relative"
+            >
+              <div className="relative">
+                <ShoppingCartIcon className="h-5 w-5 text-white flex-shrink-0" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                    {itemCount > 99 ? '99+' : itemCount}
+                  </span>
+                )}
+              </div>
+              <span className="text-sm font-medium">Cart</span>
+            </button>
+            
+            {/* Become KliqChamp Button */}
+            <button
+              onClick={() => window.open('http://localhost:3002', '_blank')}
+              className="bg-gradient-to-r from-orange-300 to-red-400 text-white px-4 py-2 rounded-full text-sm font-bold hover:from-orange-400 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 hover:border-white/30 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">Become KliqChamp</span>
+            </button>
+            
+            {/* Three Dot Menu */}
+            <div className="relative" ref={threeDotMenuRef}>
               <button
-                onClick={handleLanguageClick}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 border border-white/30 hover:border-white/50"
+                onMouseEnter={handleThreeDotMenuHover}
+                onMouseLeave={handleThreeDotMenuLeave}
+                className="flex items-center justify-center w-8 h-8 text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200"
               >
-                <LanguageIcon className="h-4 w-4 text-white flex-shrink-0" />
-                <span className="truncate max-w-24 font-medium">{selectedLanguage}</span>
-                <ChevronDownIcon className={`h-4 w-4 text-white flex-shrink-0 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
+                <EllipsisVerticalIcon className="h-5 w-5" />
               </button>
               
-              {/* Language Dropdown */}
-              {showLanguageDropdown && (
-                <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
-                  <div className="p-4">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <LanguageIcon className="h-4 w-4 text-blue-600" />
-                      Select Language
-                    </h3>
-                    <div className="space-y-1 max-h-64 overflow-y-auto">
-                      {[
-                        { code: 'EN', name: 'English', flag: '🇺🇸' },
-                        { code: 'HI', name: 'हिन्दी', flag: '🇮🇳' },
-                        { code: 'TA', name: 'தமிழ்', flag: '🇮🇳' },
-                        { code: 'TE', name: 'తెలుగు', flag: '🇮🇳' },
-                        { code: 'BN', name: 'বাংলা', flag: '🇮🇳' },
-                        { code: 'MR', name: 'मराठी', flag: '🇮🇳' },
-                        { code: 'GU', name: 'ગુજરાતી', flag: '🇮🇳' },
-                        { code: 'KN', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
-                        { code: 'ML', name: 'മലയാളം', flag: '🇮🇳' },
-                        { code: 'PA', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' }
-                      ].map((language) => (
-                        <button
-                          key={language.code}
-                          onClick={() => handleLanguageSelect(language.name)}
-                          className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center gap-3 group ${
-                            selectedLanguage === language.name 
-                              ? 'bg-blue-50 text-blue-700 border border-blue-200' 
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                          }`}
-                        >
-                          <span className="text-lg">{language.flag}</span>
-                          <div className="flex-1">
-                            <div className="font-medium">{language.name}</div>
-                            <div className="text-xs text-gray-500">{language.code}</div>
-                          </div>
-                          {selectedLanguage === language.name && (
-                            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                          )}
-                        </button>
-                      ))}
+              {/* Three Dot Menu Dropdown */}
+              {showThreeDotMenu && (
+                <div 
+                  className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+                  onMouseEnter={handleThreeDotMenuHover}
+                  onMouseLeave={handleThreeDotMenuLeave}
+                >
+                  <div className="p-2">
+                    <div className="space-y-1">
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <BellIcon className="h-4 w-4 text-gray-500" />
+                        <span>Notification Preferences</span>
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <PhoneIcon className="h-4 w-4 text-gray-500" />
+                        <span>24x7 Customer Care</span>
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <ChartBarIcon className="h-4 w-4 text-gray-500" />
+                        <span>Advertise</span>
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
+                        <ArrowDownTrayIcon className="h-4 w-4 text-gray-500" />
+                        <span>Download App</span>
+                      </button>
                     </div>
                   </div>
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Become Seller Button & Profile Icon */}
-          <div className="flex items-center gap-3">
-            {/* Become Seller Button */}
-            <button
-              onClick={() => window.open('http://localhost:3002', '_blank')}
-              className="bg-white text-purple-600 px-4 py-2 rounded-md text-sm font-semibold hover:bg-white/90 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              Become Seller
-            </button>
-            
-            {/* Profile Dropdown */}
-            <ProfileDropdown isMobile={false} />
           </div>
         </div>
       </div>
@@ -332,7 +677,35 @@ export default function DesktopNavbar() {
                 <button
                   onClick={() => {
                     // TODO: Implement location selection from map
-                    setUserLocation('Selected Location');
+                     const mapSelectedLocation = 'Selected Location';
+                     setUserLocation(mapSelectedLocation);
+                     
+                     // Store the map selected location in localStorage
+                     const mapLocationData = {
+                       city: mapSelectedLocation.split(',')[0]?.trim() || mapSelectedLocation,
+                       country: mapSelectedLocation.split(',')[1]?.trim() || 'India',
+                       state: '',
+                       postcode: '',
+                       locality: '',
+                       principalSubdivisionCode: '',
+                       countryCode: '',
+                       localityInfo: {},
+                       continent: '',
+                       continentCode: '',
+                       addressLine1: '',
+                       addressLine2: '',
+                       fullAddress: mapSelectedLocation,
+                       detailedAddress: mapSelectedLocation,
+                       coordinates: {
+                         latitude: 0,
+                         longitude: 0
+                       },
+                       timestamp: new Date().toISOString(),
+                       source: 'map_selection',
+                       rawData: {}
+                     };
+                     
+                     localStorage.setItem('userLocation', JSON.stringify(mapLocationData));
                     setShowMapModal(false);
                   }}
                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200"

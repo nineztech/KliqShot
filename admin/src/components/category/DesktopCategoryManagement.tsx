@@ -7,13 +7,26 @@ import {
   MdDelete, 
   MdExpandMore,
   MdChevronRight,
-  MdClose
+  MdClose,
+  MdImage
 } from 'react-icons/md';
+import { categoryApi } from '@/lib/api';
+
+// Helper function to get full image URL
+const getImageUrl = (imagePath: string | undefined) => {
+  if (!imagePath) return '';
+  // If it's already a full URL, return it
+  if (imagePath.startsWith('http')) return imagePath;
+  // Otherwise, prepend the backend URL
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5006';
+  return `${backendUrl}/${imagePath}`;
+};
 
 interface SubCategory {
   id: string;
   name: string;
   photographerCount: number;
+  image?: string;
 }
 
 interface Category {
@@ -22,28 +35,36 @@ interface Category {
   description: string;
   photographerCount: number;
   subCategories: SubCategory[];
+  image?: string;
 }
 
 interface DesktopCategoryManagementProps {
   categories: Category[];
   setCategories: (categories: Category[]) => void;
+  onRefresh?: () => void;
 }
 
-export default function DesktopCategoryManagement({ categories, setCategories }: DesktopCategoryManagementProps) {
+export default function DesktopCategoryManagement({ categories, setCategories, onRefresh }: DesktopCategoryManagementProps) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
+  const [showEditSubCategoryModal, setShowEditSubCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState({
     name: '',
     description: '',
-    photographerCount: 0
+    image: ''
   });
   const [newSubCategory, setNewSubCategory] = useState({
     name: '',
-    photographerCount: 0
+    image: ''
   });
+  const [categoryImagePreview, setCategoryImagePreview] = useState<string>('');
+  const [subCategoryImagePreview, setSubCategoryImagePreview] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const toggleCategoryExpansion = (categoryId: string) => {
     setExpandedCategories(prev => 
@@ -53,18 +74,33 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
     );
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (newCategory.name && newCategory.description) {
-      const category: Category = {
-        id: Date.now().toString(),
-        name: newCategory.name,
-        description: newCategory.description,
-        photographerCount: newCategory.photographerCount,
-        subCategories: []
-      };
-      setCategories([...categories, category]);
-      setNewCategory({ name: '', description: '', photographerCount: 0 });
-      setShowAddModal(false);
+      setIsSubmitting(true);
+      setError('');
+      
+      try {
+        const response = await categoryApi.create({
+          name: newCategory.name,
+          description: newCategory.description,
+          image: newCategory.image || undefined,
+          parentId: null
+        });
+
+        if (response.success) {
+          // Refresh categories from server
+          if (onRefresh) {
+            await onRefresh();
+          }
+          setNewCategory({ name: '', description: '', image: '' });
+          setCategoryImagePreview('');
+          setShowAddModal(false);
+        }
+      } catch (err: any) {
+        setError(err.message || 'Failed to create category');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -73,21 +109,39 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
     setNewCategory({
       name: category.name,
       description: category.description,
-      photographerCount: category.photographerCount
+      image: category.image || ''
     });
+    setCategoryImagePreview(category.image || '');
     setShowEditModal(true);
   };
 
-  const handleUpdateCategory = () => {
+  const handleUpdateCategory = async () => {
     if (selectedCategory && newCategory.name && newCategory.description) {
-      setCategories(categories.map(cat => 
-        cat.id === selectedCategory.id 
-          ? { ...cat, ...newCategory }
-          : cat
-      ));
-      setShowEditModal(false);
-      setSelectedCategory(null);
-      setNewCategory({ name: '', description: '', photographerCount: 0 });
+      setIsSubmitting(true);
+      setError('');
+      
+      try {
+        const response = await categoryApi.update(selectedCategory.id, {
+          name: newCategory.name,
+          description: newCategory.description,
+          image: newCategory.image || undefined
+        });
+
+        if (response.success) {
+          // Refresh categories from server
+          if (onRefresh) {
+            await onRefresh();
+          }
+          setShowEditModal(false);
+          setSelectedCategory(null);
+          setNewCategory({ name: '', description: '', image: '' });
+          setCategoryImagePreview('');
+        }
+      } catch (err: any) {
+        setError(err.message || 'Failed to update category');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -99,27 +153,129 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
 
   const handleAddSubCategory = (categoryId: string) => {
     setSelectedCategory(categories.find(cat => cat.id === categoryId) || null);
-    setNewSubCategory({ name: '', photographerCount: 0 });
+    setNewSubCategory({ name: '', image: '' });
+    setSubCategoryImagePreview('');
     setShowSubCategoryModal(true);
   };
 
-  const handleSaveSubCategory = () => {
+  const handleSaveSubCategory = async () => {
     if (selectedCategory && newSubCategory.name) {
-      const subCategory: SubCategory = {
-        id: `${selectedCategory.id}-${Date.now()}`,
-        name: newSubCategory.name,
-        photographerCount: newSubCategory.photographerCount
+      setIsSubmitting(true);
+      setError('');
+      
+      try {
+        const response = await categoryApi.create({
+          name: newSubCategory.name,
+          image: newSubCategory.image || undefined,
+          parentId: selectedCategory.id
+        });
+
+        if (response.success) {
+          // Refresh categories from server
+          if (onRefresh) {
+            await onRefresh();
+          }
+          setShowSubCategoryModal(false);
+          setSelectedCategory(null);
+          setNewSubCategory({ name: '', image: '' });
+          setSubCategoryImagePreview('');
+        }
+      } catch (err: any) {
+        setError(err.message || 'Failed to create subcategory');
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
+  const handleCategoryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Show preview immediately
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCategoryImagePreview(reader.result as string);
       };
+      reader.readAsDataURL(file);
+
+      // Upload file to server
+      try {
+        setIsSubmitting(true);
+        const uploadResponse = await categoryApi.uploadImage(file);
+        if (uploadResponse.success && uploadResponse.data) {
+          setNewCategory({ ...newCategory, image: uploadResponse.data.url });
+        }
+      } catch (err: any) {
+        setError(err.message || 'Failed to upload image');
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
+  const handleSubCategoryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Show preview immediately
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSubCategoryImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Upload file to server
+      try {
+        setIsSubmitting(true);
+        const uploadResponse = await categoryApi.uploadImage(file);
+        if (uploadResponse.success && uploadResponse.data) {
+          setNewSubCategory({ ...newSubCategory, image: uploadResponse.data.url });
+        }
+      } catch (err: any) {
+        setError(err.message || 'Failed to upload image');
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
+  const handleEditSubCategory = (categoryId: string, subCategory: SubCategory) => {
+    setSelectedCategory(categories.find(cat => cat.id === categoryId) || null);
+    setSelectedSubCategory(subCategory);
+    setNewSubCategory({
+      name: subCategory.name,
+      image: subCategory.image || ''
+    });
+    setSubCategoryImagePreview(subCategory.image || '');
+    setShowEditSubCategoryModal(true);
+  };
+
+  const handleUpdateSubCategory = async () => {
+    if (selectedCategory && selectedSubCategory && newSubCategory.name) {
+      setIsSubmitting(true);
+      setError('');
       
-      setCategories(categories.map(cat => 
-        cat.id === selectedCategory.id 
-          ? { ...cat, subCategories: [...cat.subCategories, subCategory] }
-          : cat
-      ));
-      
-      setShowSubCategoryModal(false);
-      setSelectedCategory(null);
-      setNewSubCategory({ name: '', photographerCount: 0 });
+      try {
+        const response = await categoryApi.update(selectedSubCategory.id, {
+          name: newSubCategory.name,
+          image: newSubCategory.image || undefined
+        });
+
+        if (response.success) {
+          // Refresh categories from server
+          if (onRefresh) {
+            await onRefresh();
+          }
+          setShowEditSubCategoryModal(false);
+          setSelectedCategory(null);
+          setSelectedSubCategory(null);
+          setNewSubCategory({ name: '', image: '' });
+          setSubCategoryImagePreview('');
+        }
+      } catch (err: any) {
+        setError(err.message || 'Failed to update subcategory');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -134,26 +290,26 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Header */}
       <div className="admin-card">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Category Management</h2>
-            <p className="text-gray-600">Manage categories and subcategories for the platform</p>
+            <p className="text-gray-600 text-sm">Manage categories and subcategories for the platform</p>
           </div>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="admin-button-primary"
+            className="admin-button-primary text-sm px-3 py-2 flex items-center"
           >
-            <MdAdd className="w-4 h-4 mr-2" />
+            <MdAdd className="w-3 h-3 mr-1" />
             Add Category
           </button>
         </div>
       </div>
 
       {/* Categories List */}
-      <div className="space-y-4">
+      <div className="space-y-2">
         {categories.map((category) => (
           <div key={category.id} className="admin-card">
             <div className="flex items-center justify-between">
@@ -168,6 +324,15 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                     <MdChevronRight className="w-5 h-5 text-gray-500" />
                   )}
                 </button>
+                {category.image && (
+                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
+                    <img
+                      src={getImageUrl(category.image)}
+                      alt={category.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
                 <div>
                   <h3 className="font-semibold text-gray-900">{category.name}</h3>
                   <p className="text-sm text-gray-600">{category.description}</p>
@@ -205,17 +370,37 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                 <div className="space-y-2">
                   {category.subCategories.map((subCategory) => (
                     <div key={subCategory.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-gray-900">{subCategory.name}</h4>
-                        <p className="text-xs text-blue-600">{subCategory.photographerCount} photographers</p>
+                      <div className="flex items-center space-x-3">
+                        {subCategory.image && (
+                          <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
+                            <img
+                              src={getImageUrl(subCategory.image)}
+                              alt={subCategory.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <div>
+                          <h4 className="font-medium text-gray-900">{subCategory.name}</h4>
+                          <p className="text-xs text-blue-600">{subCategory.photographerCount} KliqChamps</p>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => handleDeleteSubCategory(category.id, subCategory.id)}
-                        className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
-                        title="Delete Subcategory"
-                      >
-                        <MdDelete className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center space-x-1">
+                        <button
+                          onClick={() => handleEditSubCategory(category.id, subCategory)}
+                          className="p-1 text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                          title="Edit Subcategory"
+                        >
+                          <MdEdit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSubCategory(category.id, subCategory.id)}
+                          className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
+                          title="Delete Subcategory"
+                        >
+                          <MdDelete className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                   {category.subCategories.length === 0 && (
@@ -242,6 +427,11 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
               </button>
             </div>
             <div className="p-6 space-y-4">
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              )}
               <div>
                 <label className="admin-label">Category Name</label>
                 <input
@@ -262,14 +452,39 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                 />
               </div>
               <div>
-                <label className="admin-label">Photographer Count</label>
-                <input
-                  type="number"
-                  value={newCategory.photographerCount}
-                  onChange={(e) => setNewCategory({ ...newCategory, photographerCount: parseInt(e.target.value) || 0 })}
-                  className="admin-input w-full"
-                  placeholder="0"
-                />
+                <label className="admin-label">Category Image</label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                      <MdImage className="w-5 h-5 text-gray-400 mr-2" />
+                      <span className="text-sm text-gray-600">Choose Image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCategoryImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  {categoryImagePreview && (
+                    <div className="relative w-full h-32 border border-gray-200 rounded-lg overflow-hidden">
+                      <img
+                        src={categoryImagePreview}
+                        alt="Category preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        onClick={() => {
+                          setCategoryImagePreview('');
+                          setNewCategory({ ...newCategory, image: '' });
+                        }}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      >
+                        <MdClose className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
@@ -281,9 +496,10 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
               </button>
               <button
                 onClick={handleAddCategory}
-                className="admin-button-primary"
+                disabled={isSubmitting}
+                className="admin-button-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Add Category
+                {isSubmitting ? 'Adding...' : 'Add Category'}
               </button>
             </div>
           </div>
@@ -324,14 +540,39 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                 />
               </div>
               <div>
-                <label className="admin-label">Photographer Count</label>
-                <input
-                  type="number"
-                  value={newCategory.photographerCount}
-                  onChange={(e) => setNewCategory({ ...newCategory, photographerCount: parseInt(e.target.value) || 0 })}
-                  className="admin-input w-full"
-                  placeholder="0"
-                />
+                <label className="admin-label">Category Image</label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                      <MdImage className="w-5 h-5 text-gray-400 mr-2" />
+                      <span className="text-sm text-gray-600">Choose Image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCategoryImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  {categoryImagePreview && (
+                    <div className="relative w-full h-32 border border-gray-200 rounded-lg overflow-hidden">
+                      <img
+                        src={categoryImagePreview}
+                        alt="Category preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        onClick={() => {
+                          setCategoryImagePreview('');
+                          setNewCategory({ ...newCategory, image: '' });
+                        }}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      >
+                        <MdClose className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
@@ -377,14 +618,39 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                 />
               </div>
               <div>
-                <label className="admin-label">Photographer Count</label>
-                <input
-                  type="number"
-                  value={newSubCategory.photographerCount}
-                  onChange={(e) => setNewSubCategory({ ...newSubCategory, photographerCount: parseInt(e.target.value) || 0 })}
-                  className="admin-input w-full"
-                  placeholder="0"
-                />
+                <label className="admin-label">Subcategory Image</label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                      <MdImage className="w-5 h-5 text-gray-400 mr-2" />
+                      <span className="text-sm text-gray-600">Choose Image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleSubCategoryImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  {subCategoryImagePreview && (
+                    <div className="relative w-full h-32 border border-gray-200 rounded-lg overflow-hidden">
+                      <img
+                        src={subCategoryImagePreview}
+                        alt="Subcategory preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        onClick={() => {
+                          setSubCategoryImagePreview('');
+                          setNewSubCategory({ ...newSubCategory, image: '' });
+                        }}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      >
+                        <MdClose className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
@@ -399,6 +665,84 @@ export default function DesktopCategoryManagement({ categories, setCategories }:
                 className="admin-button-primary"
               >
                 Add Subcategory
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Subcategory Modal */}
+      {showEditSubCategoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Edit Subcategory</h3>
+              <button
+                onClick={() => setShowEditSubCategoryModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <MdClose className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="admin-label">Subcategory Name</label>
+                <input
+                  type="text"
+                  value={newSubCategory.name}
+                  onChange={(e) => setNewSubCategory({ ...newSubCategory, name: e.target.value })}
+                  className="admin-input w-full"
+                  placeholder="Enter subcategory name"
+                />
+              </div>
+              <div>
+                <label className="admin-label">Subcategory Image</label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                      <MdImage className="w-5 h-5 text-gray-400 mr-2" />
+                      <span className="text-sm text-gray-600">Choose Image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleSubCategoryImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  {subCategoryImagePreview && (
+                    <div className="relative w-full h-32 border border-gray-200 rounded-lg overflow-hidden">
+                      <img
+                        src={subCategoryImagePreview}
+                        alt="Subcategory preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        onClick={() => {
+                          setSubCategoryImagePreview('');
+                          setNewSubCategory({ ...newSubCategory, image: '' });
+                        }}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      >
+                        <MdClose className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowEditSubCategoryModal(false)}
+                className="admin-button-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateSubCategory}
+                className="admin-button-primary"
+              >
+                Update Subcategory
               </button>
             </div>
           </div>

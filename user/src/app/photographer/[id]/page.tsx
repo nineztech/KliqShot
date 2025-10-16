@@ -1,17 +1,37 @@
+import { Suspense } from 'react';
 import PhotographerDetail from '@/components/photographer/detail';
+import { photographersData } from '@/data/photographers';
 
 interface PhotographerDetailPageProps {
   params: Promise<{
     id: string;
   }>;
-  searchParams: Promise<{
-    category?: string;
-    subcategory?: string;
-  }>;
 }
 
-export default async function PhotographerDetailPage({ params, searchParams }: PhotographerDetailPageProps) {
+// Generate static params for all photographer IDs
+export async function generateStaticParams() {
+  return photographersData.map((photographer) => ({
+    id: photographer.id.toString(),
+  }));
+}
+
+// Loading component for Suspense fallback
+function PhotographerLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading photographer details...</p>
+      </div>
+    </div>
+  );
+}
+
+export default async function PhotographerDetailPage({ params }: PhotographerDetailPageProps) {
   const { id } = await params;
-  const { category, subcategory } = await searchParams;
-  return <PhotographerDetail photographerId={id} category={category} subcategory={subcategory} />;
+  return (
+    <Suspense fallback={<PhotographerLoading />}>
+      <PhotographerDetail photographerId={id} />
+    </Suspense>
+  );
 }

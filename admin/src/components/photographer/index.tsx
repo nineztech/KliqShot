@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import DesktopPhotographerManagement from './DesktopPhotographerManagement';
 import MobilePhotographerManagement from './MobilePhotographerManagement';
+import { useSidebar } from '@/components/sidebar/SidebarContext';
 
 interface Photographer {
   id: string;
@@ -28,6 +29,7 @@ interface PhotographerManagementProps {
 
 export default function PhotographerManagement({ photographers, setPhotographers }: PhotographerManagementProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const { isMinimized } = useSidebar();
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -45,12 +47,15 @@ export default function PhotographerManagement({ photographers, setPhotographers
   }, []);
 
   return (
-    <>
+    <div 
+      className="transition-all duration-300"
+      style={{ marginLeft: isMobile ? '0' : (isMinimized ? '5rem' : '16rem') }}
+    >
       {isMobile ? (
         <MobilePhotographerManagement photographers={photographers} setPhotographers={setPhotographers} />
       ) : (
         <DesktopPhotographerManagement photographers={photographers} setPhotographers={setPhotographers} />
       )}
-    </>
+    </div>
   );
 }

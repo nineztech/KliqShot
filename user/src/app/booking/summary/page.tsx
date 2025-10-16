@@ -37,6 +37,19 @@ interface BookingSummaryData {
   selectedAddons: Addon[];
 }
 
+interface CartItem {
+  photographerId: string;
+  photographerName: string;
+  photographerImage: string;
+  price: string;
+  category: string;
+  subcategory: string;
+  selectedDate: string;
+  selectedTimeSlots: string[];
+  selectedAddons: Addon[];
+  totalPrice: number;
+}
+
 function BookingSummaryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -50,40 +63,97 @@ function BookingSummaryContent() {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   // Parse booking data from URL
-  const [bookingData, setBookingData] = useState<BookingSummaryData | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [totalBill, setTotalBill] = useState(0);
+  const [itemCount, setItemCount] = useState(0);
 
   useEffect(() => {
-    const photographerId = searchParams.get('photographerId');
-    const photographerName = searchParams.get('photographerName');
-    const photographerImage = searchParams.get('photographerImage');
-    const price = searchParams.get('price');
-    const category = searchParams.get('category');
-    const subcategory = searchParams.get('subcategory');
-    const selectedDate = searchParams.get('selectedDate');
-    const selectedTimeSlots = searchParams.get('selectedTimeSlots')?.split(',') || [];
-    const addonsData = searchParams.get('addons');
+    // Check if we have multiple cart items or single booking
+    const itemCountParam = searchParams.get('itemCount');
+    const totalBillParam = searchParams.get('totalBill');
+    
+    if (itemCountParam && totalBillParam) {
+      // Multiple cart items
+      const count = parseInt(itemCountParam);
+      const bill = parseFloat(totalBillParam);
+      setItemCount(count);
+      setTotalBill(bill);
+      
+      const items: CartItem[] = [];
+      for (let i = 0; i < count; i++) {
+        const photographerId = searchParams.get(`item${i}_photographerId`);
+        const photographerName = searchParams.get(`item${i}_photographerName`);
+        const photographerImage = searchParams.get(`item${i}_photographerImage`) || '';
+        const price = searchParams.get(`item${i}_price`);
+        const category = searchParams.get(`item${i}_category`);
+        const subcategory = searchParams.get(`item${i}_subcategory`);
+        const selectedDate = searchParams.get(`item${i}_selectedDate`);
+        const selectedTimeSlots = searchParams.get(`item${i}_selectedTimeSlots`)?.split(',') || [];
+        const addonsData = searchParams.get(`item${i}_addons`);
+        const totalPrice = parseFloat(searchParams.get(`item${i}_totalPrice`) || '0');
 
-    let parsedAddons: Addon[] = [];
-    if (addonsData) {
-      try {
-        parsedAddons = JSON.parse(decodeURIComponent(addonsData));
-      } catch (e) {
-        console.error('Error parsing addons:', e);
+        let parsedAddons: Addon[] = [];
+        if (addonsData) {
+          try {
+            parsedAddons = JSON.parse(decodeURIComponent(addonsData));
+          } catch (e) {
+            console.error('Error parsing addons:', e);
+          }
+        }
+
+        if (photographerId && photographerName && price) {
+          items.push({
+            photographerId,
+            photographerName,
+            photographerImage,
+            price,
+            category: category || '',
+            subcategory: subcategory || '',
+            selectedDate: selectedDate || '',
+            selectedTimeSlots,
+            selectedAddons: parsedAddons,
+            totalPrice,
+          });
+        }
       }
-    }
+      setCartItems(items);
+    } else {
+      // Single booking (legacy support)
+      const photographerId = searchParams.get('photographerId');
+      const photographerName = searchParams.get('photographerName');
+      const photographerImage = searchParams.get('photographerImage');
+      const price = searchParams.get('price');
+      const category = searchParams.get('category');
+      const subcategory = searchParams.get('subcategory');
+      const selectedDate = searchParams.get('selectedDate');
+      const selectedTimeSlots = searchParams.get('selectedTimeSlots')?.split(',') || [];
+      const addonsData = searchParams.get('addons');
 
-    if (photographerId && photographerName && price) {
-      setBookingData({
-        photographerId,
-        photographerName,
-        photographerImage: photographerImage || '',
-        price,
-        category: category || '',
-        subcategory: subcategory || '',
-        selectedDate: selectedDate || '',
-        selectedTimeSlots,
-        selectedAddons: parsedAddons,
-      });
+      let parsedAddons: Addon[] = [];
+      if (addonsData) {
+        try {
+          parsedAddons = JSON.parse(decodeURIComponent(addonsData));
+        } catch (e) {
+          console.error('Error parsing addons:', e);
+        }
+      }
+
+      if (photographerId && photographerName && price) {
+        const item: CartItem = {
+          photographerId,
+          photographerName,
+          photographerImage: photographerImage || '',
+          price,
+          category: category || '',
+          subcategory: subcategory || '',
+          selectedDate: selectedDate || '',
+          selectedTimeSlots,
+          selectedAddons: parsedAddons,
+          totalPrice: 0, // Will be calculated
+        };
+        setCartItems([item]);
+        setItemCount(1);
+      }
     }
   }, [searchParams]);
 
@@ -96,17 +166,23 @@ function BookingSummaryContent() {
   ];
 
   const calculateBasePrice = () => {
-    if (!bookingData) return 0;
-    const priceStr = bookingData.price.replace(/[₹,]/g, '');
-    const basePrice = parseFloat(priceStr);
-    const hours = bookingData.selectedTimeSlots.length;
-    return basePrice * hours;
+    if (cartItems.length === 0) return 0;
+    
+    return cartItems.reduce((total, item) => {
+      const priceStr = item.price.replace(/[₹,]/g, '');
+      const basePrice = parseFloat(priceStr);
+      const hours = item.selectedTimeSlots.length;
+      return total + (basePrice * hours);
+    }, 0);
   };
 
   const calculateAddonsTotal = () => {
-    if (!bookingData) return 0;
-    return bookingData.selectedAddons.reduce((total, addon) => {
-      return total + (addon.price * addon.quantity);
+    if (cartItems.length === 0) return 0;
+    
+    return cartItems.reduce((total, item) => {
+      return total + item.selectedAddons.reduce((addonTotal, addon) => {
+        return addonTotal + (addon.price * addon.quantity);
+      }, 0);
     }, 0);
   };
 
@@ -162,7 +238,7 @@ function BookingSummaryContent() {
     alert('Processing payment...');
   };
 
-  if (!bookingData) {
+  if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -195,95 +271,74 @@ function BookingSummaryContent() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Left Column - Booking Details */}
           <div className="lg:col-span-2 space-y-4">
-            {/* Photographer Details Card */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <CameraIcon className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-lg font-semibold text-gray-900">{bookingData.photographerName}</h3>
-                    <span className="text-blue-600 font-medium text-sm">{bookingData.category}</span>
-                    {bookingData.subcategory && (
-                      <span className="text-gray-600 text-sm">{bookingData.subcategory}</span>
+            {/* Cart Items */}
+            {cartItems.map((item, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <CameraIcon className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <div className="flex items-center space-x-2">
+                      <h3 className="text-lg font-semibold text-gray-900">{item.photographerName}</h3>
+                      <span className="text-blue-600 font-medium text-sm">{item.category}</span>
+                      {item.subcategory && (
+                        <span className="text-gray-600 text-sm">{item.subcategory}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-blue-600">₹{item.totalPrice.toLocaleString()}</div>
+                    <div className="text-xs text-gray-500">Total Price</div>
+                  </div>
+                </div>
+                
+                {/* Service Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="space-y-2">
+                    {item.selectedDate && (
+                      <div className="flex items-center space-x-2">
+                        <CalendarDaysIcon className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-600">Date:</span>
+                        <span className="font-medium text-gray-900 text-sm">{item.selectedDate}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center space-x-2">
+                      <ClockIcon className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">Duration:</span>
+                      <span className="font-medium text-gray-900 text-sm">{item.selectedTimeSlots.length} hours</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {item.selectedTimeSlots.length > 0 && (
+                      <div>
+                        <span className="text-sm text-gray-600">Time Slots:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {item.selectedTimeSlots.map((slot, slotIndex) => (
+                            <span key={slotIndex} className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+                              {slot}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-lg font-bold text-blue-600">₹{calculateBasePrice()}</div>
-                  <div className="text-xs text-gray-500">Base Price ({bookingData.selectedTimeSlots.length}hr)</div>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4 mt-2 text-sm">
-                <div className="flex items-center text-yellow-500">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <span className="ml-1 font-medium">4.9</span>
-                </div>
-                <span className="text-gray-400">|</span>
-                <span className="text-gray-600">250+ bookings</span>
-              </div>
-            </div>
 
-            {/* Booking Schedule Card */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-                <CalendarDaysIcon className="w-5 h-5 mr-2 text-blue-600" />
-                Booking Schedule
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <CalendarDaysIcon className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Date</p>
-                    <p className="font-semibold text-gray-900 text-sm">{bookingData.selectedDate || 'Not selected'}</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <ClockIcon className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Duration</p>
-                    <p className="font-semibold text-gray-900 text-sm">{bookingData.selectedTimeSlots.length} hours</p>
-                  </div>
-                </div>
-              </div>
-              {bookingData.selectedTimeSlots.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <div className="flex flex-wrap gap-1">
-                    {bookingData.selectedTimeSlots.map((slot, index) => (
-                      <span key={index} className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
-                        {slot}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Add-ons Card */}
-            {bookingData.selectedAddons.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <SparklesIcon className="w-6 h-6 mr-2 text-blue-600" />
-                  Selected Add-ons
-                </h2>
-                <div className="space-y-3">
-                  {bookingData.selectedAddons.map((addon) => (
-                    <div key={addon.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900">{addon.name}</p>
-                        <p className="text-sm text-gray-600">Quantity: {addon.quantity}</p>
-                      </div>
-                      <p className="font-semibold text-gray-900">₹{addon.price * addon.quantity}</p>
+                {/* Add-ons for this item */}
+                {item.selectedAddons.length > 0 && (
+                  <div className="border-t border-gray-100 pt-3">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2">Add-ons:</h4>
+                    <div className="space-y-1">
+                      {item.selectedAddons.map((addon, addonIndex) => (
+                        <div key={addonIndex} className="flex justify-between text-sm">
+                          <span className="text-gray-600">{addon.name} (×{addon.quantity})</span>
+                          <span className="font-medium">₹{(addon.price * addon.quantity).toLocaleString()}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
 
             {/* Additional Services Card */}
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm border border-blue-200 p-4">
@@ -527,14 +582,14 @@ function BookingSummaryContent() {
                 
                 <div className="grid grid-cols-1 gap-2">
                   <div className="flex items-center justify-between text-xs text-gray-700">
-                    <span>Base Price ({bookingData.selectedTimeSlots.length}hr)</span>
-                    <span className="font-medium">₹{calculateBasePrice()}</span>
+                    <span>Base Price ({cartItems.reduce((total, item) => total + item.selectedTimeSlots.length, 0)}hr total)</span>
+                    <span className="font-medium">₹{calculateBasePrice().toLocaleString()}</span>
                   </div>
 
-                  {bookingData.selectedAddons.length > 0 && (
+                  {calculateAddonsTotal() > 0 && (
                     <div className="flex items-center justify-between text-xs text-gray-700">
                       <span>Add-ons</span>
-                      <span className="font-medium">₹{calculateAddonsTotal()}</span>
+                      <span className="font-medium">₹{calculateAddonsTotal().toLocaleString()}</span>
                     </div>
                   )}
 
@@ -547,7 +602,7 @@ function BookingSummaryContent() {
 
                   <div className="flex items-center justify-between text-xs text-gray-700">
                     <span>Tax (GST 18%)</span>
-                    <span className="font-medium">₹{calculateTax()}</span>
+                    <span className="font-medium">₹{calculateTax().toLocaleString()}</span>
                   </div>
 
                   {discount > 0 && (

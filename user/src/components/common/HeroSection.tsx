@@ -26,7 +26,7 @@ const heroSlides: HeroSlide[] = [
         title: "Wedding Photography Excellence",
         subtitle: "Capture Your Special Day",
         description: "Professional wedding photographers with years of experience. From candid moments to traditional ceremonies, we preserve your memories beautifully.",
-        image: "/Images/Haldi.jpg",
+        image: "/banner1.jpeg",
         ctaText: "Book Wedding Photographer",
         ctaLink: "/categories/wedding-photography",
         badge: "Trending",

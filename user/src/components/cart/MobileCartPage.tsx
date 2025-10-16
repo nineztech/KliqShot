@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import Navbar from '@/components/navbar';
+import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, UserIcon, TagIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext';
 
 export default function MobileCartPage() {
@@ -19,13 +20,46 @@ export default function MobileCartPage() {
   };
 
   const handleCheckout = () => {
-    // TODO: Implement checkout logic
-    alert('Checkout functionality coming soon!');
+    if (items.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+
+    // Create URL parameters with all cart items
+    const params = new URLSearchParams();
+    
+    // Add each cart item as a separate parameter
+    items.forEach((item, index) => {
+      const itemId = item.timestamp ? `booking_${item.timestamp}` : item.id;
+      const hourlyRate = parseInt(item.price.toString().replace(/[^\d]/g, '')) || 0;
+      const timeSlotsCount = item.selectedTimeSlots ? item.selectedTimeSlots.length : 1;
+      const basePrice = hourlyRate * timeSlotsCount;
+      const addonTotal = item.addons ? item.addons.reduce((sum, addon) => sum + (addon.price * addon.quantity), 0) : 0;
+      const totalPrice = (basePrice + addonTotal) * (item.quantity || 1);
+
+      params.append(`item${index}_photographerId`, item.photographerId || '');
+      params.append(`item${index}_photographerName`, item.photographerName || item.name);
+      params.append(`item${index}_price`, item.price.toString());
+      params.append(`item${index}_category`, item.category || '');
+      params.append(`item${index}_subcategory`, item.subcategory || '');
+      params.append(`item${index}_selectedDate`, item.selectedDate || '');
+      params.append(`item${index}_selectedTimeSlots`, item.selectedTimeSlots ? item.selectedTimeSlots.join(',') : '');
+      params.append(`item${index}_addons`, item.addons ? JSON.stringify(item.addons) : '');
+      params.append(`item${index}_totalPrice`, totalPrice.toString());
+    });
+
+    // Add total bill
+    params.append('totalBill', getTotalPrice().toString());
+    params.append('itemCount', items.length.toString());
+
+    // Navigate to booking summary page
+    router.push(`/booking/summary?${params.toString()}`);
   };
 
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <Navbar />
         <div className="px-4 py-4">
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
@@ -61,6 +95,7 @@ export default function MobileCartPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navbar />
       <div className="px-4 py-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -83,85 +118,157 @@ export default function MobileCartPage() {
 
         {/* Cart Items */}
         <div className="space-y-3 mb-6">
-          {items.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-sm p-4">
-              <div className="flex items-start gap-3">
-                {/* Item Image */}
-                <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  {item.image ? (
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={64}
-                      height={64}
-                      className="rounded-lg object-cover"
-                    />
-                  ) : (
-                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  )}
+          {items.map((item) => {
+            const itemId = item.timestamp ? `booking_${item.timestamp}` : item.id;
+            const hourlyRate = parseInt(item.price.toString().replace(/[^\d]/g, '')) || 0;
+            const timeSlotsCount = item.selectedTimeSlots ? item.selectedTimeSlots.length : 1;
+            const basePrice = hourlyRate * timeSlotsCount;
+            const addonTotal = item.addons ? item.addons.reduce((sum, addon) => sum + (addon.price * addon.quantity), 0) : 0;
+            const totalPrice = (basePrice + addonTotal) * (item.quantity || 1);
+            
+            return (
+              <div key={itemId} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <UserIcon className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900 text-sm">{item.photographerName || item.name}</h3>
+                        <p className="text-xs text-gray-600">Photography Session</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-blue-600">₹{totalPrice.toLocaleString()}</p>
+                      <p className="text-xs text-gray-500">Total</p>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Item Details */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 text-sm mb-1 truncate">{item.name}</h3>
-                  <p className="text-base font-bold text-blue-600">₹{item.price}</p>
-                  
-                  {/* Quantity Controls */}
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleQuantityChange(item.id, (item.quantity || 1) - 1)}
-                        className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <MinusIcon className="h-3 w-3 text-gray-600" />
-                      </button>
-                      <span className="w-6 text-center font-medium text-sm">{item.quantity || 1}</span>
-                      <button
-                        onClick={() => handleQuantityChange(item.id, (item.quantity || 1) + 1)}
-                        className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <PlusIcon className="h-3 w-3 text-gray-600" />
-                      </button>
-                    </div>
+                {/* Content */}
+                <div className="p-3">
+                  {/* Service Details */}
+                  <div className="space-y-2 mb-3">
+                    {/* Category & Subcategory */}
+                    {(item.category || item.subcategory) && (
+                      <div className="flex items-center space-x-2">
+                        <TagIcon className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-600">Service:</span>
+                        <span className="font-medium text-gray-900 text-xs capitalize">
+                          {item.category}
+                          {item.subcategory && ` - ${item.subcategory}`}
+                        </span>
+                      </div>
+                    )}
 
-                    {/* Remove Button */}
+                    {/* Date */}
+                    {item.selectedDate && (
+                      <div className="flex items-center space-x-2">
+                        <CalendarIcon className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-600">Date:</span>
+                        <span className="font-medium text-gray-900 text-xs">{item.selectedDate}</span>
+                      </div>
+                    )}
+
+                    {/* Time Slots */}
+                    {item.selectedTimeSlots && item.selectedTimeSlots.length > 0 && (
+                      <div className="flex items-start space-x-2">
+                        <ClockIcon className="w-3 h-3 text-gray-400 mt-0.5" />
+                        <div>
+                          <span className="text-xs text-gray-600">Time Slots:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {item.selectedTimeSlots.map((slot, index) => (
+                              <span key={index} className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                {slot}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Pricing Breakdown */}
+                  <div className="bg-gray-50 rounded-lg p-2 mb-3">
+                    <h4 className="font-semibold text-gray-900 text-sm mb-2">Pricing</h4>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex justify-between">
+                        <div className="flex flex-col">
+                          <span className="text-gray-600">Base:</span>
+                          <span className="text-xs text-blue-600">1 hr base price</span>
+                        </div>
+                        <span className="font-medium">₹{basePrice.toLocaleString()}</span>
+                      </div>
+                      {item.addons && item.addons.length > 0 && (
+                        <>
+                          <div className="border-t border-gray-200 pt-1">
+                            <span className="text-gray-600">Add-ons:</span>
+                          </div>
+                          {item.addons.map((addon, index) => (
+                            <div key={index} className="flex justify-between ml-2">
+                              <div className="flex flex-col">
+                                <span className="text-gray-600 text-xs">{addon.name}:</span>
+                                <span className="text-xs text-blue-600">₹{addon.price.toLocaleString()} × {addon.quantity}</span>
+                              </div>
+                              <span className="font-medium text-xs">₹{(addon.price * addon.quantity).toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      <div className="border-t border-gray-200 pt-1">
+                        <div className="flex justify-between font-semibold">
+                          <span>Total:</span>
+                          <span>₹{totalPrice.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-end pt-3 border-t border-gray-200">
                     <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="p-1.5 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                      onClick={() => removeFromCart(itemId)}
+                      className="flex items-center space-x-1 px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                     >
                       <TrashIcon className="h-3 w-3" />
+                      <span className="font-medium text-xs">Remove</span>
                     </button>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Order Summary - Fixed Bottom */}
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-          <div className="space-y-2 mb-4">
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Subtotal ({itemCount} items)</span>
-              <span>₹{getTotalPrice()}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Shipping</span>
-              <span className="text-green-600">Free</span>
-            </div>
-            <div className="flex justify-between text-base font-semibold text-gray-900">
-              <span>Total</span>
-              <span>₹{getTotalPrice()}</span>
-            </div>
-          </div>
+           <div className="space-y-2 mb-4">
+             <div className="flex justify-between text-sm text-gray-600">
+               <span>Subtotal ({itemCount} items)</span>
+               <span>₹{getTotalPrice().toLocaleString()}</span>
+             </div>
+             <div className="flex justify-between text-sm text-gray-600">
+               <span>Service Fee</span>
+               <span className="text-green-600">Included</span>
+             </div>
+             <div className="flex justify-between text-sm text-gray-600">
+               <span>Processing Fee</span>
+               <span className="text-green-600">Free</span>
+             </div>
+             <div className="flex justify-between text-base font-semibold text-gray-900">
+               <span>Total</span>
+               <span>₹{getTotalPrice().toLocaleString()}</span>
+             </div>
+           </div>
 
           <button
             onClick={handleCheckout}
             className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition-colors duration-200 font-medium"
           >
-            Proceed to Checkout
+            Proceed to Booking
           </button>
 
           <div className="mt-2 text-center">

@@ -34,7 +34,7 @@ const Sidebar = () => {
       hasSubmenu: true,
       submenu: [
         { id: 'income', icon: TrendingDown, label: 'Upcoming', href: '/Booking' },
-        { id: 'outcome', icon: TrendingUp, label: 'History', href: '/transactions/outcome' }
+        { id: 'outcome', icon: TrendingUp, label: 'History', href: '/History' }
       ]
     },
      { id: 'my_portfolio', icon: MdCameraAlt, label: 'My Portfolio', href: '/UserPortfolio' },
@@ -165,7 +165,7 @@ const Sidebar = () => {
         <button 
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className="w-full bg-indigo-500 hover:bg-red-200 hover:text-red-500 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
+          className="w-full bg-gradient-to-br from-cyan-500 to-blue-500 hover:bg-red-200 hover:text-red-500 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
           title={isMinimized ? 'Log out' : ''}
         >
           <div className={`flex gap-2 items-center justify-center ${isMinimized ? 'px-0' : ''}`}>

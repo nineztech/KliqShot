@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon, MapPinIcon, ClockIcon, CameraIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import CategoryTags from '../common/CategoryTags';
+import { useWishlist } from '../wishlist/WishlistContext';
 
 interface PhotographerCardProps {
   id: number;
@@ -39,6 +41,7 @@ export default function PhotographerCard({
   onClick
 }: PhotographerCardProps) {
   const router = useRouter();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -153,6 +156,33 @@ export default function PhotographerCard({
     }
   }, [isHovered, portfolioImages.length]);
 
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const wishlistItem = {
+      id,
+      name,
+      specialty,
+      location,
+      rating,
+      reviews,
+      price,
+      experience,
+      image,
+      category,
+      subCategory,
+      categories,
+      addedAt: Date.now()
+    };
+
+    if (isInWishlist(id)) {
+      removeFromWishlist(id);
+      setIsLiked(false);
+    } else {
+      addToWishlist(wishlistItem);
+      setIsLiked(true);
+    }
+  };
+
   const handleCardClick = () => {
     if (onClick) {
       onClick();
@@ -160,7 +190,6 @@ export default function PhotographerCard({
       router.push(`/photographer/${id}`);
     }
   };
-
   const renderStars = () => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -218,12 +247,13 @@ export default function PhotographerCard({
             {/* Like Button */}
           <button
             className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsLiked(!isLiked);
-            }}
+            onClick={handleWishlistToggle}
           >
-            <HeartIcon className={`w-5 h-5 transition-colors duration-200 ${isLiked ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
+            {isInWishlist(id) ? (
+              <HeartSolidIcon className="w-5 h-5 text-red-500" />
+            ) : (
+              <HeartIcon className="w-5 h-5 text-gray-600" />
+            )}
           </button>
           
           {/* Category Badge */}

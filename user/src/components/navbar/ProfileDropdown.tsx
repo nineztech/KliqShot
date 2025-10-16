@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { UserCircleIcon, HeartIcon, GiftIcon, BellIcon, ArrowRightOnRectangleIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../AuthContext';
 import { useCart } from '../cart/CartContext';
+import { useWishlist } from '../wishlist/WishlistContext';
 
 interface ProfileDropdownProps {
   isMobile?: boolean;
@@ -19,9 +20,24 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { addToCart } = useCart();
+  const { items: wishlistItems } = useWishlist();
 
   const handleProfileClick = () => {
-    setShowDropdown(!showDropdown);
+    // When not authenticated, clicking should navigate to login page
+    if (!isAuthenticated) {
+      router.push('/signin');
+    } else {
+      // When authenticated, clicking toggles the dropdown
+      setShowDropdown(!showDropdown);
+    }
+  };
+
+  const handleProfileHover = () => {
+    setShowDropdown(true);
+  };
+
+  const handleProfileLeave = () => {
+    setShowDropdown(false);
   };
 
   const handleSignupClick = () => {
@@ -59,29 +75,37 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
     setShowDropdown(false);
   };
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside (only for authenticated users)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowDropdown(false);
+      // Only close on click outside when user is authenticated
+      if (isAuthenticated) {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+          setShowDropdown(false);
+        }
       }
       if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
         setShowLanguageDropdown(false);
       }
     };
 
-    if (showDropdown || showLanguageDropdown) {
+    if ((isAuthenticated && showDropdown) || showLanguageDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showDropdown, showLanguageDropdown]);
+  }, [showDropdown, showLanguageDropdown, isAuthenticated]);
 
   if (isMobile) {
     return (
-      <div className="relative" ref={dropdownRef}>
+      <div 
+        className="relative" 
+        ref={dropdownRef}
+        onMouseEnter={handleProfileHover}
+        onMouseLeave={handleProfileLeave}
+      >
         <button
           onClick={handleProfileClick}
           className="p-1 text-white hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
@@ -91,7 +115,11 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
         
         {/* Mobile Profile Dropdown */}
         {showDropdown && (
-          <div className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+          <div 
+            className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+            onMouseEnter={handleProfileHover}
+            onMouseLeave={handleProfileLeave}
+          >
             <div className="p-2">
               {!isAuthenticated ? (
                 <div className="space-y-1">
@@ -174,11 +202,11 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                     Orders
                   </button>
                   <button
-                    onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                    onClick={() => { setShowDropdown(false); router.push('/wishlist'); }}
                     className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
                   >
                     <HeartIcon className="h-4 w-4 text-gray-500" />
-                    Wishlist
+                    Wishlist ({wishlistItems.length})
                   </button>
                   <button
                     onClick={() => { setShowDropdown(false); router.push('/signin'); }}
@@ -282,7 +310,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                     className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-2"
                   >
                     <HeartIcon className="h-4 w-4 text-gray-500" />
-                    Wishlist (42)
+                    Wishlist ({wishlistItems.length})
                   </button>
                   <button
                     onClick={() => { setShowDropdown(false); router.push('/coupons'); }}
@@ -333,7 +361,12 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
   }
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div 
+      className="relative" 
+      ref={dropdownRef}
+      onMouseEnter={handleProfileHover}
+      onMouseLeave={handleProfileLeave}
+    >
       <button
         onClick={handleProfileClick}
         className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200"
@@ -347,7 +380,11 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
       
       {/* Desktop Profile Dropdown */}
       {showDropdown && (
-        <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
+        <div 
+          className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50"
+          onMouseEnter={handleProfileHover}
+          onMouseLeave={handleProfileLeave}
+        >
           <div className="p-4">
             {!isAuthenticated ? (
               <>
@@ -433,11 +470,11 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                       Orders
                     </button>
                     <button
-                      onClick={() => { setShowDropdown(false); router.push('/signin'); }}
+                      onClick={() => { setShowDropdown(false); router.push('/wishlist'); }}
                       className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
                     >
                       <HeartIcon className="h-4 w-4 text-gray-500" />
-                      Wishlist
+                      Wishlist ({wishlistItems.length})
                     </button>
                     <button
                       onClick={() => { setShowDropdown(false); router.push('/signin'); }}
@@ -540,7 +577,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                   className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
                 >
                   <HeartIcon className="h-4 w-4 text-gray-500" />
-                  Wishlist (42)
+                  Wishlist ({wishlistItems.length})
                 </button>
                 <button
                   onClick={() => { setShowDropdown(false); router.push('/coupons'); }}

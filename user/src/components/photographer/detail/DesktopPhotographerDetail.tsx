@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon, ChatBubbleLeftIcon, XMarkIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon, ChatBubbleLeftIcon, XMarkIcon, CalendarDaysIcon, HandThumbUpIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon, HandThumbUpIcon as HandThumbUpSolidIcon, HandThumbDownIcon as HandThumbDownSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
 import { categories, type Category, type SubCategory } from '@/data/categories';
@@ -75,6 +75,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [showMoreExpertise, setShowMoreExpertise] = useState(false);
   const [showMoreCertificates, setShowMoreCertificates] = useState(false);
+  const [imageReactions, setImageReactions] = useState<{ [key: string]: 'like' | 'dislike' | null }>({});
+  const [imageLikeCounts, setImageLikeCounts] = useState<{ [key: string]: number }>({});
+  const [imageDislikeCounts, setImageDislikeCounts] = useState<{ [key: string]: number }>({});
 
   // Generate tier label based on photographer ID
   const getTierLabel = () => {
@@ -287,6 +290,75 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
     router.push(`/booking?${bookingParams.toString()}`);
   };
 
+  const handleImageReaction = (imageUrl: string, reaction: 'like' | 'dislike') => {
+    setImageReactions(prev => {
+      const currentReaction = prev[imageUrl];
+      if (currentReaction === reaction) {
+        // If clicking the same reaction, remove it
+        const newReactions = { ...prev };
+        delete newReactions[imageUrl];
+        return newReactions;
+      } else {
+        // Set new reaction
+        return { ...prev, [imageUrl]: reaction };
+      }
+    });
+
+    // Update like counts
+    setImageLikeCounts(prev => {
+      const currentCount = prev[imageUrl] || 200;
+      const currentReaction = imageReactions[imageUrl];
+      
+      if (reaction === 'like') {
+        if (currentReaction === 'like') {
+          // Remove like
+          return { ...prev, [imageUrl]: Math.max(0, currentCount - 1) };
+        } else if (currentReaction === 'dislike') {
+          // Change from dislike to like
+          return { ...prev, [imageUrl]: currentCount + 1 };
+        } else {
+          // Add new like
+          return { ...prev, [imageUrl]: currentCount + 1 };
+        }
+      } else {
+        // Dislike clicked
+        if (currentReaction === 'like') {
+          // Change from like to dislike
+          return { ...prev, [imageUrl]: Math.max(0, currentCount - 1) };
+        }
+        // If it was already dislike or no reaction, no change to count
+        return prev;
+      }
+    });
+
+    // Update dislike counts
+    setImageDislikeCounts(prev => {
+      const currentCount = prev[imageUrl] || 12;
+      const currentReaction = imageReactions[imageUrl];
+      
+      if (reaction === 'dislike') {
+        if (currentReaction === 'dislike') {
+          // Remove dislike
+          return { ...prev, [imageUrl]: Math.max(0, currentCount - 1) };
+        } else if (currentReaction === 'like') {
+          // Change from like to dislike
+          return { ...prev, [imageUrl]: currentCount + 1 };
+        } else {
+          // Add new dislike
+          return { ...prev, [imageUrl]: currentCount + 1 };
+        }
+      } else {
+        // Like clicked
+        if (currentReaction === 'dislike') {
+          // Change from dislike to like
+          return { ...prev, [imageUrl]: Math.max(0, currentCount - 1) };
+        }
+        // If it was already like or no reaction, no change to count
+        return prev;
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
@@ -377,6 +449,46 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                    </button>
                  </div>
                  
+                 {/* Like/Dislike Icons */}
+                 <div className="absolute top-4 right-4 flex flex-col space-y-2">
+                   <div className="flex space-x-2">
+                     <button
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleImageReaction(getCurrentPortfolioImages()[selectedImageIndex], 'like');
+                       }}
+                       className="w-8 h-8 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg"
+                     >
+                       {imageReactions[getCurrentPortfolioImages()[selectedImageIndex]] === 'like' ? (
+                         <HandThumbUpSolidIcon className="w-4 h-4 text-green-600" />
+                       ) : (
+                         <HandThumbUpIcon className="w-4 h-4" />
+                       )}
+                     </button>
+                     <button
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleImageReaction(getCurrentPortfolioImages()[selectedImageIndex], 'dislike');
+                       }}
+                       className="w-8 h-8 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg"
+                     >
+                       {imageReactions[getCurrentPortfolioImages()[selectedImageIndex]] === 'dislike' ? (
+                         <HandThumbDownSolidIcon className="w-4 h-4 text-red-600" />
+                       ) : (
+                         <HandThumbDownIcon className="w-4 h-4" />
+                       )}
+                     </button>
+                   </div>
+                   {/* Like/Dislike Count */}
+                   <div className="bg-white bg-opacity-90 rounded-full px-2 py-1 shadow-lg">
+                     <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700">
+                       <span className="text-green-600">{imageLikeCounts[getCurrentPortfolioImages()[selectedImageIndex]] || 200}</span>
+                       <span>•</span>
+                       <span className="text-red-600">{imageDislikeCounts[getCurrentPortfolioImages()[selectedImageIndex]] || 12}</span>
+                     </div>
+                   </div>
+                 </div>
+
                  {/* Carousel Indicators */}
                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                    {getCurrentPortfolioImages().map((_: string, index: number) => (
@@ -494,13 +606,13 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
               {activeAboutTab === 'about' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Experience</h3>
+                  <h2 className="font-semibold text-gray-900 mb-2">Experience</h2>
                   <p className="text-gray-600">{photographer.experience}</p>
                 </div>
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-gray-900">Availability</h3>
+                    <h2 className="font-semibold text-gray-900">Availability</h2>
                     <button
                       onClick={() => setShowAvailabilityCalendar(true)}
                       className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 transition-colors duration-200"
@@ -514,7 +626,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Expertise</h3>
+                  <h2 className="font-semibold text-gray-900 mb-2">Expertise</h2>
                   <div className="flex flex-wrap gap-2">
                     {[
                       "Wedding Photography",
@@ -547,7 +659,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Languages</h3>
+                  <h2 className="font-semibold text-gray-900 mb-2">Languages</h2>
                   <div className="flex flex-wrap gap-2">
                     {photographer.languages.map((language, index) => (
                       <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
@@ -558,7 +670,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Equipment</h3>
+                  <h2 className="font-semibold text-gray-900 mb-2">Equipment</h2>
                   <div className="flex flex-wrap gap-2">
                     {photographer.equipment.map((item, index) => (
                       <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
@@ -569,7 +681,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Certificates</h3>
+                  <h2 className="font-semibold text-gray-900 mb-2">Certificates</h2>
                   <div className="space-y-2">
                     {[
                       "Professional Photography Certification (PPC)",
@@ -756,7 +868,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                   
                   {/* Team Stats */}
                   <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
-                    <h3 className="font-semibold text-gray-900 mb-4">Team Overview</h3>
+                    <h2 className="font-semibold text-gray-900 mb-4">Team Overview</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-blue-600">12</div>
@@ -781,7 +893,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
               
               {activeAboutTab === 'about' && photographer.awards.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="font-semibold text-gray-900 mb-2">Awards & Recognition</h3>
+                  <h2 className="font-semibold text-gray-900 mb-2">Awards & Recognition</h2>
                   <ul className="list-disc list-inside text-gray-600 space-y-1">
                     {photographer.awards.map((award, index) => (
                       <li key={index}>{award}</li>
@@ -841,7 +953,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                   return displayedAddons.map((addon) => (
                     <div key={addon.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200">
                       <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-semibold text-gray-900">{addon.name}</h3>
+                        <h2 className="font-semibold text-gray-900">{addon.name}</h2>
                         <span className="text-blue-600 font-bold">{addon.price}</span>
                       </div>
                       <p className="text-gray-600 text-sm">{addon.description}</p>
@@ -1216,6 +1328,40 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 height={800}
                 className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
               />
+              
+              {/* Like/Dislike Icons */}
+              <div className="absolute top-4 right-4 flex flex-col space-y-3">
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleImageReaction(getCurrentPortfolioImages()[popupImageIndex], 'like')}
+                    className="w-10 h-10 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg"
+                  >
+                    {imageReactions[getCurrentPortfolioImages()[popupImageIndex]] === 'like' ? (
+                      <HandThumbUpSolidIcon className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <HandThumbUpIcon className="w-5 h-5" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleImageReaction(getCurrentPortfolioImages()[popupImageIndex], 'dislike')}
+                    className="w-10 h-10 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-700 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg"
+                  >
+                    {imageReactions[getCurrentPortfolioImages()[popupImageIndex]] === 'dislike' ? (
+                      <HandThumbDownSolidIcon className="w-5 h-5 text-red-600" />
+                    ) : (
+                      <HandThumbDownIcon className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+                {/* Like/Dislike Count */}
+                <div className="bg-white bg-opacity-95 rounded-full px-3 py-2 shadow-lg">
+                  <div className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+                    <span className="text-green-600">{imageLikeCounts[getCurrentPortfolioImages()[popupImageIndex]] || 200}</span>
+                    <span>•</span>
+                    <span className="text-red-600">{imageDislikeCounts[getCurrentPortfolioImages()[popupImageIndex]] || 12}</span>
+                  </div>
+                </div>
+              </div>
             </div>
             
             {/* Navigation Arrows */}
@@ -1292,7 +1438,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <h3 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat1.name}</h3>
+                                <h2 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat1.name}</h2>
                                 <p className="text-xs text-gray-600">{cat1.description}</p>
                                 <p className="text-[10px] text-blue-600 mt-1">{cat1.photographerCount} photographers</p>
                               </div>
@@ -1323,7 +1469,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                             >
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <h3 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat2.name}</h3>
+                                  <h2 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat2.name}</h2>
                                   <p className="text-xs text-gray-600">{cat2.description}</p>
                                   <p className="text-[10px] text-blue-600 mt-1">{cat2.photographerCount} photographers</p>
                                 </div>

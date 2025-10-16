@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { userApi } from '@/lib/api';
 
 interface User {
   id: string;
@@ -26,12 +27,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Check for existing session in localStorage
     const savedUser = localStorage.getItem('user');
-    if (savedUser) {
+    const token = localStorage.getItem('userToken');
+    
+    if (savedUser && token) {
       try {
         setUser(JSON.parse(savedUser));
       } catch (error) {
         console.error('Error parsing saved user:', error);
         localStorage.removeItem('user');
+        localStorage.removeItem('userToken');
       }
     }
     setLoading(false);
@@ -44,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    userApi.logout();
   };
 
   const value = {

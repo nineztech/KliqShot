@@ -14,7 +14,8 @@ import {
   MdInventory,
   MdLogout,
   MdExpandMore,
-  MdExpandLess
+  MdExpandLess,
+  MdEventNote
 } from 'react-icons/md';
 import { useSidebar } from './SidebarContext';
 import { useAuth } from '@/components/auth/AuthContext';
@@ -37,6 +38,7 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: MdHome, href: '/' },
+    { id: 'bookings', label: 'Bookings', icon: MdEventNote, href: '/bookings' },
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },

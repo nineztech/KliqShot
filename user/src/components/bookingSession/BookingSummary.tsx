@@ -120,8 +120,6 @@ export default function BookingSummary({
       addons: selectedAddonDetails,
       totalPrice
     };
-
-    console.log('Booking Details:', bookingDetails);
     
     // Navigate to confirmation page or show success message
     alert('Booking confirmed! You will receive a confirmation email shortly.');

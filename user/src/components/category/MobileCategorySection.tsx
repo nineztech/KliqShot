@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CategoryCard from './CategoryCard';
 import CategoryFilter from './CategoryFilter';
+import { categoryApi, getImageUrl } from '@/lib/api';
 import { 
   HeartIcon, 
   UserGroupIcon, 
@@ -12,105 +13,93 @@ import {
   BriefcaseIcon
 } from '@heroicons/react/24/outline';
 
+interface Category {
+  id: string;
+  name: string;
+  description: string | null;
+  image: string | null;
+  photographerCount: number;
+  subCategories?: { id: string; name: string }[];
+}
+
+// Icon mapping based on category name
+const getCategoryIcon = (categoryName: string) => {
+  const name = categoryName.toLowerCase();
+  if (name.includes('wedding') || name.includes('haldi') || name.includes('mehendi')) {
+    return <HeartIcon className="w-8 h-8 text-pink-600" />;
+  } else if (name.includes('portrait') || name.includes('photo')) {
+    return <CameraIcon className="w-8 h-8 text-indigo-600" />;
+  } else if (name.includes('event') || name.includes('corporate')) {
+    return <BriefcaseIcon className="w-8 h-8 text-green-600" />;
+  } else if (name.includes('family') || name.includes('couple')) {
+    return <UserGroupIcon className="w-8 h-8 text-blue-600" />;
+  } else if (name.includes('product') || name.includes('maternity') || name.includes('fashion')) {
+    return <SparklesIcon className="w-8 h-8 text-purple-600" />;
+  } else if (name.includes('interior') || name.includes('sport')) {
+    return <AcademicCapIcon className="w-8 h-8 text-orange-600" />;
+  }
+  return <CameraIcon className="w-8 h-8 text-gray-600" />;
+};
+
+// Generate placeholder image URL based on category name
+const getPlaceholderImageUrl = (categoryName: string) => {
+  const name = categoryName.toLowerCase();
+  const baseUrl = 'https://images.unsplash.com/photo';
+  
+  // Map categories to specific Unsplash images
+  const imageMap: { [key: string]: string } = {
+    'wedding': '1606800052052-a08af7148866?w=600&h=400&fit=crop&crop=center&auto=format',
+    'portrait': '1494790108755-2616b612b786?w=600&h=400&fit=crop&crop=center&auto=format',
+    'event': '1511578314322-379afb476865?w=600&h=400&fit=crop&crop=center&auto=format',
+    'family': '1544005313-94ddf0286df2?w=600&h=400&fit=crop&crop=center&auto=format',
+    'product': '1441986300917-64674bd600d8?w=600&h=400&fit=crop&crop=center&auto=format',
+    'maternity': '1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format',
+    'interior': '1586023492125-27b2c045efd7?w=600&h=400&fit=crop&crop=center&auto=format',
+    'fashion': '1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format',
+    'sport': '1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center&auto=format',
+    'video': '1492691527719-9d1e07e534b4?w=600&h=400&fit=crop&crop=center&auto=format'
+  };
+  
+  // Find matching image or use a default
+  for (const [key, value] of Object.entries(imageMap)) {
+    if (name.includes(key)) {
+      return `${baseUrl}-${value}`;
+    }
+  }
+  
+  // Default fallback image
+  return `${baseUrl}-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop&crop=center&auto=format`;
+};
+
 export default function MobileCategorySection() {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const allCategories = [
-    {
-      title: "Wedding",
-      description: "Capture your special day",
-      imageUrl: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <HeartIcon className="w-8 h-8 text-pink-600" />,
-      category: "Wedding",
-      photographerCount: 420,
-      subcategories: ["Pre-Wedding", "Reception", "Haldi", "Mehendi", "Engagement"]
-    },
-    {
-      title: "Portrait",
-      description: "Professional headshots & portraits",
-      imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <CameraIcon className="w-8 h-8 text-indigo-600" />,
-      category: "Portrait",
-      photographerCount: 380,
-      subcategories: ["Professional", "Headshots", "LinkedIn", "Fashion", "Studio"]
-    },
-    {
-      title: "Events",
-      description: "Corporate & social events",
-      imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <BriefcaseIcon className="w-8 h-8 text-green-600" />,
-      category: "Events",
-      photographerCount: 290,
-      subcategories: ["Corporate", "Birthday", "Anniversary", "Conference", "Party"]
-    },
-    {
-      title: "Family",
-      description: "Beautiful family moments",
-      imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <UserGroupIcon className="w-8 h-8 text-blue-600" />,
-      category: "Family",
-      photographerCount: 350,
-      subcategories: ["Kids", "Couple", "Newborn", "Extended Family", "Holiday"]
-    },
-    {
-      title: "Product",
-      description: "Professional product shoots",
-      imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <SparklesIcon className="w-8 h-8 text-purple-600" />,
-      category: "Product",
-      photographerCount: 240,
-      subcategories: ["E-commerce", "Food", "Jewelry", "Fashion", "Advertising"]
-    },
-    {
-      title: "Maternity",
-      description: "Beautiful maternity moments",
-      imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <SparklesIcon className="w-8 h-8 text-pink-500" />,
-      category: "Maternity",
-      photographerCount: 180,
-      subcategories: ["Studio", "Outdoor", "Couples", "Newborn", "Family"]
-    },
-    {
-      title: "Interior",
-      description: "Property photography",
-      imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <AcademicCapIcon className="w-8 h-8 text-orange-600" />,
-      category: "Interior",
-      photographerCount: 160,
-      subcategories: ["Real Estate", "Architecture", "Commercial", "Home", "Design"]
-    },
-    {
-      title: "Fashion",
-      description: "Fashion and beauty shoots",
-      imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <SparklesIcon className="w-8 h-8 text-purple-500" />,
-      category: "Fashion",
-      photographerCount: 200,
-      subcategories: ["Editorial", "Commercial", "Street", "Beauty", "Runway"]
-    },
-    {
-      title: "Sports",
-      description: "Sports and fitness photography",
-      imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <AcademicCapIcon className="w-8 h-8 text-red-600" />,
-      category: "Sports",
-      photographerCount: 120,
-      subcategories: ["Action", "Team", "Individual", "Event", "Fitness"]
-    },
-    {
-      title: "Video",
-      description: "Video and cinematography",
-      imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop&crop=center&auto=format",
-      icon: <CameraIcon className="w-8 h-8 text-blue-500" />,
-      category: "Cinematography",
-      photographerCount: 150,
-      subcategories: ["Wedding", "Corporate", "Documentary", "Music", "Commercial"]
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await categoryApi.getAll(false); // Only fetch active categories
+      
+      if (response.success && response.data?.categories) {
+        setCategories(response.data.categories);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to load categories');
+      console.error('Error fetching categories:', err);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const handleCategoryClick = (category: string) => {
-    console.log(`Category clicked: ${category}`);
-    // TODO: Navigate to category page
+    // Category click handler
   };
 
   const handleFilterChange = (filter: string) => {
@@ -119,30 +108,67 @@ export default function MobileCategorySection() {
 
   // Filter categories based on active filter
   const filteredCategories = activeFilter === 'All' 
-    ? allCategories 
-    : allCategories.filter(cat => cat.category === activeFilter);
+    ? categories 
+    : categories.filter(cat => cat.name === activeFilter);
 
   return (
     <div>
       {/* Category Filter */}
-      <CategoryFilter onFilterChange={handleFilterChange} />
+      <CategoryFilter 
+        onFilterChange={handleFilterChange} 
+        categories={categories.map(cat => ({ id: cat.id, name: cat.name }))}
+      />
 
       <div className="px-2 mt-4">
-        <div className="grid grid-cols-2 gap-2">
-          {filteredCategories.map((category, index) => (
-              <CategoryCard
-                key={index}
-                title={category.title}
-                description={category.description}
-                imageUrl={category.imageUrl}
-                icon={category.icon}
-                photographerCount={category.photographerCount}
-                category={category.category}
-                subcategories={category.subcategories}
-                onClick={() => handleCategoryClick(category.title)}
-              />
-          ))}
-        </div>
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-center text-sm">
+            <p className="font-medium">Failed to load categories</p>
+            <p className="text-xs mt-1">{error}</p>
+            <button
+              onClick={fetchCategories}
+              className="mt-2 px-3 py-1.5 bg-red-600 text-white text-xs rounded-md hover:bg-red-700 transition-colors duration-200"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Categories Grid */}
+        {!loading && !error && (
+          <>
+            {filteredCategories.length > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {filteredCategories.map((category) => (
+                      <CategoryCard
+                        key={category.id}
+                        title={category.name}
+                        description={category.description || `Explore ${category.name} photography services`}
+                        imageUrl={getImageUrl(category.image) || getPlaceholderImageUrl(category.name)}
+                        icon={getCategoryIcon(category.name)}
+                        photographerCount={category.photographerCount}
+                        category={category.name}
+                        categoryId={category.id}
+                        subcategories={category.subCategories?.map(sub => sub.name) || []}
+                        onClick={() => handleCategoryClick(category.name)}
+                      />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-gray-500">
+                <p className="text-base font-medium">No categories found</p>
+                <p className="text-xs mt-2">Please check back later</p>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

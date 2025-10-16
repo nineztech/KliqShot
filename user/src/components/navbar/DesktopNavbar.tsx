@@ -172,7 +172,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
 
   const handleLocationClick = () => {
     setShowLocationDropdown(!showLocationDropdown);
-    console.log('Location clicked');
   };
 
   const handleOpenMap = () => {
@@ -305,7 +304,6 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
         }
       );
     } else {
-      console.log('Geolocation is not supported by this browser.');
       setShowLocationDropdown(false);
     }
   };

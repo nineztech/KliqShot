@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   CameraIcon, 
@@ -17,26 +17,58 @@ import {
 
 interface CategoryFilterProps {
   onFilterChange: (filter: string) => void;
+  categories?: { id: string; name: string }[];
 }
 
-export default function CategoryFilter({ onFilterChange }: CategoryFilterProps) {
+// Icon mapping based on category name
+const getCategoryFilterIcon = (categoryName: string) => {
+  const name = categoryName.toLowerCase();
+  if (name.includes('wedding') || name.includes('haldi') || name.includes('mehendi')) {
+    return HeartIcon;
+  } else if (name.includes('portrait') || name.includes('photo')) {
+    return UserGroupIcon;
+  } else if (name.includes('event') || name.includes('corporate')) {
+    return BriefcaseIcon;
+  } else if (name.includes('family') || name.includes('couple')) {
+    return UserGroupIcon;
+  } else if (name.includes('maternity')) {
+    return SparklesIcon;
+  } else if (name.includes('product')) {
+    return ShoppingBagIcon;
+  } else if (name.includes('interior') || name.includes('real estate')) {
+    return HomeIcon;
+  } else if (name.includes('fashion')) {
+    return SparklesIcon;
+  } else if (name.includes('sport')) {
+    return TrophyIcon;
+  } else if (name.includes('video') || name.includes('cinema')) {
+    return VideoCameraIcon;
+  }
+  return CameraIcon;
+};
+
+export default function CategoryFilter({ onFilterChange, categories = [] }: CategoryFilterProps) {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [filters, setFilters] = useState<any[]>([
+    { id: 'All', label: 'All', icon: CameraIcon }
+  ]);
   const router = useRouter();
 
-  const filters = [
-    { id: 'All', label: 'All', icon: CameraIcon },
-    { id: 'Wedding', label: 'Wedding', icon: HeartIcon },
-    { id: 'Portrait', label: 'Portrait', icon: UserGroupIcon },
-    { id: 'Family', label: 'Family', icon: UserGroupIcon },
-    { id: 'Events', label: 'Events', icon: BriefcaseIcon },
-    { id: 'Maternity', label: 'Maternity', icon: SparklesIcon },
-    { id: 'Product', label: 'Product', icon: ShoppingBagIcon },
-    { id: 'Interior', label: 'Interior', icon: HomeIcon },
-    { id: 'Fashion', label: 'Fashion', icon: SparklesIcon },
-    { id: 'Sports', label: 'Sports', icon: TrophyIcon },
-    // { id: 'Cinematography', label: 'Video', icon: VideoCameraIcon },
-    { id: 'More', label: 'More', icon: Bars3Icon, isMoreButton: true }
-  ];
+  useEffect(() => {
+    if (categories.length > 0) {
+      // Build dynamic filters from categories
+      const dynamicFilters = [
+        { id: 'All', label: 'All', icon: CameraIcon },
+        ...categories.slice(0, 9).map(cat => ({
+          id: cat.name,
+          label: cat.name,
+          icon: getCategoryFilterIcon(cat.name)
+        })),
+        { id: 'More', label: 'More', icon: Bars3Icon, isMoreButton: true }
+      ];
+      setFilters(dynamicFilters);
+    }
+  }, [categories]);
 
   const handleFilterClick = (filterId: string, isMoreButton?: boolean) => {
     if (isMoreButton) {

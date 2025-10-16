@@ -10,6 +10,7 @@ interface CategoryCardProps {
   icon?: React.ReactNode;
   photographerCount?: number;
   category?: string;
+  categoryId?: string;
   subcategories?: string[];
   onClick?: () => void;
 }
@@ -18,15 +19,17 @@ export default function CategoryCard({
   title, 
   description, 
   imageUrl, 
-  icon, 
+  icon,
   photographerCount = 0,
   category,
+  categoryId,
   subcategories = [],
-  onClick 
+  onClick
 }: CategoryCardProps) {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const [visibleCount, setVisibleCount] = useState(subcategories.length);
+  const [imageError, setImageError] = useState(false);
 
   // Calculate how many subcategories fit in one line
   useEffect(() => {
@@ -38,17 +41,20 @@ export default function CategoryCard({
     }
   }, [subcategories]);
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   const handleMoreClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('More button clicked, expanding:', !isExpanded);
     setIsExpanded(!isExpanded);
   };
 
   const handleClick = () => {
-    if (category) {
-      // Navigate to categories page with the selected category
-      router.push(`/categories?category=${category.toLowerCase()}`);
+    if (categoryId) {
+      // Navigate to categories page with the selected category ID
+      router.push(`/categories?category=${categoryId}`);
     } else if (onClick) {
       onClick();
     }
@@ -61,12 +67,13 @@ export default function CategoryCard({
     >
       {/* Background Image */}
       <div className="absolute inset-0">
-        {imageUrl ? (
+        {imageUrl && !imageError ? (
           <img
             src={imageUrl}
             alt={title}
             className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
             loading="lazy"
+            onError={handleImageError}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">

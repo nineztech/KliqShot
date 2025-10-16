@@ -35,7 +35,6 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
 
   const handleLocationClick = () => {
     setShowLocationDropdown(!showLocationDropdown);
-    console.log('Location clicked');
   };
 
   const handleOpenMap = () => {
@@ -66,7 +65,6 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
         }
       );
     } else {
-      console.log('Geolocation is not supported by this browser.');
       setShowLocationDropdown(false);
     }
   };

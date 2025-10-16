@@ -3,6 +3,22 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5006/api';
 
+// Extract base URL without /api for static files
+const BACKEND_BASE_URL = API_BASE_URL.replace('/api', '');
+
+// Utility function to construct full image URL
+export const getImageUrl = (imagePath: string | null | undefined): string | null => {
+  if (!imagePath) return null;
+  
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  // If it's a relative path, prepend backend base URL
+  return `${BACKEND_BASE_URL}/${imagePath}`;
+};
+
 interface RegisterData {
   firstName: string;
   lastName: string;
@@ -170,6 +186,39 @@ export const userApi = {
   getCurrentUser: () => {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
+  }
+};
+
+// Category API
+export const categoryApi = {
+  // Get all categories with subcategories
+  getAll: async (includeInactive = false): Promise<ApiResponse> => {
+    try {
+      const response = await apiClient.get(`/categories?includeInactive=${includeInactive}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || error.message || 'Failed to fetch categories');
+    }
+  },
+
+  // Get single category by ID
+  getById: async (id: string): Promise<ApiResponse> => {
+    try {
+      const response = await apiClient.get(`/categories/${id}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || error.message || 'Failed to fetch category');
+    }
+  },
+
+  // Get subcategories of a category
+  getSubCategories: async (categoryId: string): Promise<ApiResponse> => {
+    try {
+      const response = await apiClient.get(`/categories/${categoryId}/subcategories`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || error.message || 'Failed to fetch subcategories');
+    }
   }
 };
 

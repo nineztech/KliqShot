@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, UserIcon, TagIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext';
 
@@ -296,6 +297,9 @@ export default function DesktopCartPage() {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

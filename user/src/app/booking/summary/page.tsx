@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { 
   ArrowLeftIcon, 
   TagIcon, 
@@ -671,6 +672,9 @@ function BookingSummaryContent() {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

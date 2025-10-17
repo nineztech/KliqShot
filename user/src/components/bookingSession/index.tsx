@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import BookingCalendar from './BookingCalendar';
 import AddonsSelection from './AddonsSelection';
 
@@ -278,6 +279,9 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
           )}
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

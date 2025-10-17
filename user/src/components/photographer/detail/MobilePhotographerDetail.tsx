@@ -6,6 +6,7 @@ import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, 
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { categories, type Category, type SubCategory } from '@/data/categories';
 import { BestInCategory, InspiredByHistory } from '@/components/photographer';
 
@@ -545,6 +546,9 @@ export default function MobilePhotographerDetail({ photographer, category, subca
           </div>
         </div>
       )}
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

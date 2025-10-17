@@ -6,6 +6,7 @@ import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, 
 import { HeartIcon as HeartSolidIcon, HandThumbUpIcon as HandThumbUpSolidIcon, HandThumbDownIcon as HandThumbDownSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { categories, type Category, type SubCategory } from '@/data/categories';
 import { BestInCategory, InspiredByHistory } from '@/components/photographer';
 import YourSearches from '@/components/common/YourSearches';
@@ -1601,6 +1602,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
           </div>
         </div>
       )}
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

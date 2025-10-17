@@ -6,6 +6,7 @@ import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, 
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import BestInCategory from '@/components/common/BestInCategory';
 import InspiredByHistory from '@/components/common/InspiredByHistory';
 import YourSearches from '@/components/common/YourSearches';
@@ -702,6 +703,9 @@ export default function ReviewsClient() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <YourSearches />
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

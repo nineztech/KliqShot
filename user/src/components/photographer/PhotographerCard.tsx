@@ -150,6 +150,36 @@ export default function PhotographerCard({
 
   const tierInfo = getTierLabel();
 
+  // Generate recommended features based on photographer ID
+  const getRecommendedFeatures = () => {
+    const allFeatures = [
+      'Fast Delivery',
+      'Quick Response',
+      'Professional',
+      'Experienced',
+      'Best Rated',
+      'Top Seller',
+      'Quality Work',
+      'On Time',
+      'Affordable',
+      'Creative'
+    ];
+    
+    // Select 2-3 features based on photographer ID
+    const featureCount = 2 + (id % 2); // 2 or 3 features
+    const features = [];
+    const startIndex = (id * 2) % allFeatures.length;
+    
+    for (let i = 0; i < featureCount; i++) {
+      const index = (startIndex + i) % allFeatures.length;
+      features.push(allFeatures[index]);
+    }
+    
+    return features;
+  };
+
+  const recommendedFeatures = getRecommendedFeatures();
+
   // Generate realistic rating breakdown based on overall rating
   const generateRatingBreakdown = () => {
     const totalReviews = reviews;
@@ -429,6 +459,23 @@ export default function PhotographerCard({
 
        {/* Category Tags */}
          <CategoryTags categories={categories || []} />
+         
+         {/* Recommended Features */}
+         {recommendedFeatures.length > 0 && (
+           <div className="mt-2">
+             <span className="text-[10px] text-gray-500 font-medium">Recommended for</span>
+             <div className="flex flex-wrap gap-1.5 mt-1">
+               {recommendedFeatures.map((feature, index) => (
+                 <span
+                   key={index}
+                   className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200 transition-all duration-200 hover:bg-gray-200"
+                 >
+                   {feature}
+                 </span>
+               ))}
+             </div>
+           </div>
+         )}
        </div>
     </div>
   );

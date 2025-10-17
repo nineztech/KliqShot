@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { 
   HeartIcon, 
   MapPinIcon, 
@@ -220,6 +221,9 @@ export default function WishlistPage() {
           ))}
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

@@ -26,6 +26,8 @@ interface Booking {
   remainingAmount: number;
   paymentStatus: 'paid' | 'pending' | 'partial';
   bookingStatus: 'confirmed' | 'pending' | 'cancelled' | 'completed';
+  serviceStatus: 'today' | 'upcoming' | 'completed' | 'cancelled';
+  deliveryStatus: 'pending' | 'delivered' | 'not_applicable';
   createdAt: string;
 }
 

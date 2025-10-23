@@ -14,7 +14,7 @@ export default function DesktopFooter() {
             <ul className="space-y-1.5 text-xs text-white">
                <li><a href="/contactus?otracker=footer_navlinks" className="hover:underline">Contact Us</a></li>
               <li><a href="#" className="hover:underline">Careers</a></li>
-              <li><a href="#" className="hover:underline">KliqShot Stories</a></li>
+              <li><a href="/kliqshot-stories" className="hover:underline">KliqShot Stories</a></li>
               <li><a href="#" className="hover:underline">Press</a></li>
                <li><a href="/aboutus" className="hover:underline">About Us</a></li>
               <li><a href="#" className="hover:underline">Corporate Information</a></li>

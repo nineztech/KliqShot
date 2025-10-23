@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, UserIcon, TagIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext';
 
@@ -284,6 +285,9 @@ export default function MobileCartPage() {
         {/* Bottom Padding for Fixed Summary */}
         <div className="h-40"></div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

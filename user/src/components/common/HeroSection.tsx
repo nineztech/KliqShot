@@ -182,7 +182,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[30rem] overflow-hidden shadow-2xl" data-hero-section>
+    <div className="relative w-full h-[20rem] md:h-[24rem] lg:h-[30rem] overflow-hidden shadow-2xl" data-hero-section>
       {/* Professional Background with Enhanced Blur Effect */}
       <div className="absolute inset-0 w-full h-full">
         {/* Background Image Layer */}

@@ -90,6 +90,15 @@ const DesktopDownloadApp: React.FC = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-6">
+          {/* Barcode */}
+          <Image
+            src="/image.png"
+            alt="Barcode"
+            width={200}
+            height={300}
+            className="w-40 h-60 object-contain"
+          />
+          
           {/* App Store Buttons */}
           <div className="flex flex-col gap-3">
             <a
@@ -130,15 +139,15 @@ const DesktopDownloadApp: React.FC = () => {
             </a>
           </div>
 
-          {/* QR Code */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
+          {/* mobile view */}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="flex items-center justify-center">
               <Image
-                src="/image.png"
-                alt="QR Code"
+                src="/mobileview2.jpg"
+                alt="MobileView"
                 width={200}
-                height={200}
-                className="w-50 h-50 object-contain"
+                height={500}
+                className="w-32 h-auto object-cover"
               />
             </div>
           </div>

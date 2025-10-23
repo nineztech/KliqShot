@@ -12,85 +12,26 @@ function AboutUsContent() {
       <Navbar />
       
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-[80vh] flex items-center">
-        {/* Animated Background Elements */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900">
+        <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-indigo-500/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
         </div>
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/20"></div>
-        
-        {/* Floating Particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/30 rounded-full animate-bounce" style={{animationDelay: '0s', animationDuration: '3s'}}></div>
-          <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-blue-300/40 rounded-full animate-bounce" style={{animationDelay: '1s', animationDuration: '4s'}}></div>
-          <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-purple-300/30 rounded-full animate-bounce" style={{animationDelay: '2s', animationDuration: '3.5s'}}></div>
-          <div className="absolute top-2/3 right-1/3 w-1 h-1 bg-indigo-300/40 rounded-full animate-bounce" style={{animationDelay: '0.5s', animationDuration: '4.5s'}}></div>
-        </div>
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="text-center lg:text-left">
-              {/* <div className="inline-flex items-center px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8 hover:bg-white/20 transition-all duration-300">
-                <svg className="w-5 h-5 mr-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span className="text-white text-sm font-medium">About KliqShot</span>
-              </div> */}
-              
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Capturing Life's
-                <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
-                  Beautiful Moments
-                </span>
-              </h1>
-              
-              <p className="text-xl text-blue-100 max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8">
-                We're revolutionizing photography by connecting world-class photographers with clients who deserve exceptional service
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                  <span className="flex items-center justify-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Get Started
-                  </span>
-                </button>
-                <button className="group border-2 border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-300 transform hover:scale-105 backdrop-blur-sm">
-                  <span className="flex items-center justify-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-5-8V6a2 2 0 00-2-2H8a2 2 0 00-2 2v1m8 0V6a2 2 0 00-2-2H8a2 2 0 00-2 2v1" />
-                    </svg>
-                    Learn More
-                  </span>
-                </button>
-              </div>
+          <div className="text-center">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
+              <span className="text-white text-sm font-medium">About KliqShot</span>
             </div>
-
-            {/* Right Image */}
-            <div className="relative">
-              <div className="relative z-10">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl transform rotate-6 animate-pulse"></div>
-                <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-white/20">
-                  <img
-                    src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1000&h=600&fit=crop&crop=center"
-                    alt="Professional Photography"
-                    className="rounded-2xl w-full h-auto transform hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              </div>
-              
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-80 animate-bounce" style={{animationDuration: '3s'}}></div>
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-70 animate-bounce" style={{animationDuration: '4s', animationDelay: '1s'}}></div>
-            </div>
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              Capturing Life's
+              <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Beautiful Moments
+              </span>
+            </h1>
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
+              We're revolutionizing photography by connecting world-class photographers with clients who deserve exceptional service
+            </p>
           </div>
         </div>
       </div>
@@ -135,9 +76,11 @@ function AboutUsContent() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl transform rotate-3"></div>
                 <div className="relative bg-white rounded-2xl p-4 shadow-2xl">
-                  <img
-                    src="/Images/Wedding.png"
-                    alt="Wedding Event Photography"
+                  <Image
+                    src="/Images/photographer1.jpg"
+                    alt="Professional Photographer"
+                    width={500}
+                    height={400}
                     className="rounded-xl w-full h-auto"
                   />
                 </div>
@@ -152,9 +95,11 @@ function AboutUsContent() {
             <div className="relative order-2 lg:order-1">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-3xl transform -rotate-2"></div>
               <div className="relative bg-white rounded-3xl p-6 shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=1000&h=600&fit=crop&crop=center"
-                  alt="Corporate Event Photography"
+                <Image
+                  src="/Images/photographer2.jpg"
+                  alt="Photography Team"
+                  width={500}
+                  height={400}
                   className="rounded-2xl w-full h-auto"
                 />
               </div>
@@ -209,41 +154,50 @@ function AboutUsContent() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl transform group-hover:scale-105 transition-all duration-300"></div>
+              <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-blue-100 group-hover:shadow-2xl transition-all duration-300">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Quality First</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We maintain the highest standards for photographer verification and service quality, 
+                  ensuring every client gets exceptional results that exceed expectations.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Quality First</h3>
-              <p className="text-gray-600 leading-relaxed">
-                We maintain the highest standards for photographer verification and service quality, 
-                ensuring every client gets exceptional results that exceed expectations.
-              </p>
             </div>
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-200 rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-600 rounded-3xl transform group-hover:scale-105 transition-all duration-300"></div>
+              <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-green-100 group-hover:shadow-2xl transition-all duration-300">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-200 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Transparency</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Clear pricing, honest reviews, and transparent processes ensure you know exactly 
+                  what to expect from your photography experience with complete confidence.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Transparency</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Clear pricing, honest reviews, and transparent processes ensure you know exactly 
-                what to expect from your photography experience with complete confidence.
-              </p>
             </div>
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-200 rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-3xl transform group-hover:scale-105 transition-all duration-300"></div>
+              <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-purple-100 group-hover:shadow-2xl transition-all duration-300">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-200 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Community</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We foster a supportive community where photographers can grow their business and 
+                  clients can find their perfect match in a collaborative environment.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Community</h3>
-              <p className="text-gray-600 leading-relaxed">
-                We foster a supportive community where photographers can grow their business and 
-                clients can find their perfect match in a collaborative environment.
-              </p>
             </div>
           </div>
         </div>
@@ -263,68 +217,62 @@ function AboutUsContent() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
-              <div className="text-center mb-6">
-                <div className="relative inline-block">
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full mx-auto flex items-center justify-center shadow-lg">
-                    <svg className="w-16 h-16 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                  </div>
-                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
+            <div className="group text-center">
+              <div className="relative mb-6">
+                <div className="w-40 h-40 bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl mx-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                  <svg className="w-20 h-20 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </div>
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">Sarah Johnson</h3>
-              <p className="text-blue-600 font-semibold mb-4 text-center">CEO & Founder</p>
-              <p className="text-gray-600 leading-relaxed text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Sarah Johnson</h3>
+              <p className="text-blue-600 font-semibold mb-4">CEO & Founder</p>
+              <p className="text-gray-600 leading-relaxed">
                 Photography enthusiast with 10+ years in the industry, passionate about connecting 
                 talented photographers with clients and revolutionizing the photography marketplace.
               </p>
             </div>
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
-              <div className="text-center mb-6">
-                <div className="relative inline-block">
-                  <div className="w-32 h-32 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full mx-auto flex items-center justify-center shadow-lg">
-                    <svg className="w-16 h-16 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                  </div>
-                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                  </div>
+            <div className="group text-center">
+              <div className="relative mb-6">
+                <div className="w-40 h-40 bg-gradient-to-br from-purple-100 to-purple-200 rounded-3xl mx-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                  <svg className="w-20 h-20 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </div>
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">Michael Chen</h3>
-              <p className="text-purple-600 font-semibold mb-4 text-center">CTO</p>
-              <p className="text-gray-600 leading-relaxed text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Michael Chen</h3>
+              <p className="text-purple-600 font-semibold mb-4">CTO</p>
+              <p className="text-gray-600 leading-relaxed">
                 Tech innovator focused on building scalable platforms that make photography 
                 services accessible to everyone through cutting-edge technology solutions.
               </p>
             </div>
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
-              <div className="text-center mb-6">
-                <div className="relative inline-block">
-                  <div className="w-32 h-32 bg-gradient-to-br from-green-100 to-emerald-200 rounded-full mx-auto flex items-center justify-center shadow-lg">
-                    <svg className="w-16 h-16 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                  </div>
-                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
+            <div className="group text-center">
+              <div className="relative mb-6">
+                <div className="w-40 h-40 bg-gradient-to-br from-green-100 to-emerald-200 rounded-3xl mx-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                  <svg className="w-20 h-20 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </div>
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">Emily Rodriguez</h3>
-              <p className="text-green-600 font-semibold mb-4 text-center">Head of Operations</p>
-              <p className="text-gray-600 leading-relaxed text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Emily Rodriguez</h3>
+              <p className="text-green-600 font-semibold mb-4">Head of Operations</p>
+              <p className="text-gray-600 leading-relaxed">
                 Operations expert ensuring smooth experiences for both photographers and clients, 
                 with a focus on quality, satisfaction, and continuous improvement.
               </p>

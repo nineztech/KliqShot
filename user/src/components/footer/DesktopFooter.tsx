@@ -40,9 +40,9 @@ export default function DesktopFooter() {
               <li><a href="#" className="hover:underline">Terms Of Use</a></li>
               <li><a href="#" className="hover:underline">Security</a></li>
               <li><a href="#" className="hover:underline">Privacy</a></li>
-              <li><a href="#" className="hover:underline">Sitemap</a></li>
+              <li><a href="/sitemap" className="hover:underline">Sitemap</a></li>
               <li><a href="#" className="hover:underline">Grievance Redressal</a></li>
-              <li><a href="#" className="hover:underline">EPR Compliance</a></li>
+              <li><a href="/ewaste-compliance" className="hover:underline">EPR Compliance</a></li>
             </ul>
           </div>
 

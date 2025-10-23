@@ -15,7 +15,9 @@ import {
   MdLogout,
   MdExpandMore,
   MdExpandLess,
-  MdEventNote
+  MdEventNote,
+  MdAttachMoney,
+  MdCardGiftcard
 } from 'react-icons/md';
 import { useSidebar } from './SidebarContext';
 import { useAuth } from '@/components/auth/AuthContext';
@@ -42,6 +44,8 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },
+    { id: 'coupons', label: 'Coupons', icon: MdAttachMoney, href: '/coupons' },
+    { id: 'gifts', label: 'Gifts', icon: MdCardGiftcard, href: '/gifts' },
     { id: 'analytics', label: 'Advertisements', icon: MdCampaign, href: '/analytics' },
     { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },
   ];

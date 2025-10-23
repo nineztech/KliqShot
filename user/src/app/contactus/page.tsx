@@ -10,7 +10,23 @@ export default function ContactUsPage() {
   const [selectedIssue, setSelectedIssue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBooking, setSelectedBooking] = useState('');
+  const [openFAQ, setOpenFAQ] = useState<{ [key: string]: boolean }>({});
+  const [openHelpItems, setOpenHelpItems] = useState<{ [key: string]: boolean }>({});
   const { user, isAuthenticated } = useAuth();
+
+  const toggleFAQ = (faqKey: string) => {
+    setOpenFAQ(prev => ({
+      ...prev,
+      [faqKey]: !prev[faqKey]
+    }));
+  };
+
+  const toggleHelpItem = (itemKey: string) => {
+    setOpenHelpItems(prev => ({
+      ...prev,
+      [itemKey]: !prev[itemKey]
+    }));
+  };
 
   // Mock user orders/bookings data
   const [userBookings, setUserBookings] = useState([
@@ -381,12 +397,6 @@ export default function ContactUsPage() {
               
               <div className="grid gap-3">
                 {helpCategories.find(cat => cat.id === selectedCategory)?.items.map((item, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all duration-200 cursor-pointer group">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-700 group-hover:text-gray-900">{item}</span>
-                      <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-=======
                   <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
                     <button 
                       className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
@@ -395,7 +405,6 @@ export default function ContactUsPage() {
                       <span className="text-gray-700">{item}</span>
                       <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openHelpItems[`${selectedCategory}-${index}`] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
->>>>>>> Stashed changes
                       </svg>
                     </button>
                     {openHelpItems[`${selectedCategory}-${index}`] && (
@@ -454,70 +463,70 @@ export default function ContactUsPage() {
 
             {/* FAQ Section */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Frequently Asked Questions</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">Frequently Asked Questions</h2>
               <div className="space-y-3">
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button 
+                  <button 
                     className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
-                onClick={() => setSelectedIssue(selectedIssue === 'booking' ? '' : 'booking')}
-              >
-                <h3 className="font-medium text-gray-900">How do I book a photographer on KliqShot?</h3>
-                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${selectedIssue === 'booking' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {selectedIssue === 'booking' && (
+                    onClick={() => toggleFAQ('booking')}
+                  >
+                    <h3 className="font-medium text-gray-900">How do I book a photographer on KliqShot?</h3>
+                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFAQ['booking'] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFAQ['booking'] && (
                     <div className="px-4 pb-4 border-t border-gray-200 bg-gray-50">
                       <p className="text-gray-600 text-sm pt-4">You can search for photographers by location and category, view their profiles and portfolios, then click 'Book Now' to schedule your session. The booking process is simple and takes just a few minutes.</p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button 
+                  <button 
                     className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
-                onClick={() => setSelectedIssue(selectedIssue === 'cancel' ? '' : 'cancel')}
-              >
-                <h3 className="font-medium text-gray-900">What if I need to cancel my booking?</h3>
-                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${selectedIssue === 'cancel' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {selectedIssue === 'cancel' && (
+                    onClick={() => toggleFAQ('cancel')}
+                  >
+                    <h3 className="font-medium text-gray-900">What if I need to cancel my booking?</h3>
+                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFAQ['cancel'] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFAQ['cancel'] && (
                     <div className="px-4 pb-4 border-t border-gray-200 bg-gray-50">
                       <p className="text-gray-600 text-sm pt-4">You can cancel your booking up to 24 hours before the scheduled session. Refunds will be processed within 5-7 business days to your original payment method.</p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button 
+                  <button 
                     className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
-                onClick={() => setSelectedIssue(selectedIssue === 'photographer' ? '' : 'photographer')}
-              >
-                <h3 className="font-medium text-gray-900">How do I become a photographer on KliqShot?</h3>
-                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${selectedIssue === 'photographer' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {selectedIssue === 'photographer' && (
+                    onClick={() => toggleFAQ('photographer')}
+                  >
+                    <h3 className="font-medium text-gray-900">How do I become a photographer on KliqShot?</h3>
+                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFAQ['photographer'] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFAQ['photographer'] && (
                     <div className="px-4 pb-4 border-t border-gray-200 bg-gray-50">
                       <p className="text-gray-600 text-sm pt-4">Visit our photographer registration page, fill out the application form, and upload your portfolio. Our team will review your application within 3-5 business days and notify you of the status.</p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button 
+                  <button 
                     className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
-                onClick={() => setSelectedIssue(selectedIssue === 'payment' ? '' : 'payment')}
-              >
-                <h3 className="font-medium text-gray-900">Is my payment information secure?</h3>
-                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${selectedIssue === 'payment' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {selectedIssue === 'payment' && (
+                    onClick={() => toggleFAQ('payment')}
+                  >
+                    <h3 className="font-medium text-gray-900">Is my payment information secure?</h3>
+                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFAQ['payment'] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFAQ['payment'] && (
                     <div className="px-4 pb-4 border-t border-gray-200 bg-gray-50">
                       <p className="text-gray-600 text-sm pt-4">Yes, we use industry-standard encryption to protect your payment information. All transactions are processed securely through our payment partners and we never store your card details.</p>
                     </div>

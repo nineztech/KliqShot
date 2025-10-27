@@ -7,22 +7,20 @@ import {
   MdDelete, 
   MdClose,
   MdCardGiftcard,
-  MdAttachMoney,
-  MdInventory,
   MdVisibility,
   MdVisibilityOff,
   MdImage,
-  MdCategory
+  MdContentCopy,
+  MdCheck
 } from 'react-icons/md';
 
 interface Gift {
   id: string;
   name: string;
-  description: string;
+  giftCode: string;
   image?: string;
-  category: string;
-  pointsRequired: number;
-  stock: number;
+  startDate: string;
+  endDate: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -40,32 +38,28 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
   const [selectedGift, setSelectedGift] = useState<Gift | null>(null);
   const [newGift, setNewGift] = useState({
     name: '',
-    description: '',
+    giftCode: '',
     image: '',
-    category: '',
-    pointsRequired: 0,
-    stock: 0,
+    startDate: '',
+    endDate: '',
     isActive: true
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [copiedGiftId, setCopiedGiftId] = useState<string | null>(null);
 
-  const categories = [
-    'Electronics',
-    'Home & Living',
-    'Fashion',
-    'Beauty & Health',
-    'Sports & Fitness',
-    'Books & Media',
-    'Food & Beverages',
-    'Travel & Experiences',
-    'Gift Cards',
-    'Other'
-  ];
+  const generateGiftCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewGift({ ...newGift, giftCode: result });
+  };
 
   const handleAddGift = async () => {
-    if (newGift.name && newGift.category && newGift.pointsRequired > 0) {
+    if (newGift.name && newGift.giftCode && newGift.startDate && newGift.endDate) {
       setIsSubmitting(true);
       setError('');
       
@@ -83,11 +77,10 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
         setGifts([...gifts, gift]);
         setNewGift({
           name: '',
-          description: '',
+          giftCode: '',
           image: '',
-          category: '',
-          pointsRequired: 0,
-          stock: 0,
+          startDate: '',
+          endDate: '',
           isActive: true
         });
         setImagePreview('');
@@ -104,11 +97,10 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
     setSelectedGift(gift);
     setNewGift({
       name: gift.name,
-      description: gift.description,
+      giftCode: gift.giftCode,
       image: gift.image || '',
-      category: gift.category,
-      pointsRequired: gift.pointsRequired,
-      stock: gift.stock,
+      startDate: gift.startDate,
+      endDate: gift.endDate,
       isActive: gift.isActive
     });
     setImagePreview(gift.image || '');
@@ -116,7 +108,7 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
   };
 
   const handleUpdateGift = async () => {
-    if (selectedGift && newGift.name && newGift.category && newGift.pointsRequired > 0) {
+    if (selectedGift && newGift.name && newGift.giftCode && newGift.startDate && newGift.endDate) {
       setIsSubmitting(true);
       setError('');
       
@@ -139,11 +131,10 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
         setSelectedGift(null);
         setNewGift({
           name: '',
-          description: '',
+          giftCode: '',
           image: '',
-          category: '',
-          pointsRequired: 0,
-          stock: 0,
+          startDate: '',
+          endDate: '',
           isActive: true
         });
         setImagePreview('');
@@ -197,17 +188,19 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    // Handle YYYY-MM-DD format (from date input)
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
     });
   };
 
-  const getStockStatus = (stock: number) => {
-    if (stock === 0) return { color: 'bg-red-100 text-red-600', text: 'Out of Stock' };
-    if (stock < 10) return { color: 'bg-orange-100 text-orange-600', text: 'Low Stock' };
-    return { color: 'bg-green-100 text-green-600', text: 'In Stock' };
+  const handleCopyGiftCode = (giftCode: string, giftId: string) => {
+    navigator.clipboard.writeText(giftCode);
+    setCopiedGiftId(giftId);
+    setTimeout(() => setCopiedGiftId(null), 2000);
   };
 
   return (
@@ -230,7 +223,7 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="admin-card">
           <div className="flex items-center">
             <div className="p-3 bg-purple-100 rounded-lg">
@@ -260,130 +253,131 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
         <div className="admin-card">
           <div className="flex items-center">
             <div className="p-3 bg-blue-100 rounded-lg">
-              <MdInventory className="w-6 h-6 text-blue-600" />
+              <MdVisibilityOff className="w-6 h-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Stock</p>
+              <p className="text-sm font-medium text-gray-600">Inactive Gifts</p>
               <p className="text-2xl font-bold text-gray-900">
-                {gifts.reduce((sum, g) => sum + g.stock, 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="admin-card">
-          <div className="flex items-center">
-            <div className="p-3 bg-orange-100 rounded-lg">
-              <MdAttachMoney className="w-6 h-6 text-orange-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Avg Points</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {gifts.length > 0 ? Math.round(gifts.reduce((sum, g) => sum + g.pointsRequired, 0) / gifts.length) : 0}
+                {gifts.filter(g => !g.isActive).length}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Gifts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {gifts.map((gift) => {
-          const stockStatus = getStockStatus(gift.stock);
-          return (
-            <div key={gift.id} className="admin-card">
-              <div className="relative">
-                {gift.image ? (
-                  <div className="w-full h-48 rounded-lg overflow-hidden mb-4">
-                    <img
-                      src={gift.image}
-                      alt={gift.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
-                    <MdCardGiftcard className="w-16 h-16 text-gray-400" />
-                  </div>
-                )}
-                
-                <div className="absolute top-2 right-2 flex space-x-1">
-                  <button
-                    onClick={() => toggleGiftStatus(gift.id)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      gift.isActive 
-                        ? 'text-orange-600 hover:bg-orange-50 bg-white/80' 
-                        : 'text-green-600 hover:bg-green-50 bg-white/80'
-                    }`}
-                    title={gift.isActive ? 'Deactivate' : 'Activate'}
-                  >
-                    {gift.isActive ? <MdVisibilityOff className="w-4 h-4" /> : <MdVisibility className="w-4 h-4" />}
-                  </button>
-                  <button
-                    onClick={() => handleEditGift(gift)}
-                    className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors bg-white/80"
-                    title="Edit Gift"
-                  >
-                    <MdEdit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteGift(gift.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors bg-white/80"
-                    title="Delete Gift"
-                  >
-                    <MdDelete className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-lg">{gift.name}</h3>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <MdCategory className="w-4 h-4 mr-1" />
-                    {gift.category}
-                  </div>
-                </div>
-                
-                {gift.description && (
-                  <p className="text-gray-600 text-sm line-clamp-2">{gift.description}</p>
-                )}
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <MdAttachMoney className="w-4 h-4 text-purple-600 mr-1" />
-                    <span className="font-semibold text-purple-600">{gift.pointsRequired} pts</span>
-                  </div>
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${stockStatus.color}`}>
-                    {stockStatus.text}
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <span>Stock: {gift.stock}</span>
-                  <span>Updated: {formatDate(gift.updatedAt)}</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {gifts.length === 0 && (
-        <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <MdCardGiftcard className="w-8 h-8 text-gray-400" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No gifts added yet</h3>
-          <p className="text-gray-500 mb-4">Start by adding your first reward gift</p>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="admin-button-primary"
-          >
-            Add Your First Gift
-          </button>
+      {/* Gifts Table */}
+      <div className="admin-card">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0 z-10">
+              <tr>
+                <th className="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Gift Name</th>
+                <th className="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Gift Code</th>
+                <th className="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Start Date</th>
+                <th className="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">End Date</th>
+                <th className="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                <th className="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-100">
+              {gifts.map((gift) => (
+                <tr key={gift.id} className="hover:bg-blue-50/30 transition-colors">
+                  <td className="px-4 py-1.5">
+                    <div className="flex items-center gap-3">
+                      {gift.image ? (
+                        <div className="w-12 h-12 rounded-lg overflow-hidden">
+                          <img
+                            src={gift.image}
+                            alt={gift.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <MdCardGiftcard className="w-6 h-6 text-gray-400" />
+                        </div>
+                      )}
+                      <span className="text-sm font-semibold text-gray-900">{gift.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-1.5 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-900 font-mono">{gift.giftCode}</span>
+                      <button
+                        onClick={() => handleCopyGiftCode(gift.giftCode, gift.id)}
+                        className={`p-1 rounded transition-colors ${
+                          copiedGiftId === gift.id 
+                            ? 'text-green-600 bg-green-50' 
+                            : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                        }`}
+                        title="Copy gift code"
+                      >
+                        {copiedGiftId === gift.id ? (
+                          <MdCheck className="w-4 h-4" />
+                        ) : (
+                          <MdContentCopy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </td>
+                  <td className="px-4 py-1.5 whitespace-nowrap">
+                    <span className="text-xs text-gray-500">{formatDate(gift.startDate)}</span>
+                  </td>
+                  <td className="px-4 py-1.5 whitespace-nowrap">
+                    <span className="text-xs text-gray-500">{formatDate(gift.endDate)}</span>
+                  </td>
+                  <td className="px-4 py-1.5 whitespace-nowrap">
+                    <button
+                      onClick={() => toggleGiftStatus(gift.id)}
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        gift.isActive 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {gift.isActive ? 'Active' : 'Inactive'}
+                    </button>
+                  </td>
+                  <td className="px-4 py-1.5 whitespace-nowrap text-sm font-medium">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleEditGift(gift)}
+                        className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded transition-colors"
+                        title="Edit"
+                      >
+                        <MdEdit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteGift(gift.id)}
+                        className="text-red-600 hover:text-red-800 p-1 hover:bg-red-50 rounded transition-colors"
+                        title="Delete"
+                      >
+                        <MdDelete className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+
+        {gifts.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MdCardGiftcard className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No gift cards added yet</h3>
+            <p className="text-gray-500 mb-4">Start by adding your first gift card</p>
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="admin-button-primary"
+            >
+              Add Your First Gift
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Add Gift Modal */}
       {showAddModal && (
@@ -405,71 +399,40 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
                 </div>
               )}
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="admin-label">Gift Name</label>
-                  <input
-                    type="text"
-                    value={newGift.name}
-                    onChange={(e) => setNewGift({ ...newGift, name: e.target.value })}
-                    className="admin-input w-full"
-                    placeholder="Enter gift name"
-                  />
-                </div>
-                
-                <div>
-                  <label className="admin-label">Category</label>
-                  <select
-                    value={newGift.category}
-                    onChange={(e) => setNewGift({ ...newGift, category: e.target.value })}
-                    className="admin-input w-full"
-                  >
-                    <option value="">Select category</option>
-                    {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
               <div>
-                <label className="admin-label">Description</label>
-                <textarea
-                  value={newGift.description}
-                  onChange={(e) => setNewGift({ ...newGift, description: e.target.value })}
-                  className="admin-input w-full h-20 resize-none"
-                  placeholder="Enter gift description"
+                <label className="admin-label">Gift Name</label>
+                <input
+                  type="text"
+                  value={newGift.name}
+                  onChange={(e) => setNewGift({ ...newGift, name: e.target.value })}
+                  className="admin-input w-full"
+                  placeholder="Enter gift card name"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="admin-label">Points Required</label>
+              <div>
+                <label className="admin-label">Gift Code <span className="text-red-500">*</span></label>
+                <div className="flex gap-2">
                   <input
-                    type="number"
-                    value={newGift.pointsRequired}
-                    onChange={(e) => setNewGift({ ...newGift, pointsRequired: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="100"
-                    min="0"
+                    type="text"
+                    value={newGift.giftCode}
+                    onChange={(e) => setNewGift({ ...newGift, giftCode: e.target.value })}
+                    className="admin-input flex-1"
+                    placeholder="Enter or generate gift code"
+                    required
                   />
-                </div>
-                
-                <div>
-                  <label className="admin-label">Stock Quantity</label>
-                  <input
-                    type="number"
-                    value={newGift.stock}
-                    onChange={(e) => setNewGift({ ...newGift, stock: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="10"
-                    min="0"
-                  />
+                  <button
+                    type="button"
+                    onClick={generateGiftCode}
+                    className="admin-button-secondary whitespace-nowrap px-4 py-2"
+                  >
+                    Generate
+                  </button>
                 </div>
               </div>
 
               <div>
-                <label className="admin-label">Gift Image</label>
+                <label className="admin-label">Gift Card Image</label>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
@@ -491,6 +454,7 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
                         className="w-full h-full object-cover"
                       />
                       <button
+                        type="button"
                         onClick={() => {
                           setImagePreview('');
                           setNewGift({ ...newGift, image: '' });
@@ -501,6 +465,28 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
                       </button>
                     </div>
                   )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="admin-label">Start Date</label>
+                  <input
+                    type="date"
+                    value={newGift.startDate}
+                    onChange={(e) => setNewGift({ ...newGift, startDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="admin-label">End Date</label>
+                  <input
+                    type="date"
+                    value={newGift.endDate}
+                    onChange={(e) => setNewGift({ ...newGift, endDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
                 </div>
               </div>
 
@@ -556,71 +542,40 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
                 </div>
               )}
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="admin-label">Gift Name</label>
-                  <input
-                    type="text"
-                    value={newGift.name}
-                    onChange={(e) => setNewGift({ ...newGift, name: e.target.value })}
-                    className="admin-input w-full"
-                    placeholder="Enter gift name"
-                  />
-                </div>
-                
-                <div>
-                  <label className="admin-label">Category</label>
-                  <select
-                    value={newGift.category}
-                    onChange={(e) => setNewGift({ ...newGift, category: e.target.value })}
-                    className="admin-input w-full"
-                  >
-                    <option value="">Select category</option>
-                    {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
               <div>
-                <label className="admin-label">Description</label>
-                <textarea
-                  value={newGift.description}
-                  onChange={(e) => setNewGift({ ...newGift, description: e.target.value })}
-                  className="admin-input w-full h-20 resize-none"
-                  placeholder="Enter gift description"
+                <label className="admin-label">Gift Name</label>
+                <input
+                  type="text"
+                  value={newGift.name}
+                  onChange={(e) => setNewGift({ ...newGift, name: e.target.value })}
+                  className="admin-input w-full"
+                  placeholder="Enter gift card name"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="admin-label">Points Required</label>
+              <div>
+                <label className="admin-label">Gift Code <span className="text-red-500">*</span></label>
+                <div className="flex gap-2">
                   <input
-                    type="number"
-                    value={newGift.pointsRequired}
-                    onChange={(e) => setNewGift({ ...newGift, pointsRequired: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="100"
-                    min="0"
+                    type="text"
+                    value={newGift.giftCode}
+                    onChange={(e) => setNewGift({ ...newGift, giftCode: e.target.value })}
+                    className="admin-input flex-1"
+                    placeholder="Enter or generate gift code"
+                    required
                   />
-                </div>
-                
-                <div>
-                  <label className="admin-label">Stock Quantity</label>
-                  <input
-                    type="number"
-                    value={newGift.stock}
-                    onChange={(e) => setNewGift({ ...newGift, stock: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="10"
-                    min="0"
-                  />
+                  <button
+                    type="button"
+                    onClick={generateGiftCode}
+                    className="admin-button-secondary whitespace-nowrap px-4 py-2"
+                  >
+                    Generate
+                  </button>
                 </div>
               </div>
 
               <div>
-                <label className="admin-label">Gift Image</label>
+                <label className="admin-label">Gift Card Image</label>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
@@ -642,6 +597,7 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
                         className="w-full h-full object-cover"
                       />
                       <button
+                        type="button"
                         onClick={() => {
                           setImagePreview('');
                           setNewGift({ ...newGift, image: '' });
@@ -652,6 +608,28 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
                       </button>
                     </div>
                   )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="admin-label">Start Date</label>
+                  <input
+                    type="date"
+                    value={newGift.startDate}
+                    onChange={(e) => setNewGift({ ...newGift, startDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="admin-label">End Date</label>
+                  <input
+                    type="date"
+                    value={newGift.endDate}
+                    onChange={(e) => setNewGift({ ...newGift, endDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
                 </div>
               </div>
 

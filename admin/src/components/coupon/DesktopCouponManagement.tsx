@@ -363,6 +363,11 @@ export default function DesktopCouponManagement({ coupons, setCoupons, onRefresh
                         <span className="font-semibold text-green-600">₹{coupon.value} OFF</span>
                       )}
                     </div>
+                    {coupon.maxDiscount > 0 && coupon.type === 'percentage' && (
+                      <div className="text-xs text-gray-500">
+                        Upto ₹{coupon.maxDiscount}
+                      </div>
+                    )}
                     {coupon.minOrderAmount > 0 && (
                       <div className="text-xs text-gray-500">
                         Min order: ₹{coupon.minOrderAmount}
@@ -456,7 +461,7 @@ export default function DesktopCouponManagement({ coupons, setCoupons, onRefresh
                 <MdClose className="w-6 h-6" />
               </button>
             </div>
-            <div className="p-6 space-y-6">
+              <div className="p-6 space-y-6">
               {error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-sm text-red-600">{error}</p>
@@ -545,6 +550,23 @@ export default function DesktopCouponManagement({ coupons, setCoupons, onRefresh
                   />
                 </div>
               </div>
+
+              {newCoupon.type === 'percentage' && (
+                <div>
+                  <label className="admin-label">Maximum Discount Amount (₹)</label>
+                  <input
+                    type="number"
+                    value={newCoupon.maxDiscount}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, maxDiscount: parseFloat(e.target.value) || 0 })}
+                    className="admin-input w-full"
+                    placeholder="Upto ₹1000 (optional)"
+                    min="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    This caps the discount amount. e.g., "20% off upto ₹1000"
+                  </p>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -706,6 +728,23 @@ export default function DesktopCouponManagement({ coupons, setCoupons, onRefresh
                   />
                 </div>
               </div>
+
+              {newCoupon.type === 'percentage' && (
+                <div>
+                  <label className="admin-label">Maximum Discount Amount (₹)</label>
+                  <input
+                    type="number"
+                    value={newCoupon.maxDiscount}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, maxDiscount: parseFloat(e.target.value) || 0 })}
+                    className="admin-input w-full"
+                    placeholder="Upto ₹1000 (optional)"
+                    min="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    This caps the discount amount. e.g., "20% off upto ₹1000"
+                  </p>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>

@@ -7,11 +7,10 @@ import MobileGiftManagement from './MobileGiftManagement';
 interface Gift {
   id: string;
   name: string;
-  description: string;
+  giftCode: string;
   image?: string;
-  category: string;
-  pointsRequired: number;
-  stock: number;
+  startDate: string;
+  endDate: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

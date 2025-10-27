@@ -8,11 +8,10 @@ import { useSidebar } from '@/components/sidebar/SidebarContext';
 interface Gift {
   id: string;
   name: string;
-  description: string;
+  giftCode: string;
   image?: string;
-  category: string;
-  pointsRequired: number;
-  stock: number;
+  startDate: string;
+  endDate: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -37,102 +36,73 @@ export default function GiftsPage() {
       // Simulate API call with sample data
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Get current date and future dates for samples
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      const formatDateForInput = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
       const sampleGifts: Gift[] = [
         {
           id: '1',
-          name: 'Wireless Headphones',
-          description: 'Premium quality wireless headphones with noise cancellation',
-          image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-          category: 'Electronics',
-          pointsRequired: 2500,
-          stock: 15,
+          name: 'Gift Card ₹500',
+          giftCode: 'GC500XYZ',
+          image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
+          startDate: formatDateForInput(today),
+          endDate: formatDateForInput(new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000)), // 90 days from now
           isActive: true,
           createdAt: '2024-01-01T00:00:00Z',
           updatedAt: '2024-01-15T00:00:00Z'
         },
         {
           id: '2',
-          name: 'Coffee Maker',
-          description: 'Automatic coffee maker for your perfect morning brew',
-          image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop',
-          category: 'Home & Living',
-          pointsRequired: 1800,
-          stock: 8,
+          name: 'Gift Card ₹1000',
+          giftCode: 'GC1KABC',
+          image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
+          startDate: formatDateForInput(today),
+          endDate: formatDateForInput(new Date(today.getTime() + 120 * 24 * 60 * 60 * 1000)), // 120 days from now
           isActive: true,
           createdAt: '2024-01-05T00:00:00Z',
           updatedAt: '2024-01-20T00:00:00Z'
         },
         {
           id: '3',
-          name: 'Fitness Tracker',
-          description: 'Smart fitness tracker with heart rate monitoring',
-          image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-          category: 'Sports & Fitness',
-          pointsRequired: 3200,
-          stock: 0,
-          isActive: false,
+          name: 'Gift Card ₹2500',
+          giftCode: 'GC2K5DEF',
+          image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
+          startDate: formatDateForInput(today),
+          endDate: formatDateForInput(new Date(today.getTime() + 180 * 24 * 60 * 60 * 1000)), // 180 days from now
+          isActive: true,
           createdAt: '2024-01-10T00:00:00Z',
           updatedAt: '2024-01-25T00:00:00Z'
         },
         {
           id: '4',
-          name: 'Gift Card ₹500',
-          description: 'Redeemable gift card worth ₹500',
+          name: 'Gift Card ₹5000',
+          giftCode: 'GC5KGHI',
           image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
-          category: 'Gift Cards',
-          pointsRequired: 1000,
-          stock: 50,
+          startDate: formatDateForInput(today),
+          endDate: formatDateForInput(new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000)),
           isActive: true,
           createdAt: '2024-01-12T00:00:00Z',
           updatedAt: '2024-01-18T00:00:00Z'
         },
         {
           id: '5',
-          name: 'Bluetooth Speaker',
-          description: 'Portable Bluetooth speaker with excellent sound quality',
-          image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop',
-          category: 'Electronics',
-          pointsRequired: 1500,
-          stock: 3,
+          name: 'Premium Gift Card ₹10000',
+          giftCode: 'GC10KJKL',
+          image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
+          startDate: formatDateForInput(today),
+          endDate: formatDateForInput(new Date(today.getTime() + 365 * 24 * 60 * 60 * 1000)), // 1 year from now
           isActive: true,
           createdAt: '2024-01-15T00:00:00Z',
           updatedAt: '2024-01-22T00:00:00Z'
-        },
-        {
-          id: '6',
-          name: 'Smart Watch',
-          description: 'Advanced smartwatch with health monitoring features',
-          image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
-          category: 'Electronics',
-          pointsRequired: 4000,
-          stock: 12,
-          isActive: true,
-          createdAt: '2024-01-18T00:00:00Z',
-          updatedAt: '2024-01-25T00:00:00Z'
-        },
-        {
-          id: '7',
-          name: 'Wireless Charger',
-          description: 'Fast wireless charging pad for smartphones',
-          image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop',
-          category: 'Electronics',
-          pointsRequired: 800,
-          stock: 25,
-          isActive: true,
-          createdAt: '2024-01-20T00:00:00Z',
-          updatedAt: '2024-01-28T00:00:00Z'
-        },
-        {
-          id: '8',
-          name: 'Travel Backpack',
-          description: 'Durable travel backpack with multiple compartments',
-          image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
-          category: 'Fashion',
-          pointsRequired: 1200,
-          stock: 18,
-          isActive: true,
-          createdAt: '2024-01-22T00:00:00Z',
-          updatedAt: '2024-01-30T00:00:00Z'
         }
       ];
       

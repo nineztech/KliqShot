@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
 interface HeroSlide {
@@ -84,7 +83,7 @@ const heroSlides: HeroSlide[] = [
   }
 ];
 
-export default function HeroSection() {
+export default function DesktopHeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [showText, setShowText] = useState(false);
@@ -299,3 +298,4 @@ export default function HeroSection() {
     </div>
   );
 }
+

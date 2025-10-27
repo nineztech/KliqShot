@@ -296,13 +296,13 @@ export default function PhotographerCard({
 
   return (
     <div 
-      className="bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group"
+      className="bg-white border border-gray-200 rounded-lg sm:rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group"
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
          {/* Animated Image Gallery Section */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+        <div className="relative aspect-[3/2] sm:aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
         {/* Main Image */}
         <div className="relative w-full h-full">
             <img
@@ -315,37 +315,37 @@ export default function PhotographerCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             
             {/* Trusted Badge */}
-            <div className="absolute top-3 left-3 bg-purple-500/90 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg">
-              <ShieldCheckIcon className="w-3 h-3" />
-              <span className="text-[8px] font-bold tracking-wide">TRUSTED</span>
+            <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-purple-500/90 backdrop-blur-sm text-white px-1 sm:px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg">
+              <ShieldCheckIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+              <span className="text-[7px] sm:text-[8px] font-bold tracking-wide">TRUSTED</span>
             </div>
             
             {/* Like Button */}
           <button
-            className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
+            className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white/90 backdrop-blur-sm p-1.5 sm:p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
             onClick={handleWishlistToggle}
           >
             {isInWishlist(id) ? (
-              <HeartSolidIcon className="w-5 h-5 text-red-500" />
+              <HeartSolidIcon className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
             ) : (
-              <HeartIcon className="w-5 h-5 text-gray-600" />
+              <HeartIcon className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
             )}
           </button>
           
           {/* Category Badge */}
-          <div className="absolute bottom-3 left-3 bg-blue-600/90 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <CameraIcon className="w-3 h-3 inline mr-1" />
+          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <CameraIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 inline mr-0.5 sm:mr-1" />
             {specialty}
           </div>
         </div>
         
         {/* Image Dots Indicator */}
         {portfolioImages.length > 1 && (
-          <div className="absolute bottom-3 right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             {portfolioImages.map((_, index) => (
               <div
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 ${
                   index === currentImageIndex ? 'bg-white' : 'bg-white/50'
                 }`}
               />
@@ -355,17 +355,17 @@ export default function PhotographerCard({
       </div>
       
          {/* Content Section */}
-        <div className="p-3">
+        <div className="p-2.5 sm:p-3">
          {/* Photographer Info */}
-         <div className="flex items-start space-x-3 mb-3">
+         <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-3">
            <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">
-               <div className="flex items-center gap-2">
-                 <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
+               <div className="flex items-center gap-1 sm:gap-2">
+                 <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
                    {name}
                  </h3>
                  <div className="relative group/verified">
-                   <svg className="w-4 h-4 text-green-500 flex-shrink-0 cursor-help" fill="currentColor" viewBox="0 0 20 20">
+                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 flex-shrink-0 cursor-help" fill="currentColor" viewBox="0 0 20 20">
                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                    </svg>
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-900 text-xs rounded-lg opacity-0 group-hover/verified:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-200">
@@ -387,10 +387,10 @@ export default function PhotographerCard({
                  }}
                  onMouseLeave={() => setShowRatingHover(false)}
                >
-                 <span className="text-gray-600 text-sm font-medium">
+                 <span className="text-gray-600 text-xs sm:text-sm font-medium">
                    {rating}
                  </span>
-                 <StarSolidIcon className="w-4 h-4 text-yellow-400" />
+                 <StarSolidIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400" />
                </div>
                
                {/* Rating Hover Component - Portal */}
@@ -440,17 +440,17 @@ export default function PhotographerCard({
              </div>
             </div>
             <div className="mb-1">
-              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold tracking-wider border ${tierInfo.colorClass} transition-all duration-200`}>
+              <span className={`inline-flex items-center px-1 sm:px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-semibold tracking-wider border ${tierInfo.colorClass} transition-all duration-200`}>
                 {tierInfo.label}
               </span>
             </div>
              <div className="flex items-center justify-between mt-1">
                <div className="flex items-center">
-                 <MapPinIcon className="w-3 h-3 text-gray-400 mr-1" />
-                 <span className="text-gray-500 text-xs truncate">{location}</span>
+                 <MapPinIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 mr-0.5 sm:mr-1" />
+                 <span className="text-gray-500 text-[10px] sm:text-xs truncate">{location}</span>
                </div>
-               <div className="flex items-center text-gray-500 text-xs">
-                 <ClockIcon className="w-3 h-3 mr-1" />
+               <div className="flex items-center text-gray-500 text-[10px] sm:text-xs">
+                 <ClockIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
                  {experience}
                </div>
              </div>
@@ -462,13 +462,13 @@ export default function PhotographerCard({
          
          {/* Recommended Features */}
          {recommendedFeatures.length > 0 && (
-           <div className="mt-2">
-             <span className="text-[10px] text-gray-500 font-medium">Recommended for</span>
-             <div className="flex flex-wrap gap-1.5 mt-1">
+           <div className="mt-1.5 sm:mt-2">
+             <span className="text-[9px] sm:text-[10px] text-gray-500 font-medium">Recommended for</span>
+             <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-1">
                {recommendedFeatures.map((feature, index) => (
                  <span
                    key={index}
-                   className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200 transition-all duration-200 hover:bg-gray-200"
+                   className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200 transition-all duration-200 hover:bg-gray-200"
                  >
                    {feature}
                  </span>

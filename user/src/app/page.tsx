@@ -22,7 +22,7 @@ export default function Home() {
       {/* <HeroSection /> */}
 
       {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-auto mx-auto">
         <div >
           <HeroSection/>
         </div>

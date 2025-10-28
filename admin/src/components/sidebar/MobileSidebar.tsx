@@ -21,7 +21,8 @@ import {
   MdAttachMoney,
   MdCardGiftcard,
   MdSupportAgent,
-  MdHistory
+  MdHistory,
+  MdSlideshow
 } from 'react-icons/md';
 import { useAuth } from '@/components/auth/AuthContext';
 import { adminApi } from '@/lib/api';
@@ -52,6 +53,7 @@ export default function MobileSidebar({ activeTab, onTabChange }: MobileSidebarP
     { id: 'tickets', label: 'Tickets', icon: MdSupportAgent, href: '/tickets' },
     { id: 'logs', label: 'Activity Logs', icon: MdHistory, href: '/logs' },
     { id: 'analytics', label: 'Advertisements', icon: MdCampaign, href: '/analytics' },
+    { id: 'carousel', label: 'Carousel & Content', icon: MdSlideshow, href: '/carousel' },
     { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },
   ];
 

@@ -31,6 +31,7 @@ export default function PhotographerDetail({ photographerId }: PhotographerDetai
   const searchParams = useSearchParams();
   const category = searchParams.get('category') || undefined;
   const subcategory = searchParams.get('subcategory') || undefined;
+  const packageParam = searchParams.get('package') || undefined;
   
   const [isMobile, setIsMobile] = useState(false);
   const [photographer, setPhotographer] = useState<Photographer | null>(null);
@@ -104,8 +105,8 @@ export default function PhotographerDetail({ photographerId }: PhotographerDetai
   }
 
   return isMobile ? (
-    <MobilePhotographerDetail photographer={photographer} category={category} subcategory={subcategory} />
+    <MobilePhotographerDetail photographer={photographer} category={category} subcategory={subcategory} packageParam={packageParam} />
   ) : (
-    <DesktopPhotographerDetail photographer={photographer} category={category} subcategory={subcategory} />
+    <DesktopPhotographerDetail photographer={photographer} category={category} subcategory={subcategory} packageParam={packageParam} />
   );
 }

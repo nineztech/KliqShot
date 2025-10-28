@@ -32,9 +32,10 @@ interface MobilePhotographerDetailProps {
   photographer: Photographer;
   category?: string;
   subcategory?: string;
+  packageParam?: string;
 }
 
-export default function MobilePhotographerDetail({ photographer, category, subcategory }: MobilePhotographerDetailProps) {
+export default function MobilePhotographerDetail({ photographer, category, subcategory, packageParam }: MobilePhotographerDetailProps) {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -128,6 +129,18 @@ export default function MobilePhotographerDetail({ photographer, category, subca
   };
 
   const handleBookNow = () => {
+    // If package is present, skip category selection
+    if (packageParam) {
+      const bookingParams = new URLSearchParams();
+      bookingParams.append('photographerId', photographer.id.toString());
+      bookingParams.append('photographerName', photographer.name);
+      bookingParams.append('price', photographer.price);
+      bookingParams.append('package', packageParam);
+      
+      router.push(`/booking?${bookingParams.toString()}`);
+      return;
+    }
+
     // If no category is selected, show the category selection modal
     if (!category && !selectedCategory) {
       setShowCategoryModal(true);

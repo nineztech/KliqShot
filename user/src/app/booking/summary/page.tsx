@@ -26,6 +26,80 @@ interface Addon {
   quantity: number;
 }
 
+interface PackageDetails {
+  name: string;
+  startingPrice: number;
+  valueProposition: string;
+}
+
+const packageDetailsMap: { [key: string]: PackageDetails } = {
+  wedding: {
+    name: 'Wedding',
+    startingPrice: 150000,
+    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Marriage Video'
+  },
+  'pre-wedding': {
+    name: 'Pre-Wedding',
+    startingPrice: 75000,
+    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Cinematic Video'
+  },
+  maternity: {
+    name: 'Maternity',
+    startingPrice: 45000,
+    valueProposition: 'Includes maternity shoot, 1 Photographer, Professional editing, Premium prints, Digital gallery'
+  },
+  newborn: {
+    name: 'New Born',
+    startingPrice: 35000,
+    valueProposition: 'Includes newborn shoot, 1 Photographer, Safe props, Professional editing, Premium album'
+  },
+  'productshoot': {
+    name: 'Product Shoot',
+    startingPrice: 25000,
+    valueProposition: 'Includes product photography, 1 Photographer, Studio setup, Professional editing, High-res images'
+  },
+  'real-estate': {
+    name: 'Real-Estate',
+    startingPrice: 40000,
+    valueProposition: 'Includes property photography, 1 Photographer, 1 Drone Men, Professional editing, Virtual tour'
+  },
+  headshots: {
+    name: 'Headshots',
+    startingPrice: 10000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'housewarming': {
+    name: 'House Warming',
+    startingPrice: 8000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'babynaamkaran': {
+    name: 'Baby Naam Karan',
+    startingPrice: 12000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'pre-weddingshoot': {
+    name: 'Pre-Wedding Shoot',
+    startingPrice: 25000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  mehendi: {
+    name: 'Mehendi',
+    startingPrice: 10000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'corporateevents': {
+    name: 'Corporate Events',
+    startingPrice: 18000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'familyportraits': {
+    name: 'Family Portraits',
+    startingPrice: 12000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  }
+};
+
 interface BookingSummaryData {
   photographerId: string;
   photographerName: string;
@@ -33,6 +107,7 @@ interface BookingSummaryData {
   price: string;
   category: string;
   subcategory: string;
+  package?: string;
   selectedDate: string;
   selectedTimeSlots: string[];
   selectedAddons: Addon[];
@@ -45,6 +120,7 @@ interface CartItem {
   price: string;
   category: string;
   subcategory: string;
+  package?: string;
   selectedDate: string;
   selectedTimeSlots: string[];
   selectedAddons: Addon[];
@@ -114,6 +190,7 @@ function BookingSummaryContent() {
         const price = searchParams.get(`item${i}_price`);
         const category = searchParams.get(`item${i}_category`);
         const subcategory = searchParams.get(`item${i}_subcategory`);
+        const packageParam = searchParams.get(`item${i}_package`);
         const selectedDate = searchParams.get(`item${i}_selectedDate`);
         const selectedTimeSlots = searchParams.get(`item${i}_selectedTimeSlots`)?.split(',') || [];
         const addonsData = searchParams.get(`item${i}_addons`);
@@ -136,6 +213,7 @@ function BookingSummaryContent() {
             price,
             category: category || '',
             subcategory: subcategory || '',
+            package: packageParam || undefined,
             selectedDate: selectedDate || '',
             selectedTimeSlots,
             selectedAddons: parsedAddons,
@@ -152,6 +230,7 @@ function BookingSummaryContent() {
       const price = searchParams.get('price');
       const category = searchParams.get('category');
       const subcategory = searchParams.get('subcategory');
+      const packageParam = searchParams.get('package');
       const selectedDate = searchParams.get('selectedDate');
       const selectedTimeSlots = searchParams.get('selectedTimeSlots')?.split(',') || [];
       const addonsData = searchParams.get('addons');
@@ -173,6 +252,7 @@ function BookingSummaryContent() {
           price,
           category: category || '',
           subcategory: subcategory || '',
+          package: packageParam || undefined,
           selectedDate: selectedDate || '',
           selectedTimeSlots,
           selectedAddons: parsedAddons,
@@ -492,9 +572,17 @@ function BookingSummaryContent() {
                     <CameraIcon className="w-5 h-5 text-blue-600 flex-shrink-0" />
                     <div className="flex items-center space-x-2">
                       <h3 className="text-lg font-semibold text-gray-900">{item.photographerName}</h3>
-                      <span className="text-blue-600 font-medium text-sm">{item.category}</span>
-                      {item.subcategory && (
-                        <span className="text-gray-600 text-sm">{item.subcategory}</span>
+                      {item.package ? (
+                        <span className="bg-purple-600 text-white px-2 py-0.5 rounded-md font-medium text-sm">
+                          {item.package}
+                        </span>
+                      ) : (
+                        <>
+                          <span className="text-blue-600 font-medium text-sm">{item.category}</span>
+                          {item.subcategory && (
+                            <span className="text-gray-600 text-sm">{item.subcategory}</span>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -503,6 +591,34 @@ function BookingSummaryContent() {
                     <div className="text-xs text-gray-500">Total Price</div>
                   </div>
                 </div>
+
+                {/* Package Details */}
+                {item.package && (() => {
+                  const packageKey = item.package.toLowerCase().replace(/\s+/g, '');
+                  const packageInfo = packageDetailsMap[packageKey];
+                  return packageInfo ? (
+                    <div className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-lg p-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                          <TicketIcon className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-bold text-gray-900 text-base">{packageInfo.name} Package</h4>
+                            <span className="inline-flex items-center text-xs font-bold text-purple-700 bg-white border border-purple-300 px-2 py-1 rounded-md">
+                              ALL-INCLUSIVE
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed mb-3">{packageInfo.valueProposition}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-600">Package Price:</span>
+                            <span className="text-lg font-bold text-purple-700">₹{packageInfo.startingPrice.toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
 
                 {/* Venue Section */}
                 <div className="border-t border-gray-100 pt-3 mb-4">

@@ -5,6 +5,10 @@ import {
   getUserProfile,
   updateUserProfile,
   changePassword,
+  sendEmailVerification,
+  verifyEmail,
+  sendPhoneVerification,
+  verifyPhone,
   getAllUsers,
   getUserById,
   updateUserStatus,
@@ -25,6 +29,10 @@ router.post('/login', loginUser);
 router.get('/profile', authenticate, getUserProfile);
 router.put('/profile', authenticate, updateUserProfile);
 router.put('/change-password', authenticate, changePassword);
+router.post('/send-email-verification', authenticate, sendEmailVerification);
+router.post('/verify-email', authenticate, verifyEmail);
+router.post('/send-phone-verification', authenticate, sendPhoneVerification);
+router.post('/verify-phone', authenticate, verifyPhone);
 
 // Admin routes (require authentication and admin role)
 router.get('/', authenticate, authorize(['admin']), getAllUsers);

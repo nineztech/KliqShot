@@ -13,6 +13,7 @@ interface CartItem {
   photographerName?: string;
   category?: string;
   subcategory?: string;
+  package?: string;
   selectedDate?: string;
   selectedTimeSlots?: string[];
   addons?: Array<{

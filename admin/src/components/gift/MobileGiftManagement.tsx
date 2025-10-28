@@ -7,24 +7,20 @@ import {
   MdDelete, 
   MdClose,
   MdCardGiftcard,
-  MdAttachMoney,
-  MdInventory,
   MdVisibility,
   MdVisibilityOff,
   MdImage,
-  MdCategory,
-  MdExpandMore,
-  MdChevronRight
+  MdContentCopy,
+  MdCheck
 } from 'react-icons/md';
 
 interface Gift {
   id: string;
   name: string;
-  description: string;
+  giftCode: string;
   image?: string;
-  category: string;
-  pointsRequired: number;
-  stock: number;
+  startDate: string;
+  endDate: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -43,29 +39,25 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
   const [expandedGifts, setExpandedGifts] = useState<string[]>([]);
   const [newGift, setNewGift] = useState({
     name: '',
-    description: '',
+    giftCode: '',
     image: '',
-    category: '',
-    pointsRequired: 0,
-    stock: 0,
+    startDate: '',
+    endDate: '',
     isActive: true
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [copiedGiftId, setCopiedGiftId] = useState<string | null>(null);
 
-  const categories = [
-    'Electronics',
-    'Home & Living',
-    'Fashion',
-    'Beauty & Health',
-    'Sports & Fitness',
-    'Books & Media',
-    'Food & Beverages',
-    'Travel & Experiences',
-    'Gift Cards',
-    'Other'
-  ];
+  const generateGiftCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewGift({ ...newGift, giftCode: result });
+  };
 
   const toggleGiftExpansion = (giftId: string) => {
     setExpandedGifts(prev => 
@@ -76,7 +68,7 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
   };
 
   const handleAddGift = async () => {
-    if (newGift.name && newGift.category && newGift.pointsRequired > 0) {
+    if (newGift.name && newGift.giftCode && newGift.startDate && newGift.endDate) {
       setIsSubmitting(true);
       setError('');
       
@@ -94,11 +86,10 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
         setGifts([...gifts, gift]);
         setNewGift({
           name: '',
-          description: '',
+          giftCode: '',
           image: '',
-          category: '',
-          pointsRequired: 0,
-          stock: 0,
+          startDate: '',
+          endDate: '',
           isActive: true
         });
         setImagePreview('');
@@ -115,11 +106,10 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
     setSelectedGift(gift);
     setNewGift({
       name: gift.name,
-      description: gift.description,
+      giftCode: gift.giftCode,
       image: gift.image || '',
-      category: gift.category,
-      pointsRequired: gift.pointsRequired,
-      stock: gift.stock,
+      startDate: gift.startDate,
+      endDate: gift.endDate,
       isActive: gift.isActive
     });
     setImagePreview(gift.image || '');
@@ -127,7 +117,7 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
   };
 
   const handleUpdateGift = async () => {
-    if (selectedGift && newGift.name && newGift.category && newGift.pointsRequired > 0) {
+    if (selectedGift && newGift.name && newGift.giftCode && newGift.startDate && newGift.endDate) {
       setIsSubmitting(true);
       setError('');
       
@@ -150,11 +140,10 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
         setSelectedGift(null);
         setNewGift({
           name: '',
-          description: '',
+          giftCode: '',
           image: '',
-          category: '',
-          pointsRequired: 0,
-          stock: 0,
+          startDate: '',
+          endDate: '',
           isActive: true
         });
         setImagePreview('');
@@ -208,17 +197,19 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    // Handle YYYY-MM-DD format (from date input)
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
     });
   };
 
-  const getStockStatus = (stock: number) => {
-    if (stock === 0) return { color: 'bg-red-100 text-red-600', text: 'Out of Stock' };
-    if (stock < 10) return { color: 'bg-orange-100 text-orange-600', text: 'Low Stock' };
-    return { color: 'bg-green-100 text-green-600', text: 'In Stock' };
+  const handleCopyGiftCode = (giftCode: string, giftId: string) => {
+    navigator.clipboard.writeText(giftCode);
+    setCopiedGiftId(giftId);
+    setTimeout(() => setCopiedGiftId(null), 2000);
   };
 
   return (
@@ -271,117 +262,103 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
 
       {/* Gifts List */}
       <div className="space-y-3">
-        {gifts.map((gift) => {
-          const stockStatus = getStockStatus(gift.stock);
-          return (
-            <div key={gift.id} className="admin-card">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={() => toggleGiftExpansion(gift.id)}
-                    className="p-1 hover:bg-gray-100 rounded"
-                  >
-                    {expandedGifts.includes(gift.id) ? (
-                      <MdExpandMore className="w-5 h-5 text-gray-500" />
-                    ) : (
-                      <MdChevronRight className="w-5 h-5 text-gray-500" />
-                    )}
-                  </button>
-                  
-                  {gift.image ? (
-                    <div className="w-12 h-12 rounded-lg overflow-hidden">
-                      <img
-                        src={gift.image}
-                        alt={gift.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <MdCardGiftcard className="w-6 h-6 text-gray-400" />
-                    </div>
-                  )}
-                  
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-sm">{gift.name}</h3>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <MdCategory className="w-3 h-3 mr-1" />
-                      {gift.category}
-                    </div>
+        {gifts.map((gift) => (
+          <div key={gift.id} className="admin-card">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 flex-1">
+                {gift.image ? (
+                  <div className="w-12 h-12 rounded-lg overflow-hidden">
+                    <img
+                      src={gift.image}
+                      alt={gift.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                </div>
-                
-                <div className="flex items-center space-x-1">
-                  <button
-                    onClick={() => toggleGiftStatus(gift.id)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      gift.isActive 
-                        ? 'text-orange-600 hover:bg-orange-50' 
-                        : 'text-green-600 hover:bg-green-50'
-                    }`}
-                    title={gift.isActive ? 'Deactivate' : 'Activate'}
-                  >
-                    {gift.isActive ? <MdVisibilityOff className="w-4 h-4" /> : <MdVisibility className="w-4 h-4" />}
-                  </button>
-                  <button
-                    onClick={() => handleEditGift(gift)}
-                    className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
-                    title="Edit Gift"
-                  >
-                    <MdEdit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteGift(gift.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete Gift"
-                  >
-                    <MdDelete className="w-4 h-4" />
-                  </button>
+                ) : (
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <MdCardGiftcard className="w-6 h-6 text-gray-400" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900 text-sm">{gift.name}</h3>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <p className="text-xs text-gray-500 font-mono">{gift.giftCode}</p>
+                    <button
+                      onClick={() => handleCopyGiftCode(gift.giftCode, gift.id)}
+                      className={`p-1 rounded transition-colors ${
+                        copiedGiftId === gift.id 
+                          ? 'text-green-600 bg-green-50' 
+                          : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                      }`}
+                      title="Copy gift code"
+                    >
+                      {copiedGiftId === gift.id ? (
+                        <MdCheck className="w-3 h-3" />
+                      ) : (
+                        <MdContentCopy className="w-3 h-3" />
+                      )}
+                    </button>
+                    <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
+                      gift.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {gift.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
                 </div>
               </div>
+              
+              <div className="flex items-center space-x-1">
+                <button
+                  onClick={() => toggleGiftStatus(gift.id)}
+                  className={`p-2 rounded-lg transition-colors ${
+                    gift.isActive 
+                      ? 'text-orange-600 hover:bg-orange-50' 
+                      : 'text-green-600 hover:bg-green-50'
+                  }`}
+                  title={gift.isActive ? 'Deactivate' : 'Activate'}
+                >
+                  {gift.isActive ? <MdVisibilityOff className="w-4 h-4" /> : <MdVisibility className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={() => handleEditGift(gift)}
+                  className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                  title="Edit Gift"
+                >
+                  <MdEdit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDeleteGift(gift.id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Delete Gift"
+                >
+                  <MdDelete className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
 
-              {/* Expanded Details */}
-              {expandedGifts.includes(gift.id) && (
-                <div className="mt-4 pl-8 border-l-2 border-gray-200">
-                  <div className="space-y-3">
-                    {gift.description && (
-                      <div>
-                        <p className="text-xs text-gray-500">Description</p>
-                        <p className="text-sm text-gray-900">{gift.description}</p>
-                      </div>
-                    )}
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-gray-500">Points Required</p>
-                        <div className="flex items-center">
-                          <MdAttachMoney className="w-3 h-3 text-purple-600 mr-1" />
-                          <span className="text-sm font-semibold text-purple-600">{gift.pointsRequired} pts</span>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Stock</p>
-                        <p className="text-sm font-semibold text-gray-900">{gift.stock}</p>
-                      </div>
-                    </div>
-                    
+            {/* Expanded Details */}
+            {expandedGifts.includes(gift.id) && (
+              <div className="mt-4 pl-2 border-l-2 border-gray-200">
+                <div className="space-y-2 text-sm">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-gray-500">Status</p>
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${stockStatus.color}`}>
-                        {stockStatus.text}
-                      </span>
+                      <p className="text-xs text-gray-500">Start Date</p>
+                      <p className="text-sm font-semibold text-gray-900">{formatDate(gift.startDate)}</p>
                     </div>
-                    
                     <div>
-                      <p className="text-xs text-gray-500">Last Updated</p>
-                      <p className="text-sm text-gray-900">{formatDate(gift.updatedAt)}</p>
+                      <p className="text-xs text-gray-500">End Date</p>
+                      <p className="text-sm font-semibold text-gray-900">{formatDate(gift.endDate)}</p>
                     </div>
                   </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Last Updated</p>
+                    <p className="text-sm text-gray-900">{formatDate(gift.updatedAt)}</p>
+                  </div>
                 </div>
-              )}
-            </div>
-          );
-        })}
+              </div>
+            )}
+          </div>
+        ))}
         
         {gifts.length === 0 && (
           <div className="text-center py-8">
@@ -427,62 +404,33 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
                   value={newGift.name}
                   onChange={(e) => setNewGift({ ...newGift, name: e.target.value })}
                   className="admin-input w-full"
-                  placeholder="Enter gift name"
-                />
-              </div>
-              
-              <div>
-                <label className="admin-label">Category</label>
-                <select
-                  value={newGift.category}
-                  onChange={(e) => setNewGift({ ...newGift, category: e.target.value })}
-                  className="admin-input w-full"
-                >
-                  <option value="">Select category</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="admin-label">Description</label>
-                <textarea
-                  value={newGift.description}
-                  onChange={(e) => setNewGift({ ...newGift, description: e.target.value })}
-                  className="admin-input w-full h-16 resize-none"
-                  placeholder="Enter gift description"
+                  placeholder="Enter gift card name"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="admin-label">Points Required</label>
+              <div>
+                <label className="admin-label">Gift Code <span className="text-red-500">*</span></label>
+                <div className="flex gap-2">
                   <input
-                    type="number"
-                    value={newGift.pointsRequired}
-                    onChange={(e) => setNewGift({ ...newGift, pointsRequired: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="100"
-                    min="0"
+                    type="text"
+                    value={newGift.giftCode}
+                    onChange={(e) => setNewGift({ ...newGift, giftCode: e.target.value })}
+                    className="admin-input flex-1"
+                    placeholder="Enter or generate gift code"
+                    required
                   />
-                </div>
-                
-                <div>
-                  <label className="admin-label">Stock</label>
-                  <input
-                    type="number"
-                    value={newGift.stock}
-                    onChange={(e) => setNewGift({ ...newGift, stock: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="10"
-                    min="0"
-                  />
+                  <button
+                    type="button"
+                    onClick={generateGiftCode}
+                    className="admin-button-secondary whitespace-nowrap px-3 py-2"
+                  >
+                    Generate
+                  </button>
                 </div>
               </div>
 
               <div>
-                <label className="admin-label">Gift Image</label>
+                <label className="admin-label">Gift Card Image</label>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
@@ -504,6 +452,7 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
                         className="w-full h-full object-cover"
                       />
                       <button
+                        type="button"
                         onClick={() => {
                           setImagePreview('');
                           setNewGift({ ...newGift, image: '' });
@@ -514,6 +463,28 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
                       </button>
                     </div>
                   )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="admin-label">Start Date</label>
+                  <input
+                    type="date"
+                    value={newGift.startDate}
+                    onChange={(e) => setNewGift({ ...newGift, startDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="admin-label">End Date</label>
+                  <input
+                    type="date"
+                    value={newGift.endDate}
+                    onChange={(e) => setNewGift({ ...newGift, endDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
                 </div>
               </div>
 
@@ -576,62 +547,33 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
                   value={newGift.name}
                   onChange={(e) => setNewGift({ ...newGift, name: e.target.value })}
                   className="admin-input w-full"
-                  placeholder="Enter gift name"
-                />
-              </div>
-              
-              <div>
-                <label className="admin-label">Category</label>
-                <select
-                  value={newGift.category}
-                  onChange={(e) => setNewGift({ ...newGift, category: e.target.value })}
-                  className="admin-input w-full"
-                >
-                  <option value="">Select category</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="admin-label">Description</label>
-                <textarea
-                  value={newGift.description}
-                  onChange={(e) => setNewGift({ ...newGift, description: e.target.value })}
-                  className="admin-input w-full h-16 resize-none"
-                  placeholder="Enter gift description"
+                  placeholder="Enter gift card name"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="admin-label">Points Required</label>
+              <div>
+                <label className="admin-label">Gift Code <span className="text-red-500">*</span></label>
+                <div className="flex gap-2">
                   <input
-                    type="number"
-                    value={newGift.pointsRequired}
-                    onChange={(e) => setNewGift({ ...newGift, pointsRequired: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="100"
-                    min="0"
+                    type="text"
+                    value={newGift.giftCode}
+                    onChange={(e) => setNewGift({ ...newGift, giftCode: e.target.value })}
+                    className="admin-input flex-1"
+                    placeholder="Enter or generate gift code"
+                    required
                   />
-                </div>
-                
-                <div>
-                  <label className="admin-label">Stock</label>
-                  <input
-                    type="number"
-                    value={newGift.stock}
-                    onChange={(e) => setNewGift({ ...newGift, stock: parseInt(e.target.value) || 0 })}
-                    className="admin-input w-full"
-                    placeholder="10"
-                    min="0"
-                  />
+                  <button
+                    type="button"
+                    onClick={generateGiftCode}
+                    className="admin-button-secondary whitespace-nowrap px-3 py-2"
+                  >
+                    Generate
+                  </button>
                 </div>
               </div>
 
               <div>
-                <label className="admin-label">Gift Image</label>
+                <label className="admin-label">Gift Card Image</label>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <label className="flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
@@ -653,6 +595,7 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
                         className="w-full h-full object-cover"
                       />
                       <button
+                        type="button"
                         onClick={() => {
                           setImagePreview('');
                           setNewGift({ ...newGift, image: '' });
@@ -663,6 +606,28 @@ export default function MobileGiftManagement({ gifts, setGifts, onRefresh }: Mob
                       </button>
                     </div>
                   )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="admin-label">Start Date</label>
+                  <input
+                    type="date"
+                    value={newGift.startDate}
+                    onChange={(e) => setNewGift({ ...newGift, startDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="admin-label">End Date</label>
+                  <input
+                    type="date"
+                    value={newGift.endDate}
+                    onChange={(e) => setNewGift({ ...newGift, endDate: e.target.value })}
+                    className="admin-input w-full"
+                  />
                 </div>
               </div>
 

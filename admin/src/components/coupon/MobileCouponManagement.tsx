@@ -358,7 +358,12 @@ export default function MobileCouponManagement({ coupons, setCoupons, onRefresh 
                       <p className="text-xs text-gray-500">Discount</p>
                       <p className="text-sm font-semibold text-gray-900">
                         {coupon.type === 'percentage' ? (
-                          <span className="text-blue-600">{coupon.value}% OFF</span>
+                          <>
+                            <span className="text-blue-600">{coupon.value}% OFF</span>
+                            {coupon.maxDiscount > 0 && (
+                              <span className="text-gray-500 ml-1">(Upto ₹{coupon.maxDiscount})</span>
+                            )}
+                          </>
                         ) : (
                           <span className="text-green-600">₹{coupon.value} OFF</span>
                         )}
@@ -504,6 +509,23 @@ export default function MobileCouponManagement({ coupons, setCoupons, onRefresh 
                 </div>
               </div>
 
+              {newCoupon.type === 'percentage' && (
+                <div>
+                  <label className="admin-label">Maximum Discount (₹)</label>
+                  <input
+                    type="number"
+                    value={newCoupon.maxDiscount}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, maxDiscount: parseFloat(e.target.value) || 0 })}
+                    className="admin-input w-full"
+                    placeholder="Upto ₹1000"
+                    min="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    20% off upto ₹1000
+                  </p>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="admin-label">Start Date</label>
@@ -638,6 +660,23 @@ export default function MobileCouponManagement({ coupons, setCoupons, onRefresh 
                   />
                 </div>
               </div>
+
+              {newCoupon.type === 'percentage' && (
+                <div>
+                  <label className="admin-label">Maximum Discount (₹)</label>
+                  <input
+                    type="number"
+                    value={newCoupon.maxDiscount}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, maxDiscount: parseFloat(e.target.value) || 0 })}
+                    className="admin-input w-full"
+                    placeholder="Upto ₹1000"
+                    min="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    20% off upto ₹1000
+                  </p>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>

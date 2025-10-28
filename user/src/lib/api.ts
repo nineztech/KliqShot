@@ -69,17 +69,11 @@ apiClient.interceptors.response.use(
 );
 
 export const userApi = {
-  // Register a new user
+  // Register a new user (sends OTP)
   register: async (data: RegisterData): Promise<ApiResponse> => {
     try {
       const response = await apiClient.post('/users/register', data);
-      
-      // Store token in localStorage
-      if (response.data.data?.token) {
-        localStorage.setItem('userToken', response.data.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.data.user));
-      }
-
+      // Don't store token yet, wait for OTP verification
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || error.message || 'Registration failed');
@@ -199,6 +193,23 @@ export const userApi = {
     // Clear local storage
     localStorage.removeItem('userToken');
     localStorage.removeItem('user');
+  },
+
+  // Verify registration OTP
+  verifyRegistrationOtp: async (data: { email: string; otp: string }): Promise<ApiResponse> => {
+    try {
+      const response = await apiClient.post('/users/verify-registration-otp', data);
+      
+      // Store token in localStorage
+      if (response.data.data?.token) {
+        localStorage.setItem('userToken', response.data.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || error.message || 'OTP verification failed');
+    }
   },
 
   // Check if user is authenticated

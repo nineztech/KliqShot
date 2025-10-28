@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { sendOtpEmail, generateOtp, getOtpExpiry } from '../utils/emailService.js';
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -11,7 +12,44 @@ const generateToken = (userId) => {
   });
 };
 
-// @desc    Register a new user
+// Validate password strength
+const validatePassword = (password) => {
+  if (!password) {
+    return { isValid: false, message: 'Password is required' };
+  }
+
+  if (password.length < 8) {
+    return { isValid: false, message: 'Password must be at least 8 characters long' };
+  }
+
+  if (password.length > 128) {
+    return { isValid: false, message: 'Password must be less than 128 characters' };
+  }
+
+  // Check for at least one uppercase letter
+  if (!/[A-Z]/.test(password)) {
+    return { isValid: false, message: 'Password must contain at least one uppercase letter' };
+  }
+
+  // Check for at least one lowercase letter
+  if (!/[a-z]/.test(password)) {
+    return { isValid: false, message: 'Password must contain at least one lowercase letter' };
+  }
+
+  // Check for at least one number
+  if (!/[0-9]/.test(password)) {
+    return { isValid: false, message: 'Password must contain at least one number' };
+  }
+
+  // Check for at least one special character
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    return { isValid: false, message: 'Password must contain at least one special character (!@#$%^&*(),.?":{}|<>)' };
+  }
+
+  return { isValid: true };
+};
+
+// @desc    Register a new user - Send OTP
 // @route   POST /api/users/register
 // @access  Public
 export const registerUser = async (req, res) => {
@@ -49,6 +87,15 @@ export const registerUser = async (req, res) => {
       });
     }
 
+    // Validate password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: passwordValidation.message
+      });
+    }
+
     // Hash password
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -56,7 +103,11 @@ export const registerUser = async (req, res) => {
     // Generate email verification token
     const emailVerificationToken = crypto.randomBytes(32).toString('hex');
 
-    // Create user
+    // Generate OTP and expiry
+    const otp = generateOtp();
+    const otpExpires = getOtpExpiry();
+
+    // Create user with pending status (password is hashed, but account not active yet)
     const user = await User.create({
       firstName,
       lastName,
@@ -71,18 +122,30 @@ export const registerUser = async (req, res) => {
       country,
       zipCode,
       role,
-      emailVerificationToken
+      emailVerificationToken,
+      registrationOtp: otp,
+      registrationOtpExpires: otpExpires,
+      isActive: false // Account will be activated after OTP verification
     });
 
-    // Generate JWT token
-    const token = generateToken(user.id);
+    // Send OTP email
+    const emailSent = await sendOtpEmail(email, otp, `${firstName} ${lastName}`);
+
+    if (!emailSent && process.env.NODE_ENV === 'production') {
+      // If email fails in production, delete the user
+      await user.destroy();
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to send verification email. Please try again.'
+      });
+    }
 
     res.status(201).json({
       success: true,
-      message: 'User registered successfully',
+      message: 'OTP sent to your email. Please verify to complete registration.',
       data: {
         user: user.toJSON(),
-        token
+        otp: process.env.NODE_ENV === 'development' ? otp : undefined
       }
     });
   } catch (error) {
@@ -630,6 +693,78 @@ export const deleteUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Delete User Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// @desc    Verify registration OTP
+// @route   POST /api/users/verify-registration-otp
+// @access  Public
+export const verifyRegistrationOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and OTP are required'
+      });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if OTP is valid
+    if (user.registrationOtp !== otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid OTP'
+      });
+    }
+
+    // Check if OTP has expired
+    if (new Date() > user.registrationOtpExpires) {
+      return res.status(400).json({
+        success: false,
+        message: 'OTP has expired. Please request a new one.'
+      });
+    }
+
+    // Activate user account and clear OTP fields
+    await user.update({
+      isActive: true,
+      registrationOtp: null,
+      registrationOtpExpires: null,
+      isEmailVerified: true
+    });
+
+    // Reload user to get the latest data
+    await user.reload();
+
+    // Generate JWT token
+    const token = generateToken(user.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Account verified successfully. You are now logged in!',
+      data: {
+        user: user.toJSON(),
+        token
+      }
+    });
+  } catch (error) {
+    console.error('Verify Registration OTP Error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

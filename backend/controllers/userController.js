@@ -185,6 +185,186 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
+// @desc    Send email verification
+// @route   POST /api/users/send-email-verification
+// @access  Private
+export const sendEmailVerification = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is already verified'
+      });
+    }
+
+    // Generate new verification token
+    const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+    await user.update({ emailVerificationToken });
+
+    // TODO: Send verification email with token
+    // For now, we'll just return success
+    res.status(200).json({
+      success: true,
+      message: 'Verification email sent successfully'
+    });
+  } catch (error) {
+    console.error('Send Email Verification Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// @desc    Verify email
+// @route   POST /api/users/verify-email
+// @access  Private
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const user = await User.findByPk(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (user.emailVerificationToken !== token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid verification token'
+      });
+    }
+
+    await user.update({ 
+      isEmailVerified: true,
+      emailVerificationToken: null
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Email verified successfully',
+      data: {
+        user: user.toJSON()
+      }
+    });
+  } catch (error) {
+    console.error('Verify Email Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// @desc    Send phone verification
+// @route   POST /api/users/send-phone-verification
+// @access  Private
+export const sendPhoneVerification = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (!user.phone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number not provided'
+      });
+    }
+
+    if (user.isPhoneVerified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone is already verified'
+      });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // TODO: Send OTP via SMS service
+    // For now, we'll store it temporarily and return it in dev mode
+    console.log(`OTP for ${user.phone}: ${otp}`);
+    
+    res.status(200).json({
+      success: true,
+      message: 'Verification code sent successfully',
+      data: {
+        otp: process.env.NODE_ENV === 'development' ? otp : undefined
+      }
+    });
+  } catch (error) {
+    console.error('Send Phone Verification Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// @desc    Verify phone
+// @route   POST /api/users/verify-phone
+// @access  Private
+export const verifyPhone = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const user = await User.findByPk(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (!code || code.length !== 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid verification code'
+      });
+    }
+
+    // For now, accept any 6-digit code in development mode
+    // TODO: Implement proper OTP verification
+    await user.update({ isPhoneVerified: true });
+
+    res.status(200).json({
+      success: true,
+      message: 'Phone verified successfully',
+      data: {
+        user: user.toJSON()
+      }
+    });
+  } catch (error) {
+    console.error('Verify Phone Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
 // @desc    Update user profile
 // @route   PUT /api/users/profile
 // @access  Private

@@ -113,6 +113,9 @@ function CategoriesContent() {
     if (selectedSubCategory) {
       params.append('subcategory', selectedSubCategory.id);
     }
+    if (packageName) {
+      params.append('package', packageName);
+    }
     
     const queryString = params.toString();
     const url = `/photographer/${photographer.id}${queryString ? `?${queryString}` : ''}`;

@@ -5,8 +5,72 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
-import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, UserIcon, TagIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, UserIcon, TagIcon, PlusCircleIcon, TicketIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext';
+
+interface PackageDetails {
+  name: string;
+  startingPrice: number;
+  valueProposition: string;
+}
+
+const packageDetailsMap: { [key: string]: PackageDetails } = {
+  wedding: {
+    name: 'Wedding',
+    startingPrice: 150000,
+    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Marriage Video'
+  },
+  'pre-wedding': {
+    name: 'Pre-Wedding',
+    startingPrice: 75000,
+    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Cinematic Video'
+  },
+  maternity: {
+    name: 'Maternity',
+    startingPrice: 45000,
+    valueProposition: 'Includes maternity shoot, 1 Photographer, Professional editing, Premium prints, Digital gallery'
+  },
+  newborn: {
+    name: 'New Born',
+    startingPrice: 35000,
+    valueProposition: 'Includes newborn shoot, 1 Photographer, Safe props, Professional editing, Premium album'
+  },
+  'productshoot': {
+    name: 'Product Shoot',
+    startingPrice: 25000,
+    valueProposition: 'Includes product photography, 1 Photographer, Studio setup, Professional editing, High-res images'
+  },
+  'real-estate': {
+    name: 'Real-Estate',
+    startingPrice: 40000,
+    valueProposition: 'Includes property photography, 1 Photographer, 1 Drone Men, Professional editing, Virtual tour'
+  },
+  headshots: {
+    name: 'Headshots',
+    startingPrice: 10000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'housewarming': {
+    name: 'House Warming',
+    startingPrice: 8000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'babynaamkaran': {
+    name: 'Baby Naam Karan',
+    startingPrice: 12000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  birthday: {
+    name: 'Birthday',
+    startingPrice: 6000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'anniversary': {
+    name: 'Anniversary',
+    startingPrice: 10000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  }
+};
 
 export default function DesktopCartPage() {
   const router = useRouter();
@@ -43,6 +107,7 @@ export default function DesktopCartPage() {
       params.append(`item${index}_price`, item.price.toString());
       params.append(`item${index}_category`, item.category || '');
       params.append(`item${index}_subcategory`, item.subcategory || '');
+      params.append(`item${index}_package`, item.package || '');
       params.append(`item${index}_selectedDate`, item.selectedDate || '');
       params.append(`item${index}_selectedTimeSlots`, item.selectedTimeSlots ? item.selectedTimeSlots.join(',') : '');
       params.append(`item${index}_addons`, item.addons ? JSON.stringify(item.addons) : '');
@@ -155,8 +220,16 @@ export default function DesktopCartPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       {/* Left Column */}
                       <div className="space-y-3">
-                        {/* Category & Subcategory */}
-                        {(item.category || item.subcategory) && (
+                        {/* Package */}
+                        {item.package ? (
+                          <div className="flex items-center space-x-2">
+                            <TagIcon className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm text-gray-600">Package:</span>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md font-medium bg-purple-100 text-purple-700 capitalize">
+                              {item.package}
+                            </span>
+                          </div>
+                        ) : (item.category || item.subcategory) && (
                           <div className="flex items-center space-x-2">
                             <TagIcon className="w-4 h-4 text-gray-400" />
                             <span className="text-sm text-gray-600">Service:</span>
@@ -166,6 +239,34 @@ export default function DesktopCartPage() {
                             </span>
                           </div>
                         )}
+
+                        {/* Package Details */}
+                        {item.package && (() => {
+                          const packageKey = item.package.toLowerCase().replace(/\s+/g, '');
+                          const packageInfo = packageDetailsMap[packageKey];
+                          return packageInfo ? (
+                            <div className="mb-3 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-lg p-3">
+                              <div className="flex items-start space-x-3">
+                                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                                  <TicketIcon className="w-6 h-6 text-white" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <h4 className="font-bold text-gray-900 text-base">{packageInfo.name} Package</h4>
+                                    <span className="inline-flex items-center text-xs font-bold text-purple-700 bg-white border border-purple-300 px-2 py-1 rounded-md">
+                                      ALL-INCLUSIVE
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-gray-700 leading-relaxed mb-2">{packageInfo.valueProposition}</p>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-600">Package Price:</span>
+                                    <span className="text-lg font-bold text-purple-700">₹{packageInfo.startingPrice.toLocaleString()}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : null;
+                        })()}
 
                         {/* Date */}
                         {item.selectedDate && (

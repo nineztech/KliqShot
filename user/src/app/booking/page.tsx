@@ -11,7 +11,8 @@ function BookingContent() {
     photographerName: '',
     price: '',
     category: '',
-    subcategory: ''
+    subcategory: '',
+    package: ''
   });
 
   useEffect(() => {
@@ -20,13 +21,15 @@ function BookingContent() {
     const price = searchParams.get('price') || '';
     const category = searchParams.get('category') || '';
     const subcategory = searchParams.get('subcategory') || '';
+    const packageParam = searchParams.get('package') || '';
 
     setBookingData({
       photographerId,
       photographerName,
       price,
       category,
-      subcategory
+      subcategory,
+      package: packageParam
     });
   }, [searchParams]);
 

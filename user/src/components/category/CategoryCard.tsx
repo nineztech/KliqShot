@@ -86,7 +86,7 @@ export default function CategoryCard({
         </div>
 
         {/* Black Shadow Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/30 to-black/10"></div>
 
         {/* ALL-INCLUSIVE Badge */}
         {showBadge && (

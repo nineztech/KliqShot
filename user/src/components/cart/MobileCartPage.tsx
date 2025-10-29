@@ -4,8 +4,73 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
-import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, UserIcon, TagIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import Footer from '@/components/footer';
+import { TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon, CalendarIcon, ClockIcon, UserIcon, TagIcon, PlusCircleIcon, TicketIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext';
+
+interface PackageDetails {
+  name: string;
+  startingPrice: number;
+  valueProposition: string;
+}
+
+const packageDetailsMap: { [key: string]: PackageDetails } = {
+  wedding: {
+    name: 'Wedding',
+    startingPrice: 150000,
+    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Marriage Video'
+  },
+  'pre-wedding': {
+    name: 'Pre-Wedding',
+    startingPrice: 75000,
+    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Cinematic Video'
+  },
+  maternity: {
+    name: 'Maternity',
+    startingPrice: 45000,
+    valueProposition: 'Includes maternity shoot, 1 Photographer, Professional editing, Premium prints, Digital gallery'
+  },
+  newborn: {
+    name: 'New Born',
+    startingPrice: 35000,
+    valueProposition: 'Includes newborn shoot, 1 Photographer, Safe props, Professional editing, Premium album'
+  },
+  'productshoot': {
+    name: 'Product Shoot',
+    startingPrice: 25000,
+    valueProposition: 'Includes product photography, 1 Photographer, Studio setup, Professional editing, High-res images'
+  },
+  'real-estate': {
+    name: 'Real-Estate',
+    startingPrice: 40000,
+    valueProposition: 'Includes property photography, 1 Photographer, 1 Drone Men, Professional editing, Virtual tour'
+  },
+  headshots: {
+    name: 'Headshots',
+    startingPrice: 10000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'housewarming': {
+    name: 'House Warming',
+    startingPrice: 8000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'babynaamkaran': {
+    name: 'Baby Naam Karan',
+    startingPrice: 12000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  birthday: {
+    name: 'Birthday',
+    startingPrice: 6000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  },
+  'anniversary': {
+    name: 'Anniversary',
+    startingPrice: 10000,
+    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+  }
+};
 
 export default function MobileCartPage() {
   const router = useRouter();
@@ -42,6 +107,7 @@ export default function MobileCartPage() {
       params.append(`item${index}_price`, item.price.toString());
       params.append(`item${index}_category`, item.category || '');
       params.append(`item${index}_subcategory`, item.subcategory || '');
+      params.append(`item${index}_package`, item.package || '');
       params.append(`item${index}_selectedDate`, item.selectedDate || '');
       params.append(`item${index}_selectedTimeSlots`, item.selectedTimeSlots ? item.selectedTimeSlots.join(',') : '');
       params.append(`item${index}_addons`, item.addons ? JSON.stringify(item.addons) : '');
@@ -151,8 +217,16 @@ export default function MobileCartPage() {
                 <div className="p-3">
                   {/* Service Details */}
                   <div className="space-y-2 mb-3">
-                    {/* Category & Subcategory */}
-                    {(item.category || item.subcategory) && (
+                    {/* Package */}
+                    {item.package ? (
+                      <div className="flex items-center space-x-2">
+                        <TagIcon className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-600">Package:</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md font-medium bg-purple-100 text-purple-700 text-xs capitalize">
+                          {item.package}
+                        </span>
+                      </div>
+                    ) : (item.category || item.subcategory) && (
                       <div className="flex items-center space-x-2">
                         <TagIcon className="w-3 h-3 text-gray-400" />
                         <span className="text-xs text-gray-600">Service:</span>
@@ -162,6 +236,34 @@ export default function MobileCartPage() {
                         </span>
                       </div>
                     )}
+
+                    {/* Package Details */}
+                    {item.package && (() => {
+                      const packageKey = item.package.toLowerCase().replace(/\s+/g, '');
+                      const packageInfo = packageDetailsMap[packageKey];
+                      return packageInfo ? (
+                        <div className="mb-2 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-lg p-2">
+                          <div className="flex items-start space-x-2">
+                            <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                              <TicketIcon className="w-4 h-4 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 mb-1.5">
+                                <h4 className="font-bold text-gray-900 text-sm">{packageInfo.name} Package</h4>
+                                <span className="inline-flex items-center text-[10px] font-bold text-purple-700 bg-white border border-purple-300 px-1.5 py-0.5 rounded">
+                                  ALL-INCLUSIVE
+                                </span>
+                              </div>
+                              <p className="text-xs text-gray-700 leading-relaxed mb-1.5">{packageInfo.valueProposition}</p>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] text-gray-600">Package Price:</span>
+                                <span className="text-sm font-bold text-purple-700">₹{packageInfo.startingPrice.toLocaleString()}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : null;
+                    })()}
 
                     {/* Date */}
                     {item.selectedDate && (
@@ -284,6 +386,9 @@ export default function MobileCartPage() {
         {/* Bottom Padding for Fixed Summary */}
         <div className="h-40"></div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

@@ -8,7 +8,8 @@ import {
   CurrencyRupeeIcon,
   ClockIcon,
   CameraIcon,
-  XMarkIcon
+  XMarkIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 
 interface FilterSidebarProps {
@@ -23,6 +24,7 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
     experience: '',
     specialty: ''
   });
+  const [locationSearch, setLocationSearch] = useState('');
 
   const handleFilterChange = (key: string, value: any) => {
     const newFilters = { ...filters, [key]: value };
@@ -108,6 +110,11 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
   };
 
   const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Pune', 'Hyderabad'];
+  
+  // Filter locations based on search
+  const filteredLocations = locations.filter(location =>
+    location.toLowerCase().includes(locationSearch.toLowerCase())
+  );
   const specialties = ['Wedding', 'Portrait', 'Corporate', 'Family', 'Events', 'Creative'];
   const experienceLevels = ['1-2 years', '3-5 years', '5+ years', '10+ years'];
   const userTypes = [
@@ -259,8 +266,19 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
           <MapPinIcon className="w-4 h-4 mr-1" />
           Location
         </h3>
+        {/* Search Input */}
+        <div className="relative mb-3">
+          <MagnifyingGlassIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search location..."
+            value={locationSearch}
+            onChange={(e) => setLocationSearch(e.target.value)}
+            className="w-full pl-8 pr-2 py-1.5 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
         <div className="space-y-2 max-h-32 overflow-y-auto">
-          {locations.map((location) => (
+          {filteredLocations.map((location) => (
             <label key={location} className="flex items-center cursor-pointer group">
               <input
                 type="checkbox"

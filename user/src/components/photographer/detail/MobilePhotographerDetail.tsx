@@ -6,6 +6,7 @@ import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, 
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { categories, type Category, type SubCategory } from '@/data/categories';
 import { BestInCategory, InspiredByHistory } from '@/components/photographer';
 
@@ -31,9 +32,10 @@ interface MobilePhotographerDetailProps {
   photographer: Photographer;
   category?: string;
   subcategory?: string;
+  packageParam?: string;
 }
 
-export default function MobilePhotographerDetail({ photographer, category, subcategory }: MobilePhotographerDetailProps) {
+export default function MobilePhotographerDetail({ photographer, category, subcategory, packageParam }: MobilePhotographerDetailProps) {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -127,6 +129,18 @@ export default function MobilePhotographerDetail({ photographer, category, subca
   };
 
   const handleBookNow = () => {
+    // If package is present, skip category selection
+    if (packageParam) {
+      const bookingParams = new URLSearchParams();
+      bookingParams.append('photographerId', photographer.id.toString());
+      bookingParams.append('photographerName', photographer.name);
+      bookingParams.append('price', photographer.price);
+      bookingParams.append('package', packageParam);
+      
+      router.push(`/booking?${bookingParams.toString()}`);
+      return;
+    }
+
     // If no category is selected, show the category selection modal
     if (!category && !selectedCategory) {
       setShowCategoryModal(true);
@@ -545,6 +559,9 @@ export default function MobilePhotographerDetail({ photographer, category, subca
           </div>
         </div>
       )}
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

@@ -6,10 +6,12 @@ import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, 
 import { HeartIcon as HeartSolidIcon, HandThumbUpIcon as HandThumbUpSolidIcon, HandThumbDownIcon as HandThumbDownSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import { categories, type Category, type SubCategory } from '@/data/categories';
 import { BestInCategory, InspiredByHistory } from '@/components/photographer';
 import YourSearches from '@/components/common/YourSearches';
 import BookingCalendar from '@/components/bookingSession/BookingCalendar';
+import { useCart } from '@/components/cart/CartContext';
 
 interface PortfolioCategory {
   name: string;
@@ -53,10 +55,12 @@ interface DesktopPhotographerDetailProps {
   photographer: Photographer;
   category?: string;
   subcategory?: string;
+  packageParam?: string;
 }
 
-export default function DesktopPhotographerDetail({ photographer, category, subcategory }: DesktopPhotographerDetailProps) {
+export default function DesktopPhotographerDetail({ photographer, category, subcategory, packageParam }: DesktopPhotographerDetailProps) {
   const router = useRouter();
+  const { addToCart } = useCart();
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [activePortfolioTab, setActivePortfolioTab] = useState('TOP PHOTOS');
@@ -107,6 +111,14 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
     return () => clearInterval(interval);
   }, [selectedImageIndex, activePortfolioCategory, isPaused]);
+
+  // Set first category as selected when modal opens
+  useEffect(() => {
+    if (showCategoryModal && !selectedCategory && categories.length > 0) {
+      setSelectedCategory(categories[0].id);
+      setSelectedSubCategory('');
+    }
+  }, [showCategoryModal]);
 
   const renderStars = (rating: number = photographer.rating, size: string = 'w-5 h-5') => {
     const stars = [];
@@ -222,6 +234,19 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   };
 
   const handleBookNow = () => {
+    // If package is present, skip category selection
+    if (packageParam) {
+      const bookingParams = new URLSearchParams();
+      bookingParams.append('photographerId', photographer.id.toString());
+      bookingParams.append('photographerName', photographer.name);
+      bookingParams.append('price', photographer.price);
+      bookingParams.append('package', packageParam);
+      bookingParams.append('source', 'buynow');
+      
+      router.push(`/booking?${bookingParams.toString()}`);
+      return;
+    }
+
     // If no category is selected, show the category selection modal
     if (!category && !selectedCategory) {
       setShowCategoryModal(true);
@@ -263,31 +288,46 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   };
 
   const handleAddToCart = () => {
+    // If package is present, add directly to cart
+    if (packageParam) {
+      const cartItem = {
+        id: photographer.id.toString(),
+        name: photographer.name,
+        price: parseInt(photographer.price.replace(/[^\d]/g, '')) || 0,
+        image: photographer.image,
+        photographerId: photographer.id.toString(),
+        photographerName: photographer.name,
+        package: packageParam,
+        timestamp: Date.now(),
+      };
+      addToCart(cartItem);
+      router.push('/cart');
+      return;
+    }
+
     // If no category is selected, show the category selection modal
     if (!category && !selectedCategory) {
       setShowCategoryModal(true);
       return;
     }
 
-    // Navigate to booking page with source=cart parameter
-    const bookingParams = new URLSearchParams();
-    bookingParams.append('photographerId', photographer.id.toString());
-    bookingParams.append('photographerName', photographer.name);
-    bookingParams.append('price', photographer.price);
-    bookingParams.append('source', 'cart');
-    
+    // Add to cart with category/subcategory
     const finalCategory = category || selectedCategory;
     const finalSubCategory = subcategory || selectedSubCategory;
-    
-    if (finalCategory) {
-      bookingParams.append('category', finalCategory);
-    }
-    
-    if (finalSubCategory) {
-      bookingParams.append('subcategory', finalSubCategory);
-    }
 
-    router.push(`/booking?${bookingParams.toString()}`);
+    const cartItem = {
+      id: photographer.id.toString(),
+      name: photographer.name,
+      price: parseInt(photographer.price.replace(/[^\d]/g, '')) || 0,
+      image: photographer.image,
+      photographerId: photographer.id.toString(),
+      photographerName: photographer.name,
+      category: finalCategory,
+      subcategory: finalSubCategory,
+      timestamp: Date.now(),
+    };
+    addToCart(cartItem);
+    router.push('/cart');
   };
 
   const handleImageReaction = (imageUrl: string, reaction: 'like' | 'dislike') => {
@@ -604,7 +644,24 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
               {/* Tab Content */}
               {activeAboutTab === 'about' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-8">
+                {/* Brief Section */}
+                <div>
+                  <h2 className="font-semibold text-gray-900 mb-3">Introduction</h2>
+                  <p className="text-gray-700 leading-relaxed">
+                    {photographer.name} is a premium photography service primarily focused on wedding photography and films, 
+                    also excelling in candid and classic styles. With over {photographer.experience} of experience in wedding 
+                    photography, we have the ability to be hired anywhere in India, located in the {photographer.location} region. 
+                    Our emphasis is on capturing ideal moments, with weddings being our main focus. We specialize in total event 
+                    production, managing everything from conception to follow-up for events like grandiose weddings, corporate 
+                    conferences, or gala dinners. Our work is driven by innovation, technological know-how, and extensive industry 
+                    expertise. We offer flexible, tailored pricing solutions starting from {photographer.price} per hour, with 
+                    customizable packages to suit various needs and budgets.
+                  </p>
+                </div>
+
+                {/* Additional Information Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6">
                 <div>
                   <h2 className="font-semibold text-gray-900 mb-2">Experience</h2>
                   <p className="text-gray-600">{photographer.experience}</p>
@@ -713,6 +770,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         {showMoreCertificates ? "Show less" : "+3 more"}
                       </button>
                     )}
+                  </div>
                   </div>
                 </div>
               </div>
@@ -899,6 +957,38 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                       <li key={index}>{award}</li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {activeAboutTab === 'about' && (
+                <div className="mt-6">
+                  <h2 className="font-semibold text-gray-900 mb-3">Projects Done</h2>
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Wedding</span>
+                      <span className="font-medium">25</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Maternity</span>
+                      <span className="font-medium">45</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Pre-Wedding</span>
+                      <span className="font-medium">38</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Portrait</span>
+                      <span className="font-medium">52</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Events</span>
+                      <span className="font-medium">30</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Family</span>
+                      <span className="font-medium">18</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -1407,118 +1497,87 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
             <div className="p-6">
               <p className="text-gray-600 mb-6">Please select a category to continue with your booking:</p>
               
-              {/* Categories Grid */}
-              <div className="space-y-4">
-                {/* Categories arranged to show subcategories inline */}
-                {(() => {
-                  const rows = [];
-                  for (let i = 0; i < categories.length; i += 2) {
-                    const cat1 = categories[i];
-                    const cat2 = categories[i + 1];
-                    
-                    rows.push(
-                      <div key={`row-${i}`} className="space-y-4">
-                        {/* Category Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <button
-                            onClick={() => {
-                              if (selectedCategory === cat1.id) {
-                                setSelectedCategory('');
-                                setSelectedSubCategory('');
-                              } else {
-                                setSelectedCategory(cat1.id);
-                                setSelectedSubCategory('');
-                              }
-                            }}
-                            className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
-                              selectedCategory === cat1.id
-                                ? 'border-blue-500 bg-blue-50 shadow-md'
-                                : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h2 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat1.name}</h2>
-                                <p className="text-xs text-gray-600">{cat1.description}</p>
-                                <p className="text-[10px] text-blue-600 mt-1">{cat1.photographerCount} photographers</p>
-                              </div>
-                              {selectedCategory === cat1.id && (
-                                <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                </svg>
-                              )}
-                            </div>
-                          </button>
-                          
-                          {cat2 && (
-                            <button
-                              onClick={() => {
-                                if (selectedCategory === cat2.id) {
-                                  setSelectedCategory('');
-                                  setSelectedSubCategory('');
-                                } else {
-                                  setSelectedCategory(cat2.id);
-                                  setSelectedSubCategory('');
-                                }
-                              }}
-                              className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
-                                selectedCategory === cat2.id
-                                  ? 'border-blue-500 bg-blue-50 shadow-md'
-                                  : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h2 className="font-semibold text-gray-900 mb-0.5 text-sm">{cat2.name}</h2>
-                                  <p className="text-xs text-gray-600">{cat2.description}</p>
-                                  <p className="text-[10px] text-blue-600 mt-1">{cat2.photographerCount} photographers</p>
-                                </div>
-                                {selectedCategory === cat2.id && (
-                                  <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                  </svg>
-                                )}
-                              </div>
-                            </button>
+              {/* Two Column Layout: Categories on Left, Subcategories on Right */}
+              <div className="grid grid-cols-2 gap-6 h-[500px]">
+                {/* Left Side - Categories */}
+                <div className="border-r border-gray-200 pr-6 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent" style={{ scrollbarWidth: 'thin' }}>
+                  <h3 className="font-semibold text-gray-900 mb-4">Categories</h3>
+                  <div className="space-y-2">
+                    {categories.map((category) => (
+                      <button
+                        key={category.id}
+                        onClick={() => {
+                          if (selectedCategory === category.id) {
+                            setSelectedCategory('');
+                            setSelectedSubCategory('');
+                          } else {
+                            setSelectedCategory(category.id);
+                            setSelectedSubCategory('');
+                          }
+                        }}
+                        className={`w-full border rounded-lg p-3 text-left transition-all duration-200 ${
+                          selectedCategory === category.id
+                            ? 'border-blue-500 bg-blue-50 shadow-md'
+                            : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-900 mb-1 text-sm">{category.name}</h4>
+                            <p className="text-xs text-gray-600 mb-1">{category.description}</p>
+                            <p className="text-xs text-blue-600">{category.photographerCount} photographers</p>
+                          </div>
+                          {selectedCategory === category.id && (
+                            <svg className="w-5 h-5 text-blue-500 flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
                           )}
                         </div>
-                        
-                        {/* Subcategories - Show directly below if either category in this row is selected */}
-                        {((selectedCategory === cat1.id && cat1.subCategories) || (cat2 && selectedCategory === cat2.id && cat2.subCategories)) && (
-                          <div className="ml-4 pl-4 border-l-2 border-blue-300">
-                            <h4 className="font-medium text-gray-900 mb-3 text-sm">Select a Subcategory (Required):</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {(selectedCategory === cat1.id ? cat1.subCategories : cat2?.subCategories)?.map((subCat) => (
-                                <button
-                                  key={subCat.id}
-                                  onClick={() => setSelectedSubCategory(subCat.id)}
-                                  className={`border rounded-lg p-3 text-left transition-all duration-200 ${
-                                    selectedSubCategory === subCat.id
-                                      ? 'border-blue-500 bg-blue-100 shadow-sm'
-                                      : 'border-gray-200 hover:border-blue-300 bg-white'
-                                  }`}
-                                >
-                                  <div className="flex items-start justify-between">
-                                    <div>
-                                      <h5 className="font-medium text-gray-900 text-sm mb-1">{subCat.name}</h5>
-                                      <p className="text-xs text-gray-600">{subCat.description}</p>
-                                    </div>
-                                    {selectedSubCategory === subCat.id && (
-                                      <svg className="w-5 h-5 text-blue-500 flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                      </svg>
-                                    )}
-                                  </div>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right Side - Subcategories */}
+                <div className="overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent" style={{ scrollbarWidth: 'thin' }}>
+                  {selectedCategory && (() => {
+                    const selectedCat = categories.find(cat => cat.id === selectedCategory);
+                    return selectedCat?.subCategories ? (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-4">Subcategories</h3>
+                        <div className="grid grid-cols-3 gap-2">
+                          {selectedCat.subCategories.map((subCat) => (
+                            <button
+                              key={subCat.id}
+                              onClick={() => setSelectedSubCategory(subCat.id)}
+                              className={`border rounded-lg p-3 text-left transition-all duration-200 ${
+                                selectedSubCategory === subCat.id
+                                  ? 'border-blue-500 bg-blue-100 shadow-sm'
+                                  : 'border-gray-200 hover:border-blue-300 bg-white'
+                              }`}
+                            >
+                              <div className="flex flex-col">
+                                <div className="flex items-start justify-between mb-1">
+                                  <h5 className="font-medium text-gray-900 text-sm">{subCat.name}</h5>
+                                  {selectedSubCategory === subCat.id && (
+                                    <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-600 line-clamp-2">{subCat.description}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-500">
+                        <p>Select a category to view subcategories</p>
                       </div>
                     );
-                  }
-                  return rows;
-                })()}
+                  })()}
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -1601,6 +1660,9 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
           </div>
         </div>
       )}
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

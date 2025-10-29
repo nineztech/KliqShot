@@ -45,7 +45,7 @@ export default function MobileDashboard({}: MobileDashboardProps) {
 
             {/* Recent Activity */}
             <div className="admin-card p-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h2>
+              <h2 className="text-base font-bold text-gray-900 mb-4">Recent Activity</h2>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">

@@ -15,7 +15,13 @@ import {
   MdLogout,
   MdExpandMore,
   MdExpandLess,
-  MdEventNote
+  MdEventNote,
+  MdAttachMoney,
+  MdCardGiftcard,
+  MdSupportAgent,
+  MdHistory,
+  MdSlideshow,
+  MdExtension
 } from 'react-icons/md';
 import { useSidebar } from './SidebarContext';
 import { useAuth } from '@/components/auth/AuthContext';
@@ -40,9 +46,15 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
     { id: 'dashboard', label: 'Dashboard', icon: MdHome, href: '/' },
     { id: 'bookings', label: 'Bookings', icon: MdEventNote, href: '/bookings' },
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
+    { id: 'addons', label: 'Add Ons', icon: MdExtension, href: '/addons' },
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },
+    { id: 'coupons', label: 'Coupons', icon: MdAttachMoney, href: '/coupons' },
+    { id: 'gifts', label: 'Gifts', icon: MdCardGiftcard, href: '/gifts' },
+    { id: 'tickets', label: 'Tickets', icon: MdSupportAgent, href: '/tickets' },
+    { id: 'logs', label: 'Activity Logs', icon: MdHistory, href: '/logs' },
     { id: 'analytics', label: 'Advertisements', icon: MdCampaign, href: '/analytics' },
+    { id: 'carousel', label: 'Carousel & Content', icon: MdSlideshow, href: '/carousel' },
     { id: 'settings', label: 'Settings', icon: MdSettings, href: '/settings' },
   ];
 

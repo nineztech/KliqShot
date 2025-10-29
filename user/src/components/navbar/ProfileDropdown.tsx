@@ -142,7 +142,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                     </button>
                     {/* Language Nested Dropdown - Mobile */}
                     {showLanguageDropdown && (
-                      <div className="absolute left-full top-0 ml-1 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                      <div className="absolute left-full top-0 ml-1 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[100]">
                         <div className="p-3">
                           <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                             <LanguageIcon className="h-4 w-4 text-blue-600" />
@@ -246,7 +246,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                     </button>
                     {/* Language Nested Dropdown - Mobile Authenticated */}
                     {showLanguageDropdown && (
-                      <div className="absolute left-full top-0 ml-1 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                      <div className="absolute left-full top-0 ml-1 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[100]">
                         <div className="p-3">
                           <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                             <LanguageIcon className="h-4 w-4 text-blue-600" />
@@ -410,7 +410,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                       </button>
                       {/* Language Nested Dropdown - Desktop */}
                       {showLanguageDropdown && (
-                        <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                        <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-[100]">
                           <div className="p-4">
                             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                               <LanguageIcon className="h-4 w-4 text-blue-600" />
@@ -513,7 +513,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
                   </button>
                   {/* Language Nested Dropdown - Desktop Authenticated */}
                   {showLanguageDropdown && (
-                    <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-[9999]">
+                    <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-[100]">
                       <div className="p-4">
                         <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                           <LanguageIcon className="h-4 w-4 text-blue-600" />

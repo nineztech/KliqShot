@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 import BookingCalendar from './BookingCalendar';
 import AddonsSelection from './AddonsSelection';
 
@@ -14,17 +15,23 @@ interface BookingData {
   price: string;
   category: string;
   subcategory: string;
+  package?: string;
 }
 
 interface BookingPageProps {
   bookingData: BookingData;
 }
 
+interface AddonSelection {
+  quantity: number;
+  hours: number;
+}
+
 export default function BookingPage({ bookingData }: BookingPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedAddons, setSelectedAddons] = useState<{ [key: number]: number }>({});
+  const [selectedAddons, setSelectedAddons] = useState<{ [key: number]: AddonSelection }>({});
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [source, setSource] = useState<string>('buynow');
 
@@ -41,13 +48,13 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     setSelectedTimeSlots([]); // Reset time slots when date changes
   };
 
-  const handleAddonToggle = (addonId: number, quantity: number) => {
+  const handleAddonToggle = (addonId: number, quantity: number, hours: number) => {
     setSelectedAddons(prev => {
       if (quantity === 0) {
         const { [addonId]: _, ...rest } = prev;
         return rest;
       }
-      return { ...prev, [addonId]: quantity };
+      return { ...prev, [addonId]: { quantity, hours } };
     });
   };
 
@@ -70,11 +77,12 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     }
 
     // Prepare addons data
-    const addonsArray = Object.entries(selectedAddons).map(([id, quantity]) => ({
+    const addonsArray = Object.entries(selectedAddons).map(([id, selection]) => ({
       id: parseInt(id),
       name: getAddonName(parseInt(id)),
       price: getAddonPrice(parseInt(id)),
-      quantity
+      quantity: selection.quantity,
+      hours: selection.hours
     }));
 
     // Create cart item
@@ -112,11 +120,12 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     }
 
     // Prepare addons data
-    const addonsArray = Object.entries(selectedAddons).map(([id, quantity]) => ({
+    const addonsArray = Object.entries(selectedAddons).map(([id, selection]) => ({
       id: parseInt(id),
       name: getAddonName(parseInt(id)),
       price: getAddonPrice(parseInt(id)),
-      quantity
+      quantity: selection.quantity,
+      hours: selection.hours
     }));
 
     // Create URL parameters
@@ -130,6 +139,9 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     }
     if (bookingData.subcategory) {
       params.append('subcategory', bookingData.subcategory);
+    }
+    if (bookingData.package) {
+      params.append('package', bookingData.package);
     }
     
     params.append('selectedDate', selectedDate.toLocaleDateString('en-US', { 
@@ -192,14 +204,22 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
               </button>
               <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Book Photography Session</h1>
             </div>
-            <div className="flex items-center justify-between text-gray-600 bg-gray-50 rounded-lg px-4 py-3">
+              <div className="flex items-center justify-between text-gray-600 bg-gray-50 rounded-lg px-4 py-3">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <span className="font-semibold text-gray-700">Photographer:</span>
                   <span className="font-medium text-gray-900">{bookingData.photographerName}</span>
                 </div>
-                {bookingData.category && (
+                {bookingData.package ? (
+                  <>
+                    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-gray-700">Package:</span>
+                      <span className="capitalize font-medium text-purple-600 bg-purple-100 px-2 py-0.5 rounded-md">{bookingData.package}</span>
+                    </div>
+                  </>
+                ) : bookingData.category && (
                   <>
                     <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
                     <div className="flex items-center space-x-2">
@@ -239,6 +259,7 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
             <AddonsSelection
               selectedAddons={selectedAddons}
               onAddonToggle={handleAddonToggle}
+              selectedTimeSlots={selectedTimeSlots}
             />
           </div>
         </div>
@@ -278,6 +299,9 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
           )}
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

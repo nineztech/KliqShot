@@ -296,7 +296,7 @@ export default function MobilePackageDetailManagement({
               <MdArrowBack className="w-5 h-5 text-gray-600" />
             </button>
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-gray-900 truncate">{localPackageData.name}</h2>
+              <h2 className="text-base font-bold text-gray-900 truncate">{localPackageData.name}</h2>
               <p className="text-xs text-gray-600 truncate">{localPackageData.description}</p>
             </div>
           </div>

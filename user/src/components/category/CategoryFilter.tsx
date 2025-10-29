@@ -12,7 +12,8 @@ import {
   HomeIcon,
   TrophyIcon,
   VideoCameraIcon,
-  Bars3Icon
+  Bars3Icon,
+  GiftIcon
 } from '@heroicons/react/24/outline';
 
 interface CategoryFilterProps {
@@ -20,11 +21,11 @@ interface CategoryFilterProps {
 }
 
 export default function CategoryFilter({ onFilterChange }: CategoryFilterProps) {
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeFilter, setActiveFilter] = useState('Packages');
   const router = useRouter();
 
   const filters = [
-    { id: 'All', label: 'All', icon: CameraIcon },
+    { id: 'Packages', label: 'Packages', icon: GiftIcon },
     { id: 'Wedding', label: 'Wedding', icon: HeartIcon },
     { id: 'Portrait', label: 'Portrait', icon: UserGroupIcon },
     { id: 'Family', label: 'Family', icon: UserGroupIcon },

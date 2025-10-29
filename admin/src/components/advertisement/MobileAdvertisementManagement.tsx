@@ -146,7 +146,7 @@ export default function MobileAdvertisementManagement({ advertisements, setAdver
       <div className="admin-card p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Advertisements</h2>
+            <h2 className="text-base font-bold text-gray-900">Advertisements</h2>
             <p className="text-gray-600 text-sm">Manage platform advertisements</p>
           </div>
           <button 
@@ -230,7 +230,7 @@ export default function MobileAdvertisementManagement({ advertisements, setAdver
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add Advertisement</h3>
+              <h3 className="text-base font-semibold text-gray-900">Add Advertisement</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -357,7 +357,7 @@ export default function MobileAdvertisementManagement({ advertisements, setAdver
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Advertisement</h3>
+              <h3 className="text-base font-semibold text-gray-900">Edit Advertisement</h3>
               <button
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-gray-600"

@@ -418,7 +418,7 @@ export default function DesktopCategoryManagement({ categories, setCategories, o
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add New Category</h3>
+              <h3 className="text-base font-semibold text-gray-900">Add New Category</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -511,7 +511,7 @@ export default function DesktopCategoryManagement({ categories, setCategories, o
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Category</h3>
+              <h3 className="text-base font-semibold text-gray-900">Edit Category</h3>
               <button
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -598,7 +598,7 @@ export default function DesktopCategoryManagement({ categories, setCategories, o
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Add Subcategory to {selectedCategory?.name}</h3>
+              <h3 className="text-base font-semibold text-gray-900">Add Subcategory to {selectedCategory?.name}</h3>
               <button
                 onClick={() => setShowSubCategoryModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -676,7 +676,7 @@ export default function DesktopCategoryManagement({ categories, setCategories, o
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Subcategory</h3>
+              <h3 className="text-base font-semibold text-gray-900">Edit Subcategory</h3>
               <button
                 onClick={() => setShowEditSubCategoryModal(false)}
                 className="text-gray-400 hover:text-gray-600"

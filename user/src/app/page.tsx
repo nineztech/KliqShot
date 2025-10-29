@@ -2,6 +2,7 @@ import Navbar from '@/components/navbar';
 import HeroSection from '@/components/common/HeroSection';
 import CategorySection from '@/components/category';
 import AdvertisementSection from '@/components/advertisement';
+import AdvertisementHeroCarousel from '@/components/advertisement/AdvertisementHeroCarousel';
 import ProcessSection from '@/components/process';
 import TopRatedPhotographers from '@/components/common/TopRatedPhotographers';
 import SEOSection from '@/components/seo';
@@ -22,7 +23,7 @@ export default function Home() {
       {/* <HeroSection /> */}
 
       {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-auto mx-auto">
         <div >
           <HeroSection/>
         </div>
@@ -30,6 +31,11 @@ export default function Home() {
         {/* Category Section */}
         <div className="py-4">
           <CategorySection />
+        </div>
+
+        {/* Advertisement Hero Carousel */}
+        <div className="mb-6">
+          <AdvertisementHeroCarousel />
         </div>
 
         {/* Top Rated Photographer */}

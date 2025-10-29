@@ -182,7 +182,7 @@ export default function DesktopFixedPackageDetailManagement({
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Sub-Packages</h3>
+              <h3 className="text-base font-semibold text-gray-900">Sub-Packages</h3>
               <p className="text-sm text-gray-500">Manage sub-packages for this package group</p>
             </div>
             <button
@@ -264,7 +264,7 @@ export default function DesktopFixedPackageDetailManagement({
       {showAddSubPackage && (
         <div className="admin-card mt-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-base font-bold text-gray-900">
               {editingSubPackage ? 'Edit Sub-Package' : 'Add New Sub-Package'}
             </h3>
             <button

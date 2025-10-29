@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
 interface HeroSlide {
@@ -84,7 +83,7 @@ const heroSlides: HeroSlide[] = [
   }
 ];
 
-export default function HeroSection() {
+export default function DesktopHeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [showText, setShowText] = useState(false);
@@ -182,7 +181,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative w-full h-[16rem] md:h-[20rem] lg:h-[30rem] overflow-hidden shadow-2xl" data-hero-section>
+    <div className="relative w-full h-[20rem] md:h-[24rem] lg:h-[30rem] overflow-hidden shadow-2xl" data-hero-section>
       {/* Professional Background with Enhanced Blur Effect */}
       <div className="absolute inset-0 w-full h-full">
         {/* Background Image Layer */}
@@ -198,19 +197,22 @@ export default function HeroSection() {
         />
       </div>
 
+      {/* Black Shadow Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"></div>
+
       {/* Content Overlay */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-end justify-center pb-8 md:pb-12 lg:pb-16">
         <div className="text-center max-w-4xl px-4 sm:px-6 lg:px-8 w-full">
           {/* Animated Heading */}
           <div className={`transform transition-all duration-1000 ease-out ${
             showText ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
           }`}>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3 leading-tight">
+            <h1 className="font-bold mb-0 leading-tight" style={{ fontSize: 'clamp(20px, 4vw, 36px)' }}>
               <span className="block text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
                 Capture Your Perfect Moment
               </span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-white mb-4 md:mb-6 font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+            <p className="text-white mb-2 md:mb-3 font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" style={{ fontSize: 'clamp(12px, 2.5vw, 16px)' }}>
               Find and book professional photographers for every occasion
             </p>
           </div>
@@ -219,7 +221,7 @@ export default function HeroSection() {
           <div className={`transform transition-all duration-1000 delay-200 ease-out ${
             showText ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-1.5 md:p-2 border border-white/80 ring-1 ring-white/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-all duration-300">
+            <div className="bg-white/95 backdrop-blur-xl rounded-lg shadow-2xl p-1.5 md:p-2 border border-white/80 ring-1 ring-white/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-all duration-300">
               <div className="flex flex-col md:flex-row gap-2">
                 {/* Search Input */}
                 <div className="flex-1 relative">
@@ -230,7 +232,7 @@ export default function HeroSection() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="w-full pl-10 pr-4 py-1.5 md:py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-1 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
                   />
                 </div>
 
@@ -243,7 +245,7 @@ export default function HeroSection() {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="w-full pl-10 pr-4 py-1.5 md:py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-1 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
                   />
                 </div>
 
@@ -256,14 +258,14 @@ export default function HeroSection() {
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="w-full pl-10 pr-4 py-1.5 md:py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-1 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-200"
                   />
                 </div>
 
                 {/* Search Button */}
                 <button
                   onClick={handleSearch}
-                  className="px-5 py-1.5 md:py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(59,130,246,0.5)] shadow-lg whitespace-nowrap"
+                  className="px-5 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(59,130,246,0.5)] shadow-lg whitespace-nowrap"
                 >
                   Search Now
                 </button>
@@ -296,3 +298,4 @@ export default function HeroSection() {
     </div>
   );
 }
+

@@ -23,7 +23,6 @@ interface TopRatedPhotographersProps {
   className?: string;
 }
 
-
 const topRatedPhotographers: Photographer[] = [
   {
     id: 1,
@@ -111,12 +110,12 @@ const topRatedPhotographers: Photographer[] = [
   }
 ];
 
-export default function TopRatedPhotographers({ className = '' }: TopRatedPhotographersProps) {
+export default function DesktopTopRatedPhotographers({ className = '' }: TopRatedPhotographersProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 320; // Approximate width of one card plus gap
+      const scrollAmount = 320;
       const newScrollPosition = direction === 'left'
         ? scrollContainerRef.current.scrollLeft - scrollAmount
         : scrollContainerRef.current.scrollLeft + scrollAmount;
@@ -137,21 +136,18 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
         </div>
       </div>
 
-      {/* Desktop Slider - 4 cards per row */}
-      <div className="hidden lg:block relative">
-        {/* Left Arrow */}
+      <div className="hidden lg:block relative" style={{ isolation: 'auto' }}>
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-[1] p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
           aria-label="Scroll left"
         >
           <ChevronLeftIcon className="w-6 h-6 text-gray-600" />
         </button>
 
-        {/* Right Arrow */}
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-[1] p-3 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
           aria-label="Scroll right"
         >
           <ChevronRightIcon className="w-6 h-6 text-gray-600" />
@@ -181,44 +177,7 @@ export default function TopRatedPhotographers({ className = '' }: TopRatedPhotog
           ))}
         </div>
       </div>
-
-      {/* Tablet View - 2 cards per row */}
-      <div className="hidden md:grid lg:hidden grid-cols-2 gap-6">
-        {topRatedPhotographers.slice(0, 4).map((photographer) => (
-          <PhotographerCard
-            key={photographer.id}
-            id={photographer.id}
-            name={photographer.name}
-            specialty={photographer.specialty}
-            location={photographer.location}
-            rating={photographer.rating}
-            reviews={photographer.reviews}
-            price={photographer.price}
-            experience={photographer.experience}
-            image={photographer.image}
-            category={photographer.category}
-          />
-        ))}
-      </div>
-
-      {/* Mobile View - 1 card per row */}
-      <div className="grid grid-cols-1 md:hidden gap-6">
-        {topRatedPhotographers.slice(0, 3).map((photographer) => (
-          <PhotographerCard
-            key={photographer.id}
-            id={photographer.id}
-            name={photographer.name}
-            specialty={photographer.specialty}
-            location={photographer.location}
-            rating={photographer.rating}
-            reviews={photographer.reviews}
-            price={photographer.price}
-            experience={photographer.experience}
-            image={photographer.image}
-            category={photographer.category}
-          />
-        ))}
-      </div>
     </div>
   );
 }
+

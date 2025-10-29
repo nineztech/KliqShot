@@ -10,8 +10,14 @@ interface CategoryCardProps {
   icon?: React.ReactNode;
   photographerCount?: number;
   category?: string;
+  subcategoryId?: string;
   subcategories?: string[];
   onClick?: () => void;
+  isPackage?: boolean;
+  packagePrice?: number;
+  packageCTA?: string;
+  showBadge?: boolean;
+  discountPercentage?: number;
 }
 
 export default function CategoryCard({ 
@@ -21,8 +27,14 @@ export default function CategoryCard({
   icon, 
   photographerCount = 0,
   category,
+  subcategoryId,
   subcategories = [],
-  onClick 
+  onClick,
+  isPackage = false,
+  packagePrice,
+  packageCTA,
+  showBadge = true,
+  discountPercentage
 }: CategoryCardProps) {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -46,14 +58,99 @@ export default function CategoryCard({
   };
 
   const handleClick = () => {
-    if (category) {
-      // Navigate to categories page with the selected category
-      router.push(`/categories?category=${category.toLowerCase()}`);
+    if (isPackage) {
+      // Navigate to categories page with package parameter
+      const packageParam = title.toLowerCase().replace(/\s+/g, '');
+      router.push(`/categories?package=${packageParam}`);
+    } else if (category && subcategoryId) {
+      // Use the exact IDs from categories.ts for proper routing
+      router.push(`/categories?category=${category}&subcategory=${subcategoryId}`);
     } else if (onClick) {
       onClick();
     }
   };
 
+  // Enhanced Package Card Design
+  if (isPackage && packagePrice && packageCTA) {
+    return (
+      <div 
+        className="relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+        onClick={handleClick}
+      >
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src={imageUrl}
+            alt={title}
+            className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
+            loading="lazy"
+          />
+        </div>
+
+        {/* Black Shadow Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/30 to-black/10"></div>
+
+        {/* Discount Badge - Left Side */}
+        {discountPercentage && (
+          <div className="absolute top-3 left-3 z-20">
+            <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-md shadow-md">
+              {discountPercentage}% OFF
+            </div>
+          </div>
+        )}
+
+        {/* ALL-INCLUSIVE Badge */}
+        {showBadge && (
+          <div className="absolute top-3 right-3 z-20">
+            <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-md shadow-md">
+              ALL-INCLUSIVE
+            </div>
+          </div>
+        )}
+
+        {/* Content Overlay - Similar to Hero Section */}
+        <div className="absolute inset-0 flex flex-col justify-end p-3 pb-2">
+          {/* Category Title */}
+          <h3 className="text-base font-bold text-white mb-1 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+            {title}
+          </h3>
+
+          {/* Value Proposition */}
+          <p className="text-xs text-white/90 mb-2 leading-relaxed line-clamp-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+            {description}
+          </p>
+
+          {/* Price and CTA */}
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <span className="text-white/80 text-[10px] block">Starting From</span>
+              <div className="flex items-center gap-2">
+                {discountPercentage && discountPercentage > 0 ? (
+                  <>
+                    <span className="text-sm text-white/60 line-through drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+                      ₹{Math.round(packagePrice / (1 - discountPercentage / 100)).toLocaleString('en-US')}
+                    </span>
+                    <div className="text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+                      ₹{packagePrice.toLocaleString('en-US')}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+                    ₹{packagePrice.toLocaleString('en-US')}
+                  </div>
+                )}
+              </div>
+            </div>
+            <button className="px-3 py-1.5 bg-white text-gray-900 font-semibold rounded-lg hover:bg-white/90 transition-all duration-300 text-xs whitespace-nowrap shadow-lg">
+              {packageCTA}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original Category Card Design
   return (
     <div 
       className="relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"

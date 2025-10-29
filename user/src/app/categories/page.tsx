@@ -6,7 +6,7 @@ import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import { PhotographerGrid } from '@/components/photographer';
 import { categories, Category, SubCategory, getCategoryById, getSubCategoryById } from '@/data/categories';
-import { getPhotographersByCategory, getPhotographersBySubCategory } from '@/data/photographers';
+import { getPhotographersByCategory, getPhotographersBySubCategory, photographersData } from '@/data/photographers';
 import type { Photographer } from '@/data/photographers';
 import { 
   HeartIcon, 
@@ -38,10 +38,28 @@ function CategoriesContent() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null);
   const [photographers, setPhotographers] = useState<Photographer[]>([]);
+  const [packageName, setPackageName] = useState<string | null>(null);
+
+  // Helper function to get all photographers for packages
+  const getAllPhotographers = (): Photographer[] => {
+    return photographersData;
+  };
 
   useEffect(() => {
     const categoryParam = searchParams.get('category');
     const subCategoryParam = searchParams.get('subcategory');
+    const packageParam = searchParams.get('package');
+    
+    // Handle package parameter
+    if (packageParam) {
+      // Get all photographers from all categories - package shows all photographers from all tiers
+      const allPhotographers = getAllPhotographers();
+      setPhotographers(allPhotographers);
+      setSelectedCategory(null);
+      setSelectedSubCategory(null);
+      setPackageName(packageParam);
+      return;
+    }
     
     if (categoryParam) {
       const category = getCategoryById(categoryParam);
@@ -95,11 +113,55 @@ function CategoriesContent() {
     if (selectedSubCategory) {
       params.append('subcategory', selectedSubCategory.id);
     }
+    if (packageName) {
+      params.append('package', packageName);
+    }
     
     const queryString = params.toString();
     const url = `/photographer/${photographer.id}${queryString ? `?${queryString}` : ''}`;
     router.push(url);
   };
+
+  // If we have a package selected, show all photographers
+  if (packageName) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        {/* Navbar */}
+        <Navbar />
+        
+        {/* Main Content Container */}
+        <div className="max-w-7xl mx-auto">
+          {/* Package Content */}
+          <div className="py-4">
+            {photographers.length > 0 ? (
+              <PhotographerGrid
+                photographers={photographers}
+                categoryName={packageName.charAt(0).toUpperCase() + packageName.slice(1)} 
+                onPhotographerClick={handlePhotographerClick}
+              />
+            ) : (
+              <div className="px-4">
+                <div className="text-center py-16">
+                  <div className="mb-6">
+                    <svg className="w-24 h-24 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">No Photographers Found</h2>
+                  <p className="text-gray-600 mb-8">
+                    Sorry, we couldn't find any photographers for this package.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <Footer />
+      </div>
+    );
+  }
 
   // If we have a subcategory selected, show photographers for that subcategory
   if (selectedSubCategory) {

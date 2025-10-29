@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { createPortal } from 'react-dom';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon, MapPinIcon, ClockIcon, CameraIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
@@ -45,6 +46,9 @@ export default function PhotographerCard({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [showRatingHover, setShowRatingHover] = useState(false);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+  const [isMounted, setIsMounted] = useState(false);
 
   // Generate sample portfolio images based on photographer's specialty
   const generatePortfolioImages = () => {
@@ -146,6 +150,78 @@ export default function PhotographerCard({
 
   const tierInfo = getTierLabel();
 
+  // Generate recommended features based on photographer ID
+  const getRecommendedFeatures = () => {
+    const allFeatures = [
+      'Fast Delivery',
+      'Quick Response',
+      'Professional',
+      'Experienced',
+      'Best Rated',
+      'Top Seller',
+      'Quality Work',
+      'On Time',
+      'Affordable',
+      'Creative'
+    ];
+    
+    // Select 2-3 features based on photographer ID
+    const featureCount = 2 + (id % 2); // 2 or 3 features
+    const features = [];
+    const startIndex = (id * 2) % allFeatures.length;
+    
+    for (let i = 0; i < featureCount; i++) {
+      const index = (startIndex + i) % allFeatures.length;
+      features.push(allFeatures[index]);
+    }
+    
+    return features;
+  };
+
+  const recommendedFeatures = getRecommendedFeatures();
+
+  // Generate realistic rating breakdown based on overall rating
+  const generateRatingBreakdown = () => {
+    const totalReviews = reviews;
+    const breakdown = [0, 0, 0, 0, 0]; // 1-star to 5-star counts
+    
+    // Distribute reviews based on rating
+    if (rating >= 4.5) {
+      breakdown[4] = Math.floor(totalReviews * 0.6); // 60% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.25); // 25% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.1);  // 10% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.03); // 3% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    } else if (rating >= 4.0) {
+      breakdown[4] = Math.floor(totalReviews * 0.45); // 45% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.35); // 35% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.15); // 15% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.03); // 3% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    } else if (rating >= 3.5) {
+      breakdown[4] = Math.floor(totalReviews * 0.3);  // 30% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.35); // 35% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.25); // 25% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.07); // 7% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    } else {
+      breakdown[4] = Math.floor(totalReviews * 0.2);  // 20% 5-star
+      breakdown[3] = Math.floor(totalReviews * 0.25); // 25% 4-star
+      breakdown[2] = Math.floor(totalReviews * 0.3);  // 30% 3-star
+      breakdown[1] = Math.floor(totalReviews * 0.15); // 15% 2-star
+      breakdown[0] = totalReviews - breakdown[4] - breakdown[3] - breakdown[2] - breakdown[1]; // Remaining 1-star
+    }
+    
+    return breakdown;
+  };
+
+  const ratingBreakdown = generateRatingBreakdown();
+
+  // Check if component is mounted for portal
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Auto-rotate images when hovered
   useEffect(() => {
     if (isHovered && portfolioImages.length > 1) {
@@ -220,13 +296,13 @@ export default function PhotographerCard({
 
   return (
     <div 
-      className="bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer  group transform hover:-translate-y-2 hover:scale-[1.02]"
+      className="bg-white border border-gray-200 rounded-lg sm:rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group"
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
          {/* Animated Image Gallery Section */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+        <div className="relative aspect-[3/2] sm:aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
         {/* Main Image */}
         <div className="relative w-full h-full">
             <img
@@ -239,37 +315,37 @@ export default function PhotographerCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             
             {/* Trusted Badge */}
-            <div className="absolute top-3 left-3 bg-purple-500/90 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg">
-              <ShieldCheckIcon className="w-3 h-3" />
-              <span className="text-[8px] font-bold tracking-wide">TRUSTED</span>
+            <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-purple-500/90 backdrop-blur-sm text-white px-1 sm:px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg">
+              <ShieldCheckIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+              <span className="text-[7px] sm:text-[8px] font-bold tracking-wide">TRUSTED</span>
             </div>
             
             {/* Like Button */}
           <button
-            className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
+            className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white/90 backdrop-blur-sm p-1.5 sm:p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
             onClick={handleWishlistToggle}
           >
             {isInWishlist(id) ? (
-              <HeartSolidIcon className="w-5 h-5 text-red-500" />
+              <HeartSolidIcon className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
             ) : (
-              <HeartIcon className="w-5 h-5 text-gray-600" />
+              <HeartIcon className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
             )}
           </button>
           
           {/* Category Badge */}
-          <div className="absolute bottom-3 left-3 bg-blue-600/90 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <CameraIcon className="w-3 h-3 inline mr-1" />
+          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <CameraIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 inline mr-0.5 sm:mr-1" />
             {specialty}
           </div>
         </div>
         
         {/* Image Dots Indicator */}
         {portfolioImages.length > 1 && (
-          <div className="absolute bottom-3 right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             {portfolioImages.map((_, index) => (
               <div
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 ${
                   index === currentImageIndex ? 'bg-white' : 'bg-white/50'
                 }`}
               />
@@ -279,17 +355,17 @@ export default function PhotographerCard({
       </div>
       
          {/* Content Section */}
-        <div className="p-3">
+        <div className="p-2.5 sm:p-3">
          {/* Photographer Info */}
-         <div className="flex items-start space-x-3 mb-3">
+         <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-3">
            <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">
-               <div className="flex items-center gap-2">
-                 <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
+               <div className="flex items-center gap-1 sm:gap-2">
+                 <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
                    {name}
                  </h3>
                  <div className="relative group/verified">
-                   <svg className="w-4 h-4 text-green-500 flex-shrink-0 cursor-help" fill="currentColor" viewBox="0 0 20 20">
+                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 flex-shrink-0 cursor-help" fill="currentColor" viewBox="0 0 20 20">
                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                    </svg>
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-900 text-xs rounded-lg opacity-0 group-hover/verified:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-200">
@@ -299,24 +375,82 @@ export default function PhotographerCard({
                  </div>
                </div>
               <div className="relative flex items-center space-x-1 ml-2">
-               <span className="text-gray-600 text-sm font-medium">
-                 {rating}
-               </span>
-               <StarSolidIcon className="w-4 h-4 text-yellow-400" />
+               <div 
+                 className="flex items-center space-x-1 cursor-pointer"
+                 onMouseEnter={(e) => {
+                   const rect = e.currentTarget.getBoundingClientRect();
+                   setHoverPosition({
+                     x: rect.left,
+                     y: rect.top - 10
+                   });
+                   setShowRatingHover(true);
+                 }}
+                 onMouseLeave={() => setShowRatingHover(false)}
+               >
+                 <span className="text-gray-600 text-xs sm:text-sm font-medium">
+                   {rating}
+                 </span>
+                 <StarSolidIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400" />
+               </div>
+               
+               {/* Rating Hover Component - Portal */}
+               {showRatingHover && isMounted && createPortal(
+                 <div 
+                   className="fixed bg-white border border-gray-200 rounded-lg shadow-xl p-3 w-64 z-[999999] backdrop-blur-sm"
+                   style={{ 
+                     left: `${hoverPosition.x}px`,
+                     top: `${hoverPosition.y}px`,
+                     transform: 'translateY(-100%)'
+                   }}
+                 >
+                   {/* Overall Rating */}
+                   <div className="flex items-center mb-2">
+                     <span className="text-lg font-semibold text-gray-900 mr-1">{rating}</span>
+                     <StarSolidIcon className="w-4 h-4 text-yellow-400" />
+                     <span className="text-sm text-gray-600 ml-2">{reviews} Ratings & Reviews</span>
+                   </div>
+                   
+                   {/* Star Breakdown */}
+                   <div className="space-y-1">
+                     {[5, 4, 3, 2, 1].map((star, index) => {
+                       const count = ratingBreakdown[4 - index];
+                       const percentage = reviews > 0 ? (count / reviews) * 100 : 0;
+                       const barColor = star >= 4 ? 'bg-green-500' : star >= 3 ? 'bg-yellow-500' : 'bg-red-500';
+                       
+                       return (
+                         <div key={star} className="flex items-center space-x-2">
+                           <span className="text-xs text-gray-600 w-3">{star}★</span>
+                           <div className="flex-1 bg-gray-200 rounded-full h-2">
+                             <div 
+                               className={`h-2 rounded-full ${barColor} transition-all duration-300`}
+                               style={{ width: `${percentage}%` }}
+                             />
+                           </div>
+                           <span className="text-xs text-gray-600 w-8 text-right">{count}</span>
+                         </div>
+                       );
+                     })}
+                   </div>
+                   
+                   {/* Arrow pointing down */}
+                   <div className="absolute top-full left-4 border-4 border-transparent border-t-white"></div>
+                 </div>,
+                 document.body
+               )}
              </div>
             </div>
             <div className="mb-1">
-              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold tracking-wider border ${tierInfo.colorClass} transition-all duration-200`}>
+              <span className={`inline-flex items-center px-1 sm:px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-semibold tracking-wider border ${tierInfo.colorClass} transition-all duration-200`}>
                 {tierInfo.label}
               </span>
             </div>
              <div className="flex items-center justify-between mt-1">
                <div className="flex items-center">
-                 <MapPinIcon className="w-3 h-3 text-gray-400 mr-1" />
-                 <span className="text-gray-500 text-xs truncate">{location}</span>
+                 <MapPinIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 mr-0.5 sm:mr-1" />
+                 <span className="text-gray-500 text-[10px] sm:text-xs truncate">{location}</span>
                </div>
-               <div className="flex items-center text-gray-500 text-xs">
-                 <ClockIcon className="w-3 h-3 mr-1" />
+               <div className="flex items-center text-gray-500 text-[10px] sm:text-xs">
+                 <ClockIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
                  {experience}
                </div>
              </div>
@@ -325,29 +459,23 @@ export default function PhotographerCard({
 
        {/* Category Tags */}
          <CategoryTags categories={categories || []} />
-
-         {/* View Details and Book Button */}
-         <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-          <button 
-            className="flex-1 bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/photographer/${id}`);
-            }}
-          >
-            View 
-          </button>
-          <button 
-            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Navigate to photographer detail page where booking logic will handle category selection
-              router.push(`/photographer/${id}`);
-            }}
-          >
-            Book Now
-          </button>
-         </div>
+         
+         {/* Recommended Features */}
+         {recommendedFeatures.length > 0 && (
+           <div className="mt-1.5 sm:mt-2">
+             <span className="text-[9px] sm:text-[10px] text-gray-500 font-medium">Recommended for</span>
+             <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-1">
+               {recommendedFeatures.map((feature, index) => (
+                 <span
+                   key={index}
+                   className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200 transition-all duration-200 hover:bg-gray-200"
+                 >
+                   {feature}
+                 </span>
+               ))}
+             </div>
+           </div>
+         )}
        </div>
     </div>
   );

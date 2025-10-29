@@ -4,7 +4,9 @@ import {
   loginSeller,
   getSellerProfile,
   updateSellerProfile,
-  logoutSeller
+  logoutSeller,
+  getAllSellers,
+  verifySeller
 } from '../controllers/sellerController.js';
 import { authenticateSeller } from '../middleware/authmiddelware.js';
 
@@ -18,5 +20,9 @@ router.post('/login', loginSeller);
 router.post('/logout', authenticateSeller, logoutSeller);
 router.get('/profile', authenticateSeller, getSellerProfile);
 router.put('/profile', authenticateSeller, updateSellerProfile);
+
+// Admin routes (should be protected with admin authentication in production)
+router.get('/all', getAllSellers);
+router.put('/verify/:id', verifySeller);
 
 export default router;

@@ -373,14 +373,14 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
       </div>
       
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-12 sm:h-14 md:h-16">
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <button
                 onClick={() => router.push('/')}
-                className="relative w-20 h-20 hover:opacity-80 transition-opacity duration-200"
+                className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 hover:opacity-80 transition-opacity duration-200"
               >
                 <Image
                   src="/main Logo.png"
@@ -394,7 +394,7 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
           </div>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-4xl mx-8">
+          <div className="flex-1 max-w-4xl mx-2 sm:mx-4 md:mx-8">
             <div 
               className={`relative transition-all duration-300 ${
                 showSearchBar ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
@@ -503,16 +503,17 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
           </div>
 
           {/* Location, Profile Icon & Become Seller Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
             {/* Location Selector */}
             <div className="relative" ref={locationDropdownRef}>
               <button
                 onClick={handleLocationClick}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 min-w-0"
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 min-w-0"
               >
-                <MapPinIcon className="h-4 w-4 text-white flex-shrink-0" />
-                <span className="truncate max-w-32">{userLocation}</span>
-                <ChevronDownIcon className="h-4 w-4 text-white flex-shrink-0" />
+                <MapPinIcon className="h-3 w-3 sm:h-4 sm:w-4 text-white flex-shrink-0" />
+                <span className="truncate max-w-16 sm:max-w-24 md:max-w-32 hidden sm:inline">{userLocation}</span>
+                <span className="truncate max-w-16 sm:hidden">Loc</span>
+                <ChevronDownIcon className="h-3 w-3 sm:h-4 sm:w-4 text-white flex-shrink-0" />
               </button>
               
               {/* Location Dropdown */}
@@ -563,30 +564,31 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
             {/* Cart Icon */}
             <button
               onClick={() => router.push('/cart')}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 relative"
+              className="flex items-center gap-1 sm:gap-2 px-1.5 sm:px-3 py-2 text-sm text-white hover:text-white/80 hover:bg-white/10 rounded-md transition-colors duration-200 relative"
             >
               <div className="relative">
                 <ShoppingCartIcon className="h-5 w-5 text-white flex-shrink-0" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-medium text-[10px] sm:text-xs">
                     {itemCount > 99 ? '99+' : itemCount}
                   </span>
                 )}
               </div>
-              <span className="text-sm font-medium">Cart</span>
+              <span className="text-sm font-medium hidden sm:inline">Cart</span>
             </button>
             
             {/* Become KliqChamp Button */}
             <button
               onClick={() => window.open('http://localhost:3002', '_blank')}
-              className="bg-gradient-to-r from-orange-300 to-red-400 text-white px-4 py-2 rounded-full text-sm font-bold hover:from-orange-400 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 hover:border-white/30 relative overflow-hidden group"
+              className="bg-gradient-to-r from-orange-300 to-red-400 text-white px-2 sm:px-3 md:px-4 py-2 rounded-full text-xs sm:text-sm font-bold hover:from-orange-400 hover:to-red-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 hover:border-white/30 relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="relative z-10">Become KliqChamp</span>
+              <span className="relative z-10 hidden sm:inline">Become KliqChamp</span>
+              <span className="relative z-10 sm:hidden">Become</span>
             </button>
             
             {/* Three Dot Menu */}
-            <div className="relative" ref={threeDotMenuRef}>
+            <div className="relative hidden sm:block" ref={threeDotMenuRef}>
               <button
                 onMouseEnter={handleThreeDotMenuHover}
                 onMouseLeave={handleThreeDotMenuLeave}
@@ -604,6 +606,25 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
                 >
                   <div className="p-2">
                     <div className="space-y-1">
+                      <button 
+                        onClick={() => router.push('/coupons')}
+                        className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                      >
+                        <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        <span>Coupons</span>
+                      </button>
+                      <button 
+                        onClick={() => router.push('/giftcards')}
+                        className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3"
+                      >
+                        <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                        </svg>
+                        <span>Gift Cards</span>
+                      </button>
+                      <div className="border-t border-gray-200 my-1"></div>
                       <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200 flex items-center gap-3">
                         <BellIcon className="h-4 w-4 text-gray-500" />
                         <span>Notification Preferences</span>

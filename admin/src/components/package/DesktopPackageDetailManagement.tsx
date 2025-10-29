@@ -311,7 +311,7 @@ export default function DesktopPackageDetailManagement({
 
         {/* Category Pricing Configuration */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-base font-semibold text-gray-900 mb-4">
             Configure Pricing & Features by Category
           </h3>
 

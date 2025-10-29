@@ -22,11 +22,16 @@ interface BookingPageProps {
   bookingData: BookingData;
 }
 
+interface AddonSelection {
+  quantity: number;
+  hours: number;
+}
+
 export default function BookingPage({ bookingData }: BookingPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedAddons, setSelectedAddons] = useState<{ [key: number]: number }>({});
+  const [selectedAddons, setSelectedAddons] = useState<{ [key: number]: AddonSelection }>({});
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [source, setSource] = useState<string>('buynow');
 
@@ -43,13 +48,13 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     setSelectedTimeSlots([]); // Reset time slots when date changes
   };
 
-  const handleAddonToggle = (addonId: number, quantity: number) => {
+  const handleAddonToggle = (addonId: number, quantity: number, hours: number) => {
     setSelectedAddons(prev => {
       if (quantity === 0) {
         const { [addonId]: _, ...rest } = prev;
         return rest;
       }
-      return { ...prev, [addonId]: quantity };
+      return { ...prev, [addonId]: { quantity, hours } };
     });
   };
 
@@ -72,11 +77,12 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     }
 
     // Prepare addons data
-    const addonsArray = Object.entries(selectedAddons).map(([id, quantity]) => ({
+    const addonsArray = Object.entries(selectedAddons).map(([id, selection]) => ({
       id: parseInt(id),
       name: getAddonName(parseInt(id)),
       price: getAddonPrice(parseInt(id)),
-      quantity
+      quantity: selection.quantity,
+      hours: selection.hours
     }));
 
     // Create cart item
@@ -114,11 +120,12 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     }
 
     // Prepare addons data
-    const addonsArray = Object.entries(selectedAddons).map(([id, quantity]) => ({
+    const addonsArray = Object.entries(selectedAddons).map(([id, selection]) => ({
       id: parseInt(id),
       name: getAddonName(parseInt(id)),
       price: getAddonPrice(parseInt(id)),
-      quantity
+      quantity: selection.quantity,
+      hours: selection.hours
     }));
 
     // Create URL parameters
@@ -252,6 +259,7 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
             <AddonsSelection
               selectedAddons={selectedAddons}
               onAddonToggle={handleAddonToggle}
+              selectedTimeSlots={selectedTimeSlots}
             />
           </div>
         </div>

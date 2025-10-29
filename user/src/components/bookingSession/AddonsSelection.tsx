@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+
 interface Addon {
   id: number;
   name: string;
@@ -7,9 +9,15 @@ interface Addon {
   description: string;
 }
 
+interface AddonSelection {
+  quantity: number;
+  hours: number;
+}
+
 interface AddonsSelectionProps {
-  selectedAddons: { [key: number]: number };
-  onAddonToggle: (addonId: number, quantity: number) => void;
+  selectedAddons: { [key: number]: AddonSelection };
+  onAddonToggle: (addonId: number, quantity: number, hours: number) => void;
+  selectedTimeSlots: string[];
 }
 
 const availableAddons: Addon[] = [
@@ -51,16 +59,43 @@ const availableAddons: Addon[] = [
   }
 ];
 
-export default function AddonsSelection({ selectedAddons, onAddonToggle }: AddonsSelectionProps) {
+export default function AddonsSelection({ selectedAddons, onAddonToggle, selectedTimeSlots }: AddonsSelectionProps) {
+  // Auto-update hours when time slots change
+  useEffect(() => {
+    const maxHours = selectedTimeSlots.length || 1;
+    // Update if hours exceed the current time slots limit
+    Object.keys(selectedAddons).forEach((addonIdStr) => {
+      const addonId = parseInt(addonIdStr);
+      const selection = selectedAddons[addonId];
+      if (selection && selection.quantity > 0 && selection.hours > maxHours) {
+        onAddonToggle(addonId, selection.quantity, maxHours);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTimeSlots.length]);
+
   const handleQuantityChange = (addonId: number, newQuantity: number) => {
     const quantity = Math.max(0, Math.min(10, newQuantity)); // Limit to 0-10
-    onAddonToggle(addonId, quantity);
+    const currentSelection = selectedAddons[addonId];
+    const hours = currentSelection?.hours || selectedTimeSlots.length || 1;
+    onAddonToggle(addonId, quantity, hours);
   };
 
-  const selectedCount = Object.values(selectedAddons).filter(q => q > 0).length;
+  const handleHoursChange = (addonId: number, newHours: number) => {
+    const currentSelection = selectedAddons[addonId];
+    const quantity = currentSelection?.quantity || 1;
+    const maxHours = selectedTimeSlots.length || 1;
+    const hours = Math.max(1, Math.min(maxHours, newHours)); // Limit based on selected time slots
+    onAddonToggle(addonId, quantity, hours);
+  };
+
+  const selectedCount = Object.values(selectedAddons).filter(selection => selection.quantity > 0).length;
   const totalPrice = availableAddons
-    .filter(addon => selectedAddons[addon.id] > 0)
-    .reduce((sum, addon) => sum + (addon.price * (selectedAddons[addon.id] || 0)), 0);
+    .filter(addon => selectedAddons[addon.id] && selectedAddons[addon.id].quantity > 0)
+    .reduce((sum, addon) => {
+      const selection = selectedAddons[addon.id];
+      return sum + (addon.price * (selection.quantity || 0) * (selection.hours || 1));
+    }, 0);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-3 h-full flex flex-col">
@@ -73,7 +108,7 @@ export default function AddonsSelection({ selectedAddons, onAddonToggle }: Addon
               <span className="font-semibold">{selectedCount} add-on{selectedCount > 1 ? 's' : ''} selected</span>
               <span className="text-blue-600 mx-1">•</span>
               <span className="font-medium">
-                {Object.values(selectedAddons).reduce((sum, qty) => sum + qty, 0)} item{Object.values(selectedAddons).reduce((sum, qty) => sum + qty, 0) > 1 ? 's' : ''}
+                {Object.values(selectedAddons).reduce((sum, selection) => sum + (selection.quantity || 0), 0)} item{Object.values(selectedAddons).reduce((sum, selection) => sum + (selection.quantity || 0), 0) > 1 ? 's' : ''}
               </span>
             </p>
             <p className="text-sm font-bold text-blue-700">
@@ -86,7 +121,9 @@ export default function AddonsSelection({ selectedAddons, onAddonToggle }: Addon
       <div className="flex-1 overflow-y-auto pr-1">
         <div className="space-y-2">
           {availableAddons.map((addon) => {
-            const quantity = selectedAddons[addon.id] || 0;
+            const selection = selectedAddons[addon.id];
+            const quantity = selection?.quantity || 0;
+            const hours = selection?.hours || selectedTimeSlots.length || 1;
             const isSelected = quantity > 0;
             
             return (
@@ -106,7 +143,11 @@ export default function AddonsSelection({ selectedAddons, onAddonToggle }: Addon
                       type="checkbox"
                       checked={isSelected}
                       onChange={(e) => {
-                        handleQuantityChange(addon.id, e.target.checked ? 1 : 0);
+                        if (e.target.checked) {
+                          onAddonToggle(addon.id, 1, selectedTimeSlots.length || 1);
+                        } else {
+                          onAddonToggle(addon.id, 0, 1);
+                        }
                       }}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer transition-all"
                     />
@@ -118,21 +159,19 @@ export default function AddonsSelection({ selectedAddons, onAddonToggle }: Addon
                         {addon.name}
                       </h3>
                       <span className={`text-sm font-bold whitespace-nowrap ${isSelected ? 'text-blue-700' : 'text-blue-600'}`}>
-                        ₹{addon.price.toLocaleString()}
-                        {isSelected && quantity > 1 && (
-                          <span className="text-xs ml-1 text-gray-600 font-normal">each</span>
-                        )}
+                        ₹{addon.price.toLocaleString()} <span className="text-[10px] font-normal">per hr</span>
                       </span>
                     </div>
                     <p className="text-xs text-gray-600 mt-0.5 leading-relaxed">
                       {addon.description}
                     </p>
                     
-                    {/* Quantity Controls */}
+                    {/* Hours and Quantity Controls on Same Row */}
                     {isSelected && (
-                      <div className="mt-2.5 flex items-center space-x-3">
-                        <span className="text-xs font-medium text-gray-700">Quantity:</span>
+                      <div className="mt-2 flex items-center gap-3 flex-wrap">
+                        {/* Quantity Controls */}
                         <div className="flex items-center space-x-2">
+                          <span className="text-xs font-medium text-gray-700">Quantity:</span>
                           <button
                             onClick={() => handleQuantityChange(addon.id, quantity - 1)}
                             disabled={quantity <= 1}
@@ -164,14 +203,30 @@ export default function AddonsSelection({ selectedAddons, onAddonToggle }: Addon
                           >
                             +
                           </button>
-                        </div>
+                         </div>
+                         
+                         {/* Vertical Separator */}
+                         <div className="h-6 w-px bg-gray-300"></div>
+                         
+                         {/* Hours Dropdown */}
+                         <div className="flex items-center space-x-2">
+                           <span className="text-xs font-medium text-gray-700 whitespace-nowrap">Hours:</span>
+                           <select
+                             value={hours}
+                             onChange={(e) => handleHoursChange(addon.id, parseInt(e.target.value))}
+                             className="px-2 py-1 text-xs border border-blue-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           >
+                             {Array.from({ length: selectedTimeSlots.length || 1 }, (_, i) => i + 1).map((h) => (
+                               <option key={h} value={h}>{h}</option>
+                             ))}
+                           </select>
+                         </div>
                         
-                        {quantity > 1 && (
-                          <div className="flex-1 text-right">
+                        {(quantity > 1 || hours > 1) && (
+                          <div className="flex-1 text-right min-w-full md:min-w-0">
                             <span className="text-xs font-semibold text-blue-700">
-                              ₹{(addon.price * quantity).toLocaleString()}
+                              Total: ₹{(addon.price * quantity * hours).toLocaleString()}
                             </span>
-                            <span className="text-xs text-gray-500 ml-1">total</span>
                           </div>
                         )}
                       </div>

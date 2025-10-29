@@ -45,7 +45,25 @@ const User = sequelize.define('User', {
     allowNull: false,
     validate: {
       notEmpty: true,
-      len: [6, 255]
+      len: [8, 128],
+      isStrongPassword(value) {
+        // Must contain at least one uppercase letter
+        if (!/[A-Z]/.test(value)) {
+          throw new Error('Password must contain at least one uppercase letter');
+        }
+        // Must contain at least one lowercase letter
+        if (!/[a-z]/.test(value)) {
+          throw new Error('Password must contain at least one lowercase letter');
+        }
+        // Must contain at least one number
+        if (!/[0-9]/.test(value)) {
+          throw new Error('Password must contain at least one number');
+        }
+        // Must contain at least one special character
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+          throw new Error('Password must contain at least one special character');
+        }
+      }
     }
   },
   profileImage: {
@@ -115,6 +133,14 @@ const User = sequelize.define('User', {
     type: DataTypes.DATE,
     allowNull: true
   },
+  registrationOtp: {
+    type: DataTypes.STRING(10),
+    allowNull: true
+  },
+  registrationOtpExpires: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
   role: {
     type: DataTypes.ENUM('user', 'seller', 'admin'),
     defaultValue: 'user',
@@ -154,6 +180,8 @@ User.prototype.toJSON = function() {
   delete values.emailVerificationToken;
   delete values.passwordResetToken;
   delete values.passwordResetExpires;
+  delete values.registrationOtp;
+  delete values.registrationOtpExpires;
   return values;
 };
 

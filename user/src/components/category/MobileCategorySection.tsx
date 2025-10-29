@@ -106,42 +106,48 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=200&fit=crop&crop=center&auto=format', 
       startingPrice: 150000,
       valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Marriage Video',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 25
     },
     { 
       name: 'Pre-Wedding', 
       imageUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=300&h=200&fit=crop&crop=center&auto=format', 
       startingPrice: 75000,
       valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Cinematic Video',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 20
     },
     { 
       name: 'Maternity', 
       imageUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&h=200&fit=crop&crop=center&auto=format', 
       startingPrice: 45000,
       valueProposition: 'Includes maternity shoot, 1 Photographer, Professional editing, Premium prints, Digital gallery',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 30
     },
     { 
       name: 'New Born', 
       imageUrl: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=300&h=200&fit=crop&crop=center&auto=format', 
       startingPrice: 35000,
       valueProposition: 'Includes newborn shoot, 1 Photographer, Safe props, Professional editing, Premium album',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 15
     },
     { 
       name: 'Product Shoot', 
       imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=200&fit=crop&crop=center&auto=format', 
       startingPrice: 25000,
       valueProposition: 'Includes product photography, 1 Photographer, Studio setup, Professional editing, High-res images',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 35
     },
     { 
       name: 'Real-Estate', 
       imageUrl: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop&crop=center&auto=format', 
       startingPrice: 40000,
       valueProposition: 'Includes property photography, 1 Photographer, 1 Drone Men, Professional editing, Virtual tour',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 18
     }
   ];
 
@@ -153,7 +159,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 10000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 22
     },
     { 
       name: 'House Warming', 
@@ -161,7 +168,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 8000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 28
     },
     { 
       name: 'Baby Naam Karan', 
@@ -169,7 +177,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 12000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 20
     },
     { 
       name: 'Product Shoot', 
@@ -177,7 +186,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 15000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 30
     },
     { 
       name: 'Pre-Wedding Shoot', 
@@ -185,7 +195,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 25000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 25
     },
     { 
       name: 'Mehendi', 
@@ -193,7 +204,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 10000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 15
     },
     { 
       name: 'Corporate Events', 
@@ -201,7 +213,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 18000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 22
     },
     { 
       name: 'Family Portraits', 
@@ -209,7 +222,8 @@ export default function MobileCategorySection() {
       imageUrl: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=300&h=200&fit=crop&crop=center&auto=format',
       startingPrice: 12000,
       valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography',
-      ctaText: 'View'
+      ctaText: 'View',
+      discountPercentage: 18
     }
   ];
 
@@ -253,6 +267,7 @@ export default function MobileCategorySection() {
                       packagePrice={pkg.startingPrice}
                       packageCTA={pkg.ctaText}
                       showBadge={true}
+                      discountPercentage={pkg.discountPercentage}
                     />
                   </div>
                 ))}
@@ -303,6 +318,7 @@ export default function MobileCategorySection() {
                       packagePrice={subcategory.startingPrice}
                       packageCTA={subcategory.ctaText}
                       showBadge={false}
+                      discountPercentage={subcategory.discountPercentage}
                     />
                   </div>
                 ))}

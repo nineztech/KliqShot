@@ -6,9 +6,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { userApi } from '@/lib/api';
+import { useAuth } from '@/components/AuthContext';
 
 export default function MobileSignupPage() {
   const router = useRouter();
+  const { login } = useAuth();
+  const [step, setStep] = useState<'form' | 'otp'>('form');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -18,6 +21,8 @@ export default function MobileSignupPage() {
     phone: '',
     agreeToTerms: false
   });
+  const [otp, setOtp] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +37,28 @@ export default function MobileSignupPage() {
     setError('');
   };
 
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (password.length > 128) {
+      return 'Password must be less than 128 characters';
+    }
+    if (!/[A-Z]/.test(password)) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    if (!/[a-z]/.test(password)) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    if (!/[0-9]/.test(password)) {
+      return 'Password must contain at least one number';
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return 'Password must contain at least one special character (!@#$%^&*(),.?":{}|<>)';
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -44,9 +71,10 @@ export default function MobileSignupPage() {
       return;
     }
 
-    // Validate password length
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    // Validate password strength
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      setError(passwordError);
       setIsLoading(false);
       return;
     }
@@ -62,10 +90,49 @@ export default function MobileSignupPage() {
       });
 
       if (response.success) {
-        router.push('/signin');
+        // Move to OTP verification step
+        setUserEmail(formData.email);
+        setStep('otp');
+        setError('');
+        
+        // Show OTP in development mode
+        if (process.env.NODE_ENV === 'development' && response.data?.otp) {
+          console.log('OTP for testing:', response.data.otp);
+        }
       }
     } catch (err: any) {
       setError(err.message || 'Failed to create account. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await userApi.verifyRegistrationOtp({
+        email: userEmail,
+        otp: otp
+      });
+
+      if (response.success && response.data) {
+        // Update auth context with user data
+        if (response.data.user) {
+          login({
+            id: response.data.user.id,
+            name: `${response.data.user.firstName} ${response.data.user.lastName}`,
+            email: response.data.user.email,
+            avatar: response.data.user.profileImage
+          });
+        }
+        // Account created and logged in, redirect to home
+        router.push('/');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Invalid OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +144,7 @@ export default function MobileSignupPage() {
         {/* Back Button */}
         <div className="mb-3">
           <button
-            onClick={() => router.back()}
+            onClick={() => step === 'otp' ? setStep('form') : router.back()}
             className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200"
           >
             <ArrowLeftIcon className="w-4 h-4 mr-1" />
@@ -99,16 +166,56 @@ export default function MobileSignupPage() {
         </div>
 
         <h2 className="mt-2 text-center text-xl font-bold text-gray-900">
-          Create your account
+          {step === 'otp' ? 'Verify your email' : 'Create your account'}
         </h2>
         <p className="mt-1 text-center text-xs text-gray-600">
-          Join thousands of photographers and clients
+          {step === 'otp' 
+            ? `We've sent a 6-digit code to ${userEmail}` 
+            : 'Join thousands of photographers and clients'}
         </p>
       </div>
 
       <div className="mt-3 w-full max-w-sm mx-auto">
         <div className="bg-white py-4 px-3 shadow rounded-lg">
-          <form onSubmit={handleSubmit} className="space-y-3">
+          {step === 'otp' ? (
+            // OTP Verification Form
+            <form onSubmit={handleOtpSubmit} className="space-y-3">
+              <div>
+                <label htmlFor="otp" className="block text-xs font-medium text-gray-700 text-center">
+                  Enter Verification Code
+                </label>
+                <input
+                  type="text"
+                  id="otp"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  maxLength={6}
+                  required
+                  className="mt-2 block w-full px-3 py-2.5 text-center text-2xl tracking-widest border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 font-mono"
+                  placeholder="000000"
+                />
+                <p className="mt-2 text-center text-xs text-gray-500">
+                  Enter the 6-digit code sent to your email
+                </p>
+              </div>
+
+              {error && (
+                <div className="rounded-md bg-red-50 p-2">
+                  <p className="text-xs text-red-800">{error}</p>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading || otp.length !== 6}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                {isLoading ? 'Verifying...' : 'Verify & Create Account'}
+              </button>
+            </form>
+          ) : (
+            // Registration Form
+            <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-2">
               <div>
@@ -199,6 +306,9 @@ export default function MobileSignupPage() {
                   )}
                 </button>
               </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Must be 8+ characters with uppercase, lowercase, number, and special character
+              </p>
             </div>
 
             {/* Confirm Password */}
@@ -253,35 +363,36 @@ export default function MobileSignupPage() {
               </label>
             </div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="rounded-md bg-red-50 p-2">
-                <p className="text-xs text-red-800">{error}</p>
-              </div>
-            )}
+              {/* Error Message */}
+              {error && (
+                <div className="rounded-md bg-red-50 p-2">
+                  <p className="text-xs text-red-800">{error}</p>
+                </div>
+              )}
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-            >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-            </button>
-          </form>
-
-          {/* Switch to Sign In */}
-          <div className="mt-3 text-center">
-            <p className="text-xs text-gray-600">
-              Already have an account?{' '}
-              <Link
-                href="/signin"
-                className="font-medium text-blue-600 hover:text-blue-500"
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
-                Sign In
-              </Link>
-            </p>
-          </div>
+                {isLoading ? 'Creating Account...' : 'Create Account'}
+              </button>
+
+              {/* Switch to Sign In */}
+              <div className="mt-3 text-center">
+                <p className="text-xs text-gray-600">
+                  Already have an account?{' '}
+                  <Link
+                    href="/signin"
+                    className="font-medium text-blue-600 hover:text-blue-500"
+                  >
+                    Sign In
+                  </Link>
+                </p>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>

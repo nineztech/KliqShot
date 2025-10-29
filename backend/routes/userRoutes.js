@@ -12,7 +12,8 @@ import {
   getAllUsers,
   getUserById,
   updateUserStatus,
-  deleteUser
+  deleteUser,
+  verifyRegistrationOtp
 } from '../controllers/userController.js';
 
 // Import middleware
@@ -24,6 +25,7 @@ const router = express.Router();
 // Public routes
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/verify-registration-otp', verifyRegistrationOtp);
 
 // Protected routes (require authentication)
 router.get('/profile', authenticate, getUserProfile);

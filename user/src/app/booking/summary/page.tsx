@@ -24,6 +24,7 @@ interface Addon {
   name: string;
   price: number;
   quantity: number;
+  hours: number;
 }
 
 interface PackageDetails {
@@ -206,6 +207,18 @@ function BookingSummaryContent() {
         }
 
         if (photographerId && photographerName && price) {
+          // Calculate total price if not provided
+          let calculatedTotalPrice = totalPrice;
+          if (calculatedTotalPrice === 0) {
+            const priceStr = price.replace(/[₹,]/g, '');
+            const basePrice = parseFloat(priceStr);
+            const hours = selectedTimeSlots.length;
+            const addonsTotal = parsedAddons.reduce((sum, addon) => {
+              return sum + (addon.price * addon.quantity * (addon.hours || 1));
+            }, 0);
+            calculatedTotalPrice = (basePrice * hours) + addonsTotal;
+          }
+          
           items.push({
             photographerId,
             photographerName,
@@ -217,7 +230,7 @@ function BookingSummaryContent() {
             selectedDate: selectedDate || '',
             selectedTimeSlots,
             selectedAddons: parsedAddons,
-            totalPrice,
+            totalPrice: calculatedTotalPrice,
           });
         }
       }
@@ -245,6 +258,15 @@ function BookingSummaryContent() {
       }
 
       if (photographerId && photographerName && price) {
+        // Calculate total price
+        const priceStr = price.replace(/[₹,]/g, '');
+        const basePrice = parseFloat(priceStr);
+        const hours = selectedTimeSlots.length;
+        const addonsTotal = parsedAddons.reduce((sum, addon) => {
+          return sum + (addon.price * addon.quantity * (addon.hours || 1));
+        }, 0);
+        const totalPrice = (basePrice * hours) + addonsTotal;
+        
         const item: CartItem = {
           photographerId,
           photographerName,
@@ -256,7 +278,7 @@ function BookingSummaryContent() {
           selectedDate: selectedDate || '',
           selectedTimeSlots,
           selectedAddons: parsedAddons,
-          totalPrice: 0, // Will be calculated
+          totalPrice,
         };
         setCartItems([item]);
         setItemCount(1);
@@ -347,7 +369,7 @@ function BookingSummaryContent() {
     
     return cartItems.reduce((total, item) => {
       return total + item.selectedAddons.reduce((addonTotal, addon) => {
-        return addonTotal + (addon.price * addon.quantity);
+        return addonTotal + (addon.price * addon.quantity * (addon.hours || 1));
       }, 0);
     }, 0);
   };
@@ -480,6 +502,10 @@ function BookingSummaryContent() {
       if (existingIndex >= 0) {
         // Update quantity
         item.selectedAddons[existingIndex].quantity = quantity;
+        // Preserve hours if it exists, otherwise default to 1
+        if (!item.selectedAddons[existingIndex].hours) {
+          item.selectedAddons[existingIndex].hours = 1;
+        }
       } else {
         // Add addon
         const addon = availableAddons.find(a => a.id === addonId);
@@ -489,6 +515,7 @@ function BookingSummaryContent() {
             name: addon.name,
             price: addon.price,
             quantity: quantity,
+            hours: 1, // Default to 1 hour for addons added from summary
           });
         }
       }
@@ -498,6 +525,15 @@ function BookingSummaryContent() {
         item.selectedAddons.splice(existingIndex, 1);
       }
     }
+    
+    // Recalculate total price
+    const priceStr = item.price.replace(/[₹,]/g, '');
+    const basePrice = parseFloat(priceStr);
+    const hours = item.selectedTimeSlots.length;
+    const addonsTotal = item.selectedAddons.reduce((sum, addon) => {
+      return sum + (addon.price * addon.quantity * (addon.hours || 1));
+    }, 0);
+    item.totalPrice = (basePrice * hours) + addonsTotal;
     
     setCartItems(updatedItems);
   };
@@ -720,8 +756,8 @@ function BookingSummaryContent() {
                     <div className="space-y-1">
                       {item.selectedAddons.map((addon, addonIndex) => (
                         <div key={addonIndex} className="flex justify-between text-sm">
-                          <span className="text-gray-600">{addon.name} (×{addon.quantity})</span>
-                          <span className="font-medium">₹{(addon.price * addon.quantity).toLocaleString()}</span>
+                          <span className="text-gray-600">{addon.name} (×{addon.quantity} ×{addon.hours || 1}hr)</span>
+                          <span className="font-medium">₹{(addon.price * addon.quantity * (addon.hours || 1)).toLocaleString()}</span>
                         </div>
                       ))}
                     </div>
@@ -1365,7 +1401,7 @@ function BookingSummaryContent() {
                               {quantity > 1 && (
                                 <div className="flex-1 text-right">
                                   <span className="text-xs font-semibold text-blue-700">
-                                    ₹{(addon.price * quantity).toLocaleString()}
+                                    ₹{(addon.price * quantity * (selectedAddon?.hours || 1)).toLocaleString()}
                                   </span>
                                   <span className="text-xs text-gray-500 ml-1">total</span>
                                 </div>

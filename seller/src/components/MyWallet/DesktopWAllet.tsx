@@ -44,8 +44,8 @@ export default function WalletPage() {
       title: 'Total Revenue', 
       value: '$127,450', 
       icon: MdAttachMoney, 
-      gradient: 'from-green-500 to-emerald-500',
-      bgGradient: 'from-green-50 to-emerald-50',
+      gradient: 'from-teal-400 to-emerald-500',
+      bgGradient: 'from-teal-40 to-emerald-50',
       change: '+23.5%',
       trend: 'up'
     },
@@ -53,8 +53,8 @@ export default function WalletPage() {
       title: 'Successful Payments', 
       value: 1847, 
       icon: MdCheckCircle, 
-      gradient: 'from-blue-500 to-indigo-500',
-      bgGradient: 'from-blue-50 to-indigo-50',
+      gradient: 'from-violet-500 to-sky-600',
+      bgGradient: 'from-violet-50 to-sky-60',
       change: '+18%',
       trend: 'up'
     },
@@ -62,8 +62,8 @@ export default function WalletPage() {
       title: 'Pending Payments', 
       value: 143, 
       icon: MdPending, 
-      gradient: 'from-orange-500 to-yellow-500',
-      bgGradient: 'from-orange-50 to-yellow-50',
+      gradient: 'from-amber-500 to-orange-600',
+      bgGradient: 'from-amber-50 to-orange-60',
       change: '-5%',
       trend: 'down'
     },

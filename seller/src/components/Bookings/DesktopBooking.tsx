@@ -98,11 +98,11 @@ export default function BookingManagement() {
 
   // Team members
   const teamMembers = [
-    { id: 1, name: 'You (Owner)', role: 'Lead Photographer', avatar: '👤', availability: 'Available', bookings: 12 },
-    { id: 2, name: 'Sarah Joshi', role: 'Lead Photographer', avatar: '👩‍💼', availability: 'Available', bookings: 12 },
-    { id: 3, name: 'David Kumar', role: 'Wedding Specialist', avatar: '👨‍💼', availability: 'Busy', bookings: 8 },
-    { id: 4, name: 'Lisa Kumari', role: 'Portrait Expert', avatar: '👩‍🎨', availability: 'Available', bookings: 15 },
-    { id: 5, name: 'Mark Wilson', role: 'Event Photographer', avatar: '👨‍🎨', availability: 'Available', bookings: 10 },
+    { id: 1, name: 'You (Owner)', role: 'Lead Photographer', availability: 'Available', bookings: 12 },
+    { id: 2, name: 'Sarah Joshi', role: 'Lead Photographer' , availability: 'Available', bookings: 12 },
+    { id: 3, name: 'David Kumar', role: 'Wedding Specialist' , availability: 'Busy', bookings: 8 },
+    { id: 4, name: 'Lisa Kumari', role: 'Portrait Expert' , availability: 'Available', bookings: 15 },
+    { id: 5, name: 'Mark Wilson', role: 'Event Photographer',  availability: 'Available', bookings: 10 },
   ];
 
   // Upcoming bookings
@@ -955,9 +955,9 @@ export default function BookingManagement() {
 
       {/* Team Assignment Modal */}
       {showAssignModal && selectedBooking && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-t-2xl">
+       <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="sticky top-0 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 text-white p-6 rounded-t-2xl z-10">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold">Assign Team Members</h2>
@@ -971,13 +971,14 @@ export default function BookingManagement() {
                   }}
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200"
                 >
-                  <span className="text-2xl">×</span>
+                  <span className="text-2xl text-black">×</span>
                 </button>
               </div>
             </div>
-
-            <div className="p-6">
+<div className="flex-1 overflow-y-auto p-2">
+            <div className="p-3">
               {/* Booking Details */}
+               
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border-2 border-blue-200">
                 <h3 className="font-bold text-gray-900 mb-3 text-lg">Booking Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
@@ -1043,7 +1044,8 @@ export default function BookingManagement() {
               {/* Team Members List */}
               <div className="mb-6">
                 <h3 className="font-bold text-gray-900 mb-4 text-lg">Available Team Members</h3>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
+                <div className="space-y-3">
+
                   {teamMembers.map((member) => {
                     const isSelected = selectedTeamMembers.includes(member.name);
                     const isAvailable = member.availability === 'Available';
@@ -1095,7 +1097,7 @@ export default function BookingManagement() {
                   })}
                 </div>
               </div>
-
+</div>
               {/* Action Buttons */}
               <div className="flex gap-4 pt-4 border-t border-gray-200">
                 <button

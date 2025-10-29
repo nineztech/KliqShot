@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowLeftRight, TrendingDown, TrendingUp,ChevronRight, ChevronDown, LogOut } from 'lucide-react';
+import { ArrowLeftRight, TrendingDown, UserCog,TrendingUp,ChevronRight, ChevronDown, LogOut } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -34,7 +34,8 @@ const Sidebar = () => {
       hasSubmenu: true,
       submenu: [
         { id: 'income', icon: TrendingDown, label: 'Upcoming', href: '/Booking' },
-        { id: 'outcome', icon: TrendingUp, label: 'History', href: '/History' }
+        { id: 'outcome', icon: TrendingUp, label: 'History', href: '/History' },
+        { id: 'team', icon: UserCog, label: 'Team Management', href: '/Team' }
       ]
     },
      { id: 'my_portfolio', icon: MdCameraAlt, label: 'My Portfolio', href: '/UserPortfolio' },
@@ -61,7 +62,7 @@ const Sidebar = () => {
   return (
     <div className={`${isMinimized ? 'w-20' : 'w-64'} ease-in-out bg-gradient-to-b from-slate-800 via-purple-800 to-indigo-900 h-screen fixed left-0 top-0 text-white z-20 transition-all duration-300`}>
       {/* Logo/Brand Section */}
-      <div className={`${isMinimized ? 'p-6' : 'p-6'} transition-all duration-300`}>
+      <div className={`${isMinimized ? 'p-3 mt-2' : 'p-3 mt-2'} transition-all duration-300`}>
         <div className="flex items-center justify-center">
           <div className={`relative ${isMinimized ? 'w-12 h-12' : 'w-40 h-16'} transition-all duration-300`}>
             {isMinimized ? (
@@ -69,7 +70,7 @@ const Sidebar = () => {
                 src="/Logo_Icon2.png"
                 alt="KliqShot Logo"
                 fill
-                className="object-contain"
+                className="object-contain p-1"
                 priority
               />
             ) : (
@@ -165,7 +166,7 @@ const Sidebar = () => {
         <button 
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className="w-full bg-gradient-to-br from-cyan-500 to-blue-500 hover:bg-red-200 hover:text-red-500 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
+          className="w-full bg-red-200 text-red-500 hover:scale-105 disabled:cursor-not-allowed font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
           title={isMinimized ? 'Log out' : ''}
         >
           <div className={`flex gap-2 items-center justify-center ${isMinimized ? 'px-0' : ''}`}>

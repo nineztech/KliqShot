@@ -173,12 +173,33 @@ const { isMinimized } = useSidebar();
       photos: 180,
       feedback: 'Captured our love story perfectly!',
     },
+     {
+      id: 'BK-2024-012',
+      client: 'Isabella Thomas',
+      email: 'isabella.t@email.com',
+      phone: '+91 98765 43217',
+      type: 'Engagement Photos',
+      date: '2025-09-20',
+      time: '5:00 PM - 8:00 PM',
+      location: 'Heritage Park',
+      assignedTo: 'Mark Wilson',
+      status: 'Disputed',
+      amount: 420,
+      paymentStatus: 'Paid',
+      deliveryDate: '2025-09-27',
+      rating: 5,
+      photos: 180,
+      feedback: 'Captured our love story perfectly!',
+      cancellationReason: 'Client scheduling conflict',
+      cancellationDate: '2025-09-23',
+    },
   ];
 
   // Stats calculation
   const totalOrders = orderHistory.length;
   const completedOrders = orderHistory.filter(o => o.status === 'Completed').length;
   const cancelledOrders = orderHistory.filter(o => o.status === 'Cancelled').length;
+  const disputedOrders = orderHistory.filter(o => o.status === 'Disputed').length;
   const totalRevenue = orderHistory
     .filter(o => o.status === 'Completed')
     .reduce((sum, o) => sum + o.amount, 0);
@@ -223,6 +244,8 @@ const { isMinimized } = useSidebar();
       filtered = filtered.filter(o => o.status === 'Completed');
     } else if (activeTab === 'cancelled') {
       filtered = filtered.filter(o => o.status === 'Cancelled');
+    }else if (activeTab === 'Disputed') {
+      filtered = filtered.filter(o => o.status === 'Disputed');
     }
 
     // Filter by search query
@@ -408,6 +431,16 @@ const { isMinimized } = useSidebar();
             >
               Cancelled ({cancelledOrders})
             </button>
+            <button
+              onClick={() => setActiveTab('Disputed')}
+              className={`flex-1 min-w-max px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-semibold transition-colors duration-200 ${
+                activeTab === 'Disputed'
+                  ? 'text-red-600 border-b-2 border-red-600 bg-red-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              Disputed ({disputedOrders})
+            </button>
           </div>
 
           {/* Search and Filters */}
@@ -574,7 +607,7 @@ const { isMinimized } = useSidebar();
                   }}
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200"
                 >
-                  <span className="text-2xl">×</span>
+                  <span className="text-2xl text-black">×</span>
                 </button>
               </div>
             </div>
@@ -716,6 +749,21 @@ const { isMinimized } = useSidebar();
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">Cancelled On:</span>
+                      <span className="font-semibold">{selectedOrder.cancellationDate}</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-gray-600">Reason:</span>
+                      <p className="font-semibold text-gray-900">{selectedOrder.cancellationReason}</p>
+                    </div>
+                  </div>
+                </div>  
+                )}
+                {selectedOrder.status === 'Disputed' && (
+                <div className="bg-red-50 rounded-xl p-4 border border-red-200">
+                  <h3 className="font-bold text-gray-900 mb-3">Dispute Information</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Disputed On:</span>
                       <span className="font-semibold">{selectedOrder.cancellationDate}</span>
                     </div>
                     <div className="flex flex-col gap-1">

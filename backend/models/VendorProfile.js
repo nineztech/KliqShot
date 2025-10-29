@@ -93,6 +93,48 @@ const VendorProfile = sequelize.define(
     branchName: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    // NEW FIELDS
+    whatsappNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    dateOfBirth: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    serviceRadius: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    travelPreference: {
+      type: DataTypes.ENUM('local', 'up_to_100km', 'national', 'international'),
+      allowNull: true,
+    },
+    languagePreferences: {
+      type: DataTypes.JSON, // Store as JSON array
+      allowNull: true,
+      defaultValue: []
+    },
+    bio: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    businessType: {
+      type: DataTypes.ENUM('llc', 'llp', 'sole_proprietorship', 'partnership', 'private_limited'),
+      allowNull: true,
+    },
+    incorporationDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    businessRegistrationDocument: {
+      type: DataTypes.STRING, // Store file path/URL
+      allowNull: true,
+    },
+    gstCertificateDocument: {
+      type: DataTypes.STRING, // Store file path/URL
+      allowNull: true,
     }
   },
   {

@@ -9,7 +9,8 @@ import {
   MdPerson,
   MdSearch,
   MdFilterList,
-  MdMoreVert
+  MdMoreVert,
+  MdDialerSip
 } from 'react-icons/md';
 import { useState } from 'react';
 import { 
@@ -42,7 +43,7 @@ export default function WalletPage() {
   const stats = [
     { 
       title: 'Total Revenue', 
-      value: '$127,450', 
+      value: '1274', 
       icon: MdAttachMoney, 
       gradient: 'from-teal-400 to-emerald-500',
       bgGradient: 'from-teal-40 to-emerald-50',
@@ -67,7 +68,15 @@ export default function WalletPage() {
       change: '-5%',
       trend: 'down'
     },
-     
+    { 
+      title: 'Disputed Payments', 
+      value: 283, 
+      icon: MdDialerSip, 
+      gradient: 'from-pink-500 to-rose-600',
+      bgGradient: 'from-pink-50 to-rose-60',
+      change: '-7%',
+      trend: 'down'
+    },
   ];
 
   // Successful payments data
@@ -244,7 +253,7 @@ export default function WalletPage() {
         </div>
  
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (

@@ -6,6 +6,7 @@ import vendorProfileRoutes from './VendorRoutes.js';
 import adminRoutes from './adminRoutes.js';
 import categoryRoutes from './categoryRoutes.js';
 import uploadRoutes from './uploadRoutes.js';
+import teamMemberRoutes from './teammemberRoutes.js';
 const router = express.Router();
 
 // Health check route
@@ -24,6 +25,7 @@ router.use('/vendors', vendorProfileRoutes);
 router.use('/admins', adminRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/upload', uploadRoutes);
+router.use('/team-members', teamMemberRoutes);
 // Add other route modules here as they are created
 // router.use('/products', productRoutes);
 // router.use('/orders', orderRoutes);

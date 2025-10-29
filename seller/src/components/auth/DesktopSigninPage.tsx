@@ -59,16 +59,16 @@ export default function DesktopSigninPage() {
 
       if (redirectUrl) {
         // If there's a specific redirect URL, use it
-        router.push(redirectUrl);
+        router.push('/Profile');
       } else {
-        // Check isProfileCompleted value
-        const isProfileCompleted = result.data.isProfileCompleted;
+        // Check if vendor profile exists
+        const hasVendorProfile = result.data.hasVendorProfile;
         
-        if (isProfileCompleted === 1 || isProfileCompleted === true) {
-          // Profile is completed, redirect to Desktop
+        if (hasVendorProfile) {
+          // Vendor profile exists, redirect to Desktop
           router.push('/Desktop');
         } else {
-          // Profile is not completed (0 or false), redirect to Profile
+          // No vendor profile, redirect to Profile page to create one
           router.push('/Profile');
         }
       }

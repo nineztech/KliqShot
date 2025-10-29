@@ -20,10 +20,12 @@ import {
 } from 'react-icons/md';
 import { Calendar } from 'lucide-react';
 import { useSidebar } from '../Sidebar/SidebarContext';
-
 export default function BookingManagement() {
   const [activeTab, setActiveTab] = useState('upcoming');
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const today = new Date();
+  const [selectedDate, setSelectedDate] = useState<string>(
+    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+  );
   const [showTeamModal, setShowTeamModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
@@ -44,29 +46,6 @@ export default function BookingManagement() {
     category: '',
     experience: ''
   });
-
-  const handleTeamFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setTeamForm({
-      ...teamForm,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleTeamFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('New team member:', teamForm);
-    // Add your submission logic here
-    setShowTeamModal(false);
-    setTeamForm({
-      firstName: '',
-      lastName: '',
-      email: '',
-      mobile: '',
-      designation: '',
-      category: '',
-      experience: ''
-    });
-  };
 
   // Stats data
   const stats = [
@@ -123,7 +102,7 @@ export default function BookingManagement() {
       id: 'BK-2024-002',
       client: 'Emma Wilson',
       type: 'Portrait Session',
-      date: '2025-10-16',
+      date: '2025-10-17',
       time: '2:00 PM - 4:00 PM',
       location: 'Studio A',
       assignedTo: 'Lisa Kumari',
@@ -223,8 +202,7 @@ export default function BookingManagement() {
     '2025-10-17': { slots: 2, type: 'Product' },
     '2025-10-18': { slots: 8, type: 'Wedding' },
     '2025-10-20': { slots: 8, type: 'Event' },
-    '2025-10-25': { slots: 4, type: 'Portrait' },
-    '2025-10-28': { slots: 6, type: 'Wedding' },
+    
   };
 
   // Generate calendar
@@ -237,9 +215,17 @@ export default function BookingManagement() {
       day: i, 
       isBooked: bookedDates[dateKey] !== undefined,
       slots: bookedDates[dateKey]?.slots || 0,
-      type: bookedDates[dateKey]?.type || ''
+      type: bookedDates[dateKey]?.type || '',
+      dateKey: dateKey
     });
   }
+
+  // Get bookings for selected date
+  const getBookingsForDate = (date: string) => {
+    return upcomingBookings.filter(booking => booking.date === date);
+  };
+
+  const selectedDateBookings = getBookingsForDate(selectedDate);
 
   // Calendar navigation functions
   const goToPreviousMonth = () => {
@@ -252,6 +238,8 @@ export default function BookingManagement() {
 
   const goToToday = () => {
     setCurrentDate(new Date());
+    const todayDate = new Date();
+    setSelectedDate(`${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`);
   };
 
   // Handle booking actions
@@ -295,7 +283,7 @@ export default function BookingManagement() {
   return (
     <div 
       className="mt-20 p-6 md:p-8 bg-gray-50 min-h-screen transition-all duration-300"
-      style={{ marginLeft: isMinimized ? '5rem' : '16rem' }}
+     style={{ marginLeft: isMinimized ? '5rem' : '16rem' }}
     >
       <style jsx>{`
         @keyframes fadeInUp {
@@ -413,7 +401,7 @@ export default function BookingManagement() {
           })}
         </div>
 
-        {/* Calendar and Team Section */}
+        {/* Calendar and Selected Date Bookings Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 md:mb-8">
           {/* Calendar */}
           <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
@@ -457,24 +445,27 @@ export default function BookingManagement() {
                 const isToday = dayObj.day === new Date().getDate() && 
                                 month === new Date().getMonth() && 
                                 year === new Date().getFullYear();
+                const isSelectedDate = dayObj.dateKey === selectedDate;
                 return (
                   <div
                     key={index}
                     className={`aspect-square flex flex-col items-center justify-center rounded-lg text-sm cursor-pointer transition-all duration-200 ${
                       dayObj.day === null
                         ? 'bg-transparent'
+                        : isSelectedDate
+                        ? 'bg-purple-600 text-white font-bold ring-2 ring-purple-400 ring-offset-2'
                         : isToday
                         ? 'bg-indigo-600 text-white font-bold hover:bg-indigo-700'
                         : dayObj.isBooked
                         ? 'bg-purple-100 hover:bg-purple-200 border-2 border-purple-500'
                         : 'bg-gray-50 hover:bg-gray-100'
                     }`}
-                    onClick={() => dayObj.day && setSelectedDate(dayObj.day)}
+                    onClick={() => dayObj.dateKey && setSelectedDate(dayObj.dateKey)}
                   >
                     {dayObj.day && (
                       <>
                         <span className={`font-semibold ${
-                          isToday 
+                          isSelectedDate || isToday
                             ? 'text-white' 
                             : dayObj.isBooked 
                             ? 'text-purple-700' 
@@ -482,7 +473,7 @@ export default function BookingManagement() {
                         }`}>
                           {dayObj.day}
                         </span>
-                        {dayObj.isBooked && !isToday && (
+                        {dayObj.isBooked && !isToday && !isSelectedDate && (
                           <span className="text-xs text-purple-600 font-medium mt-1">
                             {dayObj.slots}h
                           </span>
@@ -500,6 +491,10 @@ export default function BookingManagement() {
                 <span className="text-gray-600">Today</span>
               </div>
               <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-purple-600 rounded ring-2 ring-purple-400"></div>
+                <span className="text-gray-600">Selected</span>
+              </div>
+              <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-purple-500 rounded border-2 border-purple-500"></div>
                 <span className="text-gray-600">Booked</span>
               </div>
@@ -510,47 +505,99 @@ export default function BookingManagement() {
             </div>
           </div>
 
-          {/* Team Members */}
+          {/* Selected Date Bookings */}
           <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg md:text-xl font-bold text-gray-900">Team Members</h3>
-              <button
-                onClick={() => setShowTeamModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 text-white rounded-lg text-sm font-semibold hover:bg-purple-700 transition-colors"
-              >
-                <MdAdd className="w-4 h-4" />
-                Add Member
-              </button>
+              <div>
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">
+                  Bookings for {new Date(selectedDate).toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                  })}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {selectedDateBookings.length} booking{selectedDateBookings.length !== 1 ? 's' : ''} scheduled
+                </p>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-2 bg-purple-100 rounded-lg">
+                <MdCalendarToday className="w-4 h-4 text-purple-600" />
+                <span className="text-sm font-semibold text-purple-600">
+                  {selectedDateBookings.length === 0 ? 'No bookings' : `${selectedDateBookings.length} booking${selectedDateBookings.length !== 1 ? 's' : ''}`}
+                </span>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              {teamMembers.map((member, index) => (
-                <div
-                  key={member.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200 opacity-0 animate-fadeInLeft"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 rounded-full flex items-center justify-center text-2xl">
-                       <MdPerson className="text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">{member.name}</p>
-                      <p className="text-sm text-gray-600">{member.role}</p>
-                    </div>
+            <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              {selectedDateBookings.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <MdEvent className="w-8 h-8 text-gray-400" />
                   </div>
-                  <div className="text-right">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                      member.availability === 'Available' 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-red-100 text-red-700'
-                    }`}>
-                      {member.availability}
-                    </span>
-                    <p className="text-xs text-gray-500 mt-1">{member.bookings} bookings</p>
-                  </div>
+                  <p className="text-gray-500 font-medium">No bookings for this date</p>
+                  <p className="text-sm text-gray-400 mt-1">Select a different date or create a new booking</p>
                 </div>
-              ))}
+              ) : (
+                selectedDateBookings.map((booking, index) => (
+                  <div
+                    key={booking.id}
+                    className="flex items-start gap-3 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl hover:shadow-md transition-all duration-200 border border-purple-200 opacity-0 animate-fadeInLeft"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <MdCamera className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div>
+                          <p className="font-bold text-gray-900 text-sm">{booking.id}</p>
+                          <p className="text-xs text-gray-600">{booking.type}</p>
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
+                          booking.status === 'Confirmed' 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-orange-100 text-orange-700'
+                        }`}>
+                          {booking.status}
+                        </span>
+                        
+                      </div>
+                      
+                      <div className="space-y-1 text-xs text-gray-600">
+  {/* Row 1: Client + Time */}
+  <div className="flex items-center justify-between gap-4">
+    <div className="flex items-center gap-2">
+      <MdPerson className="w-3 h-3 flex-shrink-0" />
+      <span className="truncate">{booking.client}</span>
+    </div>
+    <div className="flex items-center gap-2">
+      <MdAccessTime className="w-3 h-3 flex-shrink-0" />
+      <span>{booking.time}</span>
+    </div>
+  </div>
+
+  {/* Row 2: Location + Assigned To */}
+  <div className="flex items-center justify-between gap-4">
+    <div className="flex items-center gap-2">
+      <MdLocationOn className="w-3 h-3 flex-shrink-0" />
+      <span className="truncate">{booking.location}</span>
+    </div>
+     
+  </div>
+   <div className="flex items-center gap-2">
+      <MdAssignment className="w-3 h-3 text-purple-600 flex-shrink-0" />
+      <span className="text-purple-600 font-semibold">{booking.assignedTo}</span>
+    </div>
+</div>
+
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-purple-200">
+                        <span className="text-sm font-bold text-gray-900">${booking.amount}</span>
+                        <span className="text-xs text-gray-500">{booking.slots} hours</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -783,176 +830,6 @@ export default function BookingManagement() {
         </div>
       </div>
 
-      {/* Team Member Modal */}
-      {showTeamModal && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-             <div className="sticky top-0 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 text-white p-6 rounded-t-2xl">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold">Add Team Member</h2>
-                  <p className="text-purple-100 mt-1">Fill in the details to add a new photographer</p>
-                </div>
-                <button
-                  onClick={() => setShowTeamModal(false)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200"
-                >
-                  <span className="text-2xl text-black">×</span>
-                </button>
-              </div>
-            </div>
-<div className="overflow-y-auto px-6 py-6 space-y-6">
-            <form onSubmit={handleTeamFormSubmit} className="p-6 space-y-6">
-              {/* Name Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    First Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={teamForm.firstName}
-                    onChange={handleTeamFormChange}
-                    required
-                    placeholder="Enter first name"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Last Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={teamForm.lastName}
-                    onChange={handleTeamFormChange}
-                    required
-                    placeholder="Enter last name"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                  />
-                </div>
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Email Address <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={teamForm.email}
-                  onChange={handleTeamFormChange}
-                  required
-                  placeholder="photographer@example.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-
-              {/* Mobile */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Mobile Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="mobile"
-                  value={teamForm.mobile}
-                  onChange={handleTeamFormChange}
-                  required
-                  placeholder="+91 XXXXX XXXXX"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-
-              {/* Designation */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Designation <span className="text-red-500">*</span>
-                </label>
-                <select
-                  name="designation"
-                  value={teamForm.designation}
-                  onChange={handleTeamFormChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white"
-                >
-                  <option value="">Select designation</option>
-                  <option value="Lead Photographer">Lead Photographer</option>
-                  <option value="Senior Photographer">Senior Photographer</option>
-                  <option value="Photographer">Photographer</option>
-                  <option value="Assistant Photographer">Assistant Photographer</option>
-                  <option value="Junior Photographer">Junior Photographer</option>
-                </select>
-              </div>
-
-              {/* Photography Category */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Photography Category <span className="text-red-500">*</span>
-                </label>
-                <select
-                  name="category"
-                  value={teamForm.category}
-                  onChange={handleTeamFormChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white"
-                >
-                  <option value="">Select category</option>
-                  <option value="Wedding Photography">Wedding Photography</option>
-                  <option value="Portrait Photography">Portrait Photography</option>
-                  <option value="Event Photography">Event Photography</option>
-                  <option value="Product Photography">Product Photography</option>
-                  <option value="Corporate Photography">Corporate Photography</option>
-                  <option value="Fashion Photography">Fashion Photography</option>
-                  <option value="Wildlife Photography">Wildlife Photography</option>
-                  <option value="Food Photography">Food Photography</option>
-                  <option value="All Categories">All Categories</option>
-                </select>
-              </div>
-
-              {/* Experience */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Experience (Years) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="experience"
-                  value={teamForm.experience}
-                  onChange={handleTeamFormChange}
-                  required
-                  min="0"
-                  max="50"
-                  placeholder="Enter years of experience"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-4 pt-4 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={() => setShowTeamModal(false)}
-                  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-200"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-6 py-3 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-200"
-                >
-                  Add Team Member
-                </button>
-              </div>
-            </form>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Team Assignment Modal */}
       {showAssignModal && selectedBooking && (
        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -975,131 +852,129 @@ export default function BookingManagement() {
                 </button>
               </div>
             </div>
-<div className="flex-1 overflow-y-auto p-2">
-            <div className="p-3">
-              {/* Booking Details */}
-               
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border-2 border-blue-200">
-                <h3 className="font-bold text-gray-900 mb-3 text-lg">Booking Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                  <div className="flex items-center gap-2">
-                    <MdAssignment className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-600">ID:</span>
-                    <span className="font-semibold">{selectedBooking.id}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MdPerson className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-600">Client:</span>
-                    <span className="font-semibold">{selectedBooking.client}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MdCamera className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-600">Type:</span>
-                    <span className="font-semibold">{selectedBooking.type}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MdCalendarToday className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-600">Date:</span>
-                    <span className="font-semibold">{selectedBooking.date}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MdAccessTime className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-600">Time:</span>
-                    <span className="font-semibold">{selectedBooking.time}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MdLocationOn className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-600">Location:</span>
-                    <span className="font-semibold">{selectedBooking.location}</span>
+            <div className="flex-1 overflow-y-auto p-2">
+              <div className="p-3">
+                {/* Booking Details */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border-2 border-blue-200">
+                  <h3 className="font-bold text-gray-900 mb-3 text-lg">Booking Details</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <MdAssignment className="w-4 h-4 text-blue-600" />
+                      <span className="text-gray-600">ID:</span>
+                      <span className="font-semibold">{selectedBooking.id}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MdPerson className="w-4 h-4 text-blue-600" />
+                      <span className="text-gray-600">Client:</span>
+                      <span className="font-semibold">{selectedBooking.client}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MdCamera className="w-4 h-4 text-blue-600" />
+                      <span className="text-gray-600">Type:</span>
+                      <span className="font-semibold">{selectedBooking.type}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MdCalendarToday className="w-4 h-4 text-blue-600" />
+                      <span className="text-gray-600">Date:</span>
+                      <span className="font-semibold">{selectedBooking.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MdAccessTime className="w-4 h-4 text-blue-600" />
+                      <span className="text-gray-600">Time:</span>
+                      <span className="font-semibold">{selectedBooking.time}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MdLocationOn className="w-4 h-4 text-blue-600" />
+                      <span className="text-gray-600">Location:</span>
+                      <span className="font-semibold">{selectedBooking.location}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Selected Team Members Summary */}
-              {selectedTeamMembers.length > 0 && (
-                <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl">
-                  <h4 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
-                    <MdCheckCircle className="w-5 h-5" />
-                    Selected Team Members ({selectedTeamMembers.length})
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedTeamMembers.map((member, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium"
-                      >
-                        {member}
-                        <button
-                          onClick={() => toggleTeamMember(member)}
-                          className="hover:bg-green-200 rounded-full p-0.5 transition-colors"
+                {/* Selected Team Members Summary */}
+                {selectedTeamMembers.length > 0 && (
+                  <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl">
+                    <h4 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
+                      <MdCheckCircle className="w-5 h-5" />
+                      Selected Team Members ({selectedTeamMembers.length})
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedTeamMembers.map((member, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium"
                         >
-                          <span className="text-green-600">×</span>
-                        </button>
-                      </span>
-                    ))}
+                          {member}
+                          <button
+                            onClick={() => toggleTeamMember(member)}
+                            className="hover:bg-green-200 rounded-full p-0.5 transition-colors"
+                          >
+                            <span className="text-green-600">×</span>
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Team Members List */}
+                <div className="mb-6">
+                  <h3 className="font-bold text-gray-900 mb-4 text-lg">Available Team Members</h3>
+                  <div className="space-y-3">
+                    {teamMembers.map((member) => {
+                      const isSelected = selectedTeamMembers.includes(member.name);
+                      const isAvailable = member.availability === 'Available';
+                      
+                      return (
+                        <div
+                          key={member.id}
+                          onClick={() => isAvailable && toggleTeamMember(member.name)}
+                          className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 ${
+                            isSelected
+                              ? 'bg-blue-50 border-blue-500 shadow-md'
+                              : isAvailable
+                              ? 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:shadow-md cursor-pointer'
+                              : 'bg-gray-100 border-gray-200 opacity-60 cursor-not-allowed'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="relative">
+                              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${
+                                isSelected 
+                                  ? 'bg-gradient-to-br from-blue-600 to-indigo-600' 
+                                  : 'bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900'
+                              }`}>
+                                <MdPerson className="text-white" />
+                              </div>
+                              {isSelected && (
+                                <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                  <MdCheckCircle className="w-4 h-4 text-white" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-gray-900">{member.name}</p>
+                              <p className="text-sm text-gray-600">{member.role}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                              isAvailable
+                                ? 'bg-green-100 text-green-700' 
+                                : 'bg-red-100 text-red-700'
+                            }`}>
+                              {member.availability}
+                            </span>
+                            <p className="text-xs text-gray-500 mt-1">{member.bookings} bookings</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-              )}
-
-              {/* Team Members List */}
-              <div className="mb-6">
-                <h3 className="font-bold text-gray-900 mb-4 text-lg">Available Team Members</h3>
-                <div className="space-y-3">
-
-                  {teamMembers.map((member) => {
-                    const isSelected = selectedTeamMembers.includes(member.name);
-                    const isAvailable = member.availability === 'Available';
-                    
-                    return (
-                      <div
-                        key={member.id}
-                        onClick={() => isAvailable && toggleTeamMember(member.name)}
-                        className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 ${
-                          isSelected
-                            ? 'bg-blue-50 border-blue-500 shadow-md'
-                            : isAvailable
-                            ? 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:shadow-md cursor-pointer'
-                            : 'bg-gray-100 border-gray-200 opacity-60 cursor-not-allowed'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className="relative">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${
-                              isSelected 
-                                ? 'bg-gradient-to-br from-blue-600 to-indigo-600' 
-                                : 'bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900'
-                            }`}>
-                              <MdPerson className="text-white" />
-                            </div>
-                            {isSelected && (
-                              <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                <MdCheckCircle className="w-4 h-4 text-white" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-semibold text-gray-900">{member.name}</p>
-                            <p className="text-sm text-gray-600">{member.role}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                            isAvailable
-                              ? 'bg-green-100 text-green-700' 
-                              : 'bg-red-100 text-red-700'
-                          }`}>
-                            {member.availability}
-                          </span>
-                          <p className="text-xs text-gray-500 mt-1">{member.bookings} bookings</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
               </div>
-</div>
               {/* Action Buttons */}
-              <div className="flex gap-4 pt-4 border-t border-gray-200">
+              <div className="flex gap-4 pt-4 border-t border-gray-200 px-3">
                 <button
                   type="button"
                   onClick={() => {

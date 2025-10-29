@@ -63,49 +63,43 @@ export default function DesktopSignupPage() {
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
 
-    // Validate form
-    if (!validateForm()) {
-      return;
+  // Validate form
+  if (!validateForm()) {
+    return;
+  }
+
+  setIsLoading(true);
+  
+  try {
+    // Remove non-digit characters from phone
+    const cleanedPhone = formData.phone.replace(/\D/g, '');
+
+    const result = await api.register({
+      firstname: formData.firstName,
+      lastname: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      Phone: cleanedPhone
+    });
+
+    if (result.success && result.data) {
+      // DON'T login automatically - just redirect to signin
+      // Show success message (optional)
+      alert('Registration successful! Please sign in to continue.');
+      
+      // Redirect to signin page
+      router.push('/signin');
     }
-
-    setIsLoading(true);
-    
-    try {
-      // Remove non-digit characters from phone
-      const cleanedPhone = formData.phone.replace(/\D/g, '');
-
-      const result = await api.register({
-        firstname: formData.firstName,
-        lastname: formData.lastName,
-        email: formData.email,
-        password: formData.password,
-        Phone: cleanedPhone
-      });
-
-      if (result.success && result.data) {
-        // Call AuthContext login to update global state and set cookies
-        login(result.data.token, {
-          id: result.data.id,
-          firstname: result.data.firstname,
-          lastname: result.data.lastname,
-          email: result.data.email,
-          createdAt: result.data.createdAt || new Date().toISOString(),
-          updatedAt: result.data.updatedAt || new Date().toISOString()
-        });
-
-        // Success! Redirect to Signin
-        router.push('/signin');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Registration failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  } catch (err: any) {
+    setError(err.message || 'Registration failed. Please try again.');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-orange-50 flex items-center justify-center p-4">
@@ -316,6 +310,7 @@ export default function DesktopSignupPage() {
             <button
               type="submit"
               disabled={isLoading}
+              onClick={handleSubmit}
               className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isLoading ? (

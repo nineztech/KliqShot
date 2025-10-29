@@ -2,16 +2,19 @@
 
 import React, { useState } from 'react';
 import { Camera, Upload, Heart, UserRound, Mountain, PartyPopper, UploadIcon, Box, Sparkles, Image, X, Plus, Trash2, Save, Award, Calendar, MapPin, Briefcase, FolderOpen, Image as ImageIcon, Star, Eye } from 'lucide-react';
-import { useSidebar } from '@/components/Sidebar/SidebarContext';
+
 interface PortfolioImage {
   id: string;
   url: string;
   name: string;
   category: string;
+  subcategory: string;
   uploadDate: string;
   size: number;
   location: string;
   isCover: boolean;
+  type: 'image' | 'video';
+  thumbnail?: string;
 }
 
 interface Experience {
@@ -32,22 +35,53 @@ interface CategoryImages {
 interface PhotographerPortfolioProps {
   isMinimized?: boolean;
 }
-
+import { useSidebar } from '../Sidebar/SidebarContext';
 const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
   const [selectedCategory, setSelectedCategory] = useState('wedding');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [showAddExperience, setShowAddExperience] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [viewingImage, setViewingImage] = useState<PortfolioImage | null>(null);
   const [editingImageId, setEditingImageId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
-  
+   const { isMinimized } = useSidebar();
   const categories = [
-    { id: 'wedding', name: 'Wedding', icon: <Heart /> },
-    { id: 'portrait', name: 'Portrait Sessions', icon: <UserRound /> },
-    { id: 'landscape', name: 'Landscape & Nature', icon: <Mountain /> },
-    { id: 'event', name: 'Event Coverage', icon: <PartyPopper />},
-    { id: 'product', name: 'Product Photography', icon: <Box />},
-    { id: 'fashion', name: 'Fashion & Editorial', icon: <Sparkles />}
+    { 
+      id: 'wedding', 
+      name: 'Wedding', 
+      icon: <Heart />,
+      subcategories: ['Ceremony', 'Reception', 'Pre-Wedding', 'Candid Moments', 'Family Portraits']
+    },
+    { 
+      id: 'portrait', 
+      name: 'Portrait Sessions', 
+      icon: <UserRound />,
+      subcategories: ['Studio Portraits', 'Outdoor Portraits', 'Family', 'Couples', 'Individual']
+    },
+    { 
+      id: 'landscape', 
+      name: 'Landscape & Nature', 
+      icon: <Mountain />,
+      subcategories: ['Mountains', 'Seascapes', 'Forests', 'Sunsets', 'Wildlife']
+    },
+    { 
+      id: 'event', 
+      name: 'Event Coverage', 
+      icon: <PartyPopper />,
+      subcategories: ['Corporate Events', 'Birthday Parties', 'Concerts', 'Festivals', 'Conferences']
+    },
+    { 
+      id: 'product', 
+      name: 'Product Photography', 
+      icon: <Box />,
+      subcategories: ['E-commerce', 'Food & Beverage', 'Jewelry', 'Electronics', 'Fashion Products']
+    },
+    { 
+      id: 'fashion', 
+      name: 'Fashion & Editorial', 
+      icon: <Sparkles />,
+      subcategories: ['Runway', 'Lookbook', 'Magazine Editorial', 'Street Style', 'Beauty']
+    }
   ];
 
   const [portfolioImages, setPortfolioImages] = useState<CategoryImages>({
@@ -115,7 +149,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
     const fileArray = Array.from(files);
     
     fileArray.forEach(file => {
-      if (file.type.startsWith('image/')) {
+      if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
         const reader = new FileReader();
         reader.onloadend = () => {
           if (reader.result) {
@@ -130,20 +164,22 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
               minute: '2-digit' 
             });
             
-            const imageData: PortfolioImage = {
+            const mediaData: PortfolioImage = {
               id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
               url: reader.result as string,
-              name: `${categoryName}_${defaultLocation}_${timestamp}`,
+              name: `${categoryName}_${selectedSubcategory || 'General'}_${defaultLocation}_${timestamp}`,
               category: selectedCategory,
+              subcategory: selectedSubcategory || 'General',
               uploadDate: currentDate.toISOString(),
               size: file.size,
               location: defaultLocation,
-              isCover: false
+              isCover: false,
+              type: file.type.startsWith('video/') ? 'video' : 'image'
             };
             
             setPortfolioImages(prev => ({
               ...prev,
-              [selectedCategory]: [...prev[selectedCategory], imageData]
+              [selectedCategory]: [...prev[selectedCategory], mediaData]
             }));
           }
         };
@@ -240,25 +276,31 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
     return experiences.filter(exp => exp.category === categoryId);
   };
 
+  const getFilteredImages = () => {
+    const categoryImages = portfolioImages[selectedCategory] || [];
+    if (!selectedSubcategory) {
+      return categoryImages;
+    }
+    return categoryImages.filter(img => img.subcategory === selectedSubcategory);
+  };
+
+  const getSubcategoryCount = (subcategory: string) => {
+    const categoryImages = portfolioImages[selectedCategory] || [];
+    return categoryImages.filter(img => img.subcategory === subcategory).length;
+  };
+
   const handleViewImage = (image: PortfolioImage, e: React.MouseEvent) => {
     e.stopPropagation();
     setViewingImage(image);
   };
 
   const currentCategory = getCurrentCategory();
-  const currentImages = portfolioImages[selectedCategory] || [];
+  const currentImages = getFilteredImages();
   const currentExperiences = getCategoryExperiences(selectedCategory);
- const { isMinimized } = useSidebar();
    
   return (
-     <div className="mt-8 p-4 md:p-6 lg:p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 min-h-screen">
-      <div 
-        className="p-4 md:p-6 lg:p-8 transition-all duration-300"
-        style={{ 
-          marginLeft: isMinimized ? '3rem' : '14rem',
-           
-        }}
-      >
+    <div className="mt-20 p-4 md:p-6 lg:p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 min-h-screen"
+     style={{ marginLeft: isMinimized ? '5rem' : '16rem' }}>
       <style>{`
         @keyframes fadeInUp {
           from {
@@ -340,7 +382,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">My Portfolio</h1>
                 <p className="text-xs md:text-sm lg:text-base text-gray-600 flex items-center gap-2 mt-1">
                   <Star className="w-3 h-3 md:w-4 md:h-4 text-yellow-500 fill-yellow-500" />
-                  {getTotalImagesCount()} photos across {categories.length} categories
+                  {getTotalImagesCount()} items across {categories.length} categories
                 </p>
               </div>
             </div>
@@ -357,7 +399,10 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
             {categories.map(category => (
               <button
                 key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => {
+                  setSelectedCategory(category.id);
+                  setSelectedSubcategory('');
+                }}
                 className={`group relative rounded-2xl transition-all duration-300 transform ${
                   selectedCategory === category.id
                     ? 'scale-105 shadow-2xl'
@@ -405,22 +450,60 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
           </div>
         </div>
 
+        {/* Subcategory Selection */}
+        {currentCategory && currentCategory.subcategories && (
+          <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6 border border-gray-100 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.15s' }}>
+            <h2 className="text-base md:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <FolderOpen className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
+              {currentCategory.name} Albums
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {/* <button
+                onClick={() => setSelectedSubcategory('')}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  selectedSubcategory === ''
+                    ? 'bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All ({portfolioImages[selectedCategory]?.length || 0})
+              </button> */}
+              {currentCategory.subcategories.map((subcategory) => (
+                <button
+                  key={subcategory}
+                  onClick={() => setSelectedSubcategory(subcategory)}
+                  className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                    selectedSubcategory === subcategory
+                      ? 'bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {subcategory} ({getSubcategoryCount(subcategory)})
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Left Column - Upload & Stats */}
           <div className="lg:col-span-1 space-y-4 md:space-y-6">
             {/* Upload Section */}
             <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 flex items-center gap-2">
                 <Upload className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
-                Upload Photos to <br /> {currentCategory?.name}
+                Upload to  {currentCategory?.name}
               </h3>
+              <h4 className="text-xs -mt-4 md:text-sm text-gray-600 mb-4">
+                {selectedSubcategory && <><br /><span className="text-purple-600">• {selectedSubcategory}</span></>}
+              </h4>
               
               <div
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-xl p-4 md:p-6 text-center transition-all duration-300 ${
+                className={`border-2 border-dashed rounded-xl p-6 md:p-6 text-center transition-all duration-300 ${
                   dragActive
                     ? 'border-indigo-500 bg-indigo-50'
                     : 'border-gray-300 bg-gray-50'
@@ -432,15 +515,18 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                   </div>
                   <div>
                     <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1">
-                      Drop photos here
+                      Drop photos or videos here
                     </p>
-                    <p className="text-xs text-gray-500">to {currentCategory?.name}</p>
+                    <p className="text-xs text-gray-500">
+                      to {currentCategory?.name}
+                      {selectedSubcategory && ` • ${selectedSubcategory}`}
+                    </p>
                   </div>
-                  <label className="px-3 md:px-4 py-2 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 text-white text-xs md:text-sm rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg font-medium">
+                  <label className="px-3 md:px-4 mb-4 py-2 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 text-white text-xs md:text-sm rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg font-medium">
                     <input
                       type="file"
                       multiple
-                      accept="image/*"
+                      accept="image/*,video/*"
                       onChange={handleFileInput}
                       className="hidden"
                     />
@@ -458,12 +544,18 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                 <div className="space-y-2 text-xs md:text-sm opacity-90">
                   <div className="flex items-center gap-2">
                     <ImageIcon className="w-3 h-3 md:w-4 md:h-4" />
-                    <span>{currentImages.length} Photos</span>
+                    <span>{portfolioImages[selectedCategory]?.length || 0} Items</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Briefcase className="w-3 h-3 md:w-4 md:h-4" />
                     <span>{currentExperiences.length} Experience{currentExperiences.length !== 1 ? 's' : ''}</span>
                   </div>
+                  {selectedSubcategory && (
+                    <div className="flex items-center gap-2">
+                      <FolderOpen className="w-3 h-3 md:w-4 md:h-4" />
+                      <span>{selectedSubcategory}: {currentImages.length}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -476,10 +568,10 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base md:text-lg lg:text-xl font-bold text-gray-900 flex items-center gap-2">
                   <FolderOpen className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
-                  Photo Gallery
+                  {selectedSubcategory ? `${selectedSubcategory} Gallery` : 'Photo & Video Gallery'}
                 </h3>
                 <span className="px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-semibold bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 text-white">
-                  {currentImages.length} Photos
+                  {currentImages.length} Items
                 </span>
               </div>
 
@@ -488,8 +580,8 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                   <div className="w-12 h-12 md:w-14 md:h-14 p-2 mx-auto mb-4 rounded-full bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 flex items-center justify-center">
                     <span className="text-4xl md:text-5xl text-white">{currentCategory?.icon}</span>
                   </div>
-                  <p className="text-lg md:text-xl font-semibold text-gray-700 mb-2">No photos yet</p>
-                  <p className="text-xs md:text-sm">Upload your first {currentCategory?.name.toLowerCase()} photo to get started!</p>
+                  <p className="text-lg md:text-xl font-semibold text-gray-700 mb-2">No items yet</p>
+                  <p className="text-xs md:text-sm">Upload your first photo or video to get started!</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
@@ -500,12 +592,27 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                       style={{ animationDelay: `${idx * 0.05}s` }}
                     >
                       <div className="relative overflow-hidden rounded-xl shadow-md hover:shadow-2xl transition-shadow duration-300">
-                        <div className="aspect-square">
-                          <img
-                            src={image.url}
-                            alt={image.name}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
+                        <div className="aspect-square relative">
+                          {image.type === 'video' ? (
+                            <>
+                              <video
+                                src={image.url}
+                                className="w-full h-full object-cover"
+                                muted
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                <div className="w-12 h-12 md:w-16 md:h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                                  <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-indigo-600 border-b-8 border-b-transparent ml-1"></div>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <img
+                              src={image.url}
+                              alt={image.name}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                          )}
                         </div>
                         {image.isCover && (
                           <div className="absolute top-2 right-2 px-2 py-0.5 md:py-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-lg z-10">
@@ -539,16 +646,6 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                             <div className="flex items-center gap-2">
                               {editingImageId === image.id ? (
                                 <>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      saveImageName(selectedCategory, image.id);
-                                    }}
-                                    className="flex-1 px-2 md:px-3 py-1.5 md:py-2 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600 transition-colors duration-200 font-medium flex items-center justify-center gap-1"
-                                  >
-                                    <Save className="w-3 h-3" />
-                                    Save
-                                  </button>
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -741,7 +838,6 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
           </div>
         </div>
       </div>
-      </div>
 
       {/* Image Viewer Modal */}
       {viewingImage && (
@@ -754,7 +850,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col lg:flex-row h-full max-h-[90vh]">
-              {/* Left Side - Image */}
+              {/* Left Side - Image/Video */}
               <div className="lg:w-2/3 bg-gray-900 flex items-center justify-center p-4 md:p-6 lg:p-8 relative min-h-[250px] md:min-h-[400px] lg:min-h-[500px]">
                 <button
                   onClick={() => setViewingImage(null)}
@@ -762,11 +858,19 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                 >
                   <X className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
-                <img
-                  src={viewingImage.url}
-                  alt={viewingImage.name}
-                  className="max-w-full max-h-full object-contain rounded-lg"
-                />
+                {viewingImage.type === 'video' ? (
+                  <video
+                    src={viewingImage.url}
+                    controls
+                    className="max-w-full max-h-full object-contain rounded-lg"
+                  />
+                ) : (
+                  <img
+                    src={viewingImage.url}
+                    alt={viewingImage.name}
+                    className="max-w-full max-h-full object-contain rounded-lg"
+                  />
+                )}
               </div>
 
               {/* Right Side - Details */}
@@ -778,9 +882,13 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                       <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 rounded-lg flex items-center justify-center">
                         <span className="text-white text-lg md:text-xl">{currentCategory?.icon}</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold text-gray-900">Photo Details</h3>
+                      <h3 className="text-xl md:text-2xl font-bold text-gray-900">
+                        {viewingImage.type === 'video' ? 'Video Details' : 'Photo Details'}
+                      </h3>
                     </div>
-                    <p className="text-xs md:text-sm text-gray-500">{currentCategory?.name}</p>
+                    <p className="text-xs md:text-sm text-gray-500">
+                      {currentCategory?.name} • {viewingImage.subcategory}
+                    </p>
                   </div>
 
                   {/* Image Name */}
@@ -879,12 +987,12 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                       }}
                       className="w-full px-3 md:px-4 py-2 md:py-3 bg-gradient-to-r from-slate-800 via-purple-800 to-indigo-900 text-white rounded-xl text-sm md:text-base font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                     >
-                      Rename Photo
+                      Rename {viewingImage.type === 'video' ? 'Video' : 'Photo'}
                     </button>
 
                     <button
                       onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this photo?')) {
+                        if (window.confirm(`Are you sure you want to delete this ${viewingImage.type}?`)) {
                           removeImage(selectedCategory, viewingImage.id);
                           setViewingImage(null);
                         }
@@ -892,7 +1000,7 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
                       className="w-full px-3 md:px-4 py-2 md:py-3 bg-red-500 text-white rounded-xl text-sm md:text-base font-semibold hover:bg-red-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                     >
                       <Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                      Delete Photo
+                      Delete {viewingImage.type === 'video' ? 'Video' : 'Photo'}
                     </button>
                   </div>
                 </div>
@@ -906,3 +1014,4 @@ const PhotographerPortfolio: React.FC<PhotographerPortfolioProps> = () => {
 };
 
 export default PhotographerPortfolio;
+                                     

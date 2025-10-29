@@ -246,13 +246,13 @@ const PhotographerPortfolio = () => {
           </div>
         </div>
 
-         {/* Category Tabs - Grid Layout */}
+        {/* Category Tabs - Grid Layout */}
         <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6 border border-gray-100 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <FolderOpen className="w-5 h-5 text-indigo-500" />
             Categories
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 overflow-visible">
             {categories.map(category => (
               <button
                 key={category.id}

@@ -10,10 +10,12 @@ import {
   AlertCircle,
   CheckCircle,
   Shield,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  Upload,
+  X,
+  File
 } from 'lucide-react';
- 
-import { useRouter } from 'next/navigation';
+
 interface FormData {
   firstName: string;
   lastName: string;
@@ -21,6 +23,12 @@ interface FormData {
   email: string;
   gstNumber: string;
   panNumber: string;
+  aadharNumber: string;
+  msmeNumber: string;
+  gstFile: File | null;
+  panFile: File | null;
+  aadharFile: File | null;
+  msmeFile: File | null;
   permanentAddress: {
     street: string;
     city: string;
@@ -48,9 +56,8 @@ interface ValidationErrors {
 }
 
 const ResponsiveVendorRegistrationForm: React.FC = () => {
-  // For demo purposes - in real app, get this from context like: const { isMinimized } = useSidebar();
   const [isMinimized] = useState(false);
-   const router = useRouter();
+  
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -58,6 +65,12 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
     email: '',
     gstNumber: '',
     panNumber: '',
+    aadharNumber: '',
+    msmeNumber: '',
+    gstFile: null,
+    panFile: null,
+    aadharFile: null,
+    msmeFile: null,
     permanentAddress: {
       street: '',
       city: '',
@@ -104,6 +117,7 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
     }
 
     if (step === 2) {
+      // GST or PAN is required
       if (!formData.gstNumber && !formData.panNumber) {
         newErrors.gstNumber = 'Either GST or PAN number is required';
         newErrors.panNumber = 'Either GST or PAN number is required';
@@ -113,6 +127,13 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
       }
       if (formData.panNumber && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)) {
         newErrors.panNumber = 'Please enter a valid PAN number';
+      }
+      
+      // Aadhar is required
+      if (!formData.aadharNumber.trim()) {
+        newErrors.aadharNumber = 'Aadhar number is required';
+      } else if (!/^\d{12}$/.test(formData.aadharNumber)) {
+        newErrors.aadharNumber = 'Please enter a valid 12-digit Aadhar number';
       }
     }
 
@@ -202,56 +223,53 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
     }
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  if (!validateStep(currentStep)) {
-    return;
-  }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fileType: string) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        setErrors(prev => ({
+          ...prev,
+          [fileType]: 'Only PDF files are allowed'
+        }));
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setErrors(prev => ({
+          ...prev,
+          [fileType]: 'File size must be less than 5MB'
+        }));
+        return;
+      }
+      setFormData(prev => ({
+        ...prev,
+        [fileType]: file
+      }));
+      setErrors(prev => ({
+        ...prev,
+        [fileType]: ''
+      }));
+    }
+  };
 
-  setIsLoading(true);
+  const removeFile = (fileType: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [fileType]: null
+    }));
+  };
 
-  try {
-    const token = localStorage.getItem('token');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    if (!token) {
-      alert('Please login first');
-      router.push('/login');
+    if (!validateStep(currentStep)) {
       return;
     }
 
-    const apiData = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      mobileNumber: formData.mobileNumber,
-      email: formData.email,
-      gstNumber: formData.gstNumber || null,
-      panNumber: formData.panNumber || null,
-      permanentAddress: formData.permanentAddress,
-      residentialAddress: formData.residentialAddress,
-      bankName: formData.bankName,
-      accountHolderName: formData.accountHolderName,
-      accountNumber: formData.accountNumber,
-      ifscCode: formData.ifscCode.toUpperCase(),
-      branchName: formData.branchName,
-    };
-
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-    
-    const response = await fetch(`${API_URL}/vendors/profile`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(apiData)
-    });
-
-    const result = await response.json();
-
-    if (response.ok && result.success) {
+    setIsLoading(true);
+    // Simulate API call
+    setTimeout(() => {
       alert('Registration successful! Your profile has been saved.');
-      
+      setIsLoading(false);
       setFormData({
         firstName: '',
         lastName: '',
@@ -259,6 +277,12 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
         email: '',
         gstNumber: '',
         panNumber: '',
+        aadharNumber: '',
+        msmeNumber: '',
+        gstFile: null,
+        panFile: null,
+        aadharFile: null,
+        msmeFile: null,
         permanentAddress: { street: '', city: '', state: '', pincode: '' },
         residentialAddress: { street: '', city: '', state: '', pincode: '' },
         sameAsPermanent: false,
@@ -271,22 +295,8 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
         agreeToTerms: false
       });
       setCurrentStep(1);
-      
-      setTimeout(() => {
-        router.push('/Desktop');
-      }, 1500);
-      
-    } else {
-      alert(result.message || 'Registration failed. Please try again.');
-    }
-    
-  } catch (error) {
-    console.error('Registration error:', error);
-    alert('Registration failed. Please check your connection and try again.');
-  } finally {
-    setIsLoading(false);
-  }
-};
+    }, 2000);
+  };
 
   const handleNextStep = () => {
     if (validateStep(currentStep)) {
@@ -300,7 +310,67 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  
+  const FileUploadField = ({ 
+    label, 
+    fileType, 
+    file, 
+    error 
+  }: { 
+    label: string; 
+    fileType: string; 
+    file: File | null; 
+    error?: string;
+  }) => (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        {label}
+      </label>
+      <div className={`border-2 border-dashed rounded-lg p-4 transition-all ${
+        error ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-indigo-400'
+      }`}>
+        {file ? (
+          <div className="flex items-center justify-between bg-white p-3 rounded border border-gray-200">
+            <div className="flex items-center space-x-3">
+              <File className="w-5 h-5 text-indigo-600" />
+              <div>
+                <p className="text-sm font-medium text-gray-900">{file.name}</p>
+                <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(2)} KB</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => removeFile(fileType)}
+              className="text-red-500 hover:text-red-700 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        ) : (
+          <label className="cursor-pointer block">
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={(e) => handleFileChange(e, fileType)}
+              className="hidden"
+            />
+            <div className="text-center">
+              <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+              <p className="text-sm text-gray-600">
+                <span className="text-indigo-600 font-medium">Click to upload</span> or drag and drop
+              </p>
+              <p className="text-xs text-gray-500 mt-1">PDF only (Max 5MB)</p>
+            </div>
+          </label>
+        )}
+      </div>
+      {error && (
+        <p className="mt-1 text-xs md:text-sm text-red-600 flex items-center">
+          <AlertCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+          {error}
+        </p>
+      )}
+    </div>
+  );
 
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center mb-6">
@@ -451,68 +521,169 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
     <div className="space-y-4 md:space-y-6">
       <div className="text-center mb-4 md:mb-6">
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Business Information</h2>
-        <p className="text-sm md:text-base text-gray-600">Provide your GST or PAN details</p>
+        <p className="text-sm md:text-base text-gray-600">Provide your business documents and details</p>
       </div>
 
-      <div>
-        <label htmlFor="gstNumber" className="block text-sm font-medium text-gray-700 mb-2">
-          GST Number
-        </label>
-        <div className="relative">
-          <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <input
-            type="text"
-            id="gstNumber"
-            name="gstNumber"
-            value={formData.gstNumber}
-            onChange={handleInputChange}
-            className={`w-full pl-10 pr-4 py-2.5 md:py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all uppercase text-sm md:text-base ${
-              errors.gstNumber ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="22AAAAA0000A1Z5"
-            maxLength={15}
+      {/* GST Section */}
+      <div className="bg-gray-50 rounded-lg p-4 md:p-6 space-y-4">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900">GST Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="gstNumber" className="block text-sm font-medium text-gray-700 mb-2">
+              GST Number
+            </label>
+            <div className="relative">
+              <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                id="gstNumber"
+                name="gstNumber"
+                value={formData.gstNumber}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-4 py-2.5 md:py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all uppercase text-sm md:text-base ${
+                  errors.gstNumber ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="22AAAAA0000A1Z5"
+                maxLength={15}
+              />
+              {errors.gstNumber && (
+                <p className="mt-1 text-xs md:text-sm text-red-600 flex items-center">
+                  <AlertCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                  {errors.gstNumber}
+                </p>
+              )}
+            </div>
+          </div>
+          <FileUploadField 
+            label="GST Certificate (PDF)" 
+            fileType="gstFile" 
+            file={formData.gstFile}
+            error={errors.gstFile}
           />
-          {errors.gstNumber && (
-            <p className="mt-1 text-xs md:text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-              {errors.gstNumber}
-            </p>
-          )}
         </div>
       </div>
 
       <div className="text-center text-gray-500 text-sm font-medium">OR</div>
 
-      <div>
-        <label htmlFor="panNumber" className="block text-sm font-medium text-gray-700 mb-2">
-          PAN Number
-        </label>
-        <div className="relative">
-          <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <input
-            type="text"
-            id="panNumber"
-            name="panNumber"
-            value={formData.panNumber}
-            onChange={handleInputChange}
-            className={`w-full pl-10 pr-4 py-2.5 md:py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all uppercase text-sm md:text-base ${
-              errors.panNumber ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="ABCDE1234F"
-            maxLength={10}
+      {/* PAN Section */}
+      <div className="bg-gray-50 rounded-lg p-4 md:p-6 space-y-4">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900">PAN Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="panNumber" className="block text-sm font-medium text-gray-700 mb-2">
+              PAN Number
+            </label>
+            <div className="relative">
+              <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                id="panNumber"
+                name="panNumber"
+                value={formData.panNumber}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-4 py-2.5 md:py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all uppercase text-sm md:text-base ${
+                  errors.panNumber ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="ABCDE1234F"
+                maxLength={10}
+              />
+              {errors.panNumber && (
+                <p className="mt-1 text-xs md:text-sm text-red-600 flex items-center">
+                  <AlertCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                  {errors.panNumber}
+                </p>
+              )}
+            </div>
+          </div>
+          <FileUploadField 
+            label="PAN Card (PDF)" 
+            fileType="panFile" 
+            file={formData.panFile}
+            error={errors.panFile}
           />
-          {errors.panNumber && (
-            <p className="mt-1 text-xs md:text-sm text-red-600 flex items-center">
-              <AlertCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-              {errors.panNumber}
-            </p>
-          )}
+        </div>
+      </div>
+
+      {/* Aadhar Section */}
+      <div className="bg-gray-50 rounded-lg p-4 md:p-6 space-y-4">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900">Aadhar Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="aadharNumber" className="block text-sm font-medium text-gray-700 mb-2">
+              Aadhar Number
+            </label>
+            <div className="relative">
+              <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                id="aadharNumber"
+                name="aadharNumber"
+                value={formData.aadharNumber}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-4 py-2.5 md:py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm md:text-base ${
+                  errors.aadharNumber ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="1234 5678 9012"
+                maxLength={12}
+              />
+              {errors.aadharNumber && (
+                <p className="mt-1 text-xs md:text-sm text-red-600 flex items-center">
+                  <AlertCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                  {errors.aadharNumber}
+                </p>
+              )}
+            </div>
+          </div>
+          <FileUploadField 
+            label="Aadhar Card (PDF)" 
+            fileType="aadharFile" 
+            file={formData.aadharFile}
+            error={errors.aadharFile}
+          />
+        </div>
+      </div>
+
+      {/* MSME Section */}
+      <div className="bg-gray-50 rounded-lg p-4 md:p-6 space-y-4">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900">MSME Details (Optional)</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="msmeNumber" className="block text-sm font-medium text-gray-700 mb-2">
+              MSME/Udyam Registration Number
+            </label>
+            <div className="relative">
+              <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                id="msmeNumber"
+                name="msmeNumber"
+                value={formData.msmeNumber}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-4 py-2.5 md:py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all uppercase text-sm md:text-base ${
+                  errors.msmeNumber ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="UDYAM-XX-00-0000000"
+              />
+              {errors.msmeNumber && (
+                <p className="mt-1 text-xs md:text-sm text-red-600 flex items-center">
+                  <AlertCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                  {errors.msmeNumber}
+                </p>
+              )}
+            </div>
+          </div>
+          <FileUploadField 
+            label="MSME Certificate (PDF)" 
+            fileType="msmeFile" 
+            file={formData.msmeFile}
+            error={errors.msmeFile}
+          />
         </div>
       </div>
 
       <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 md:p-4">
         <p className="text-xs md:text-sm text-indigo-800">
-          <strong>Note:</strong> Please provide either GST Number or PAN Number. GST Number is preferred for registered businesses.
+          <strong>Note:</strong> Please provide either GST Number or PAN Number (required). Aadhar and MSME details are optional but recommended for faster verification.
         </p>
       </div>
     </div>
@@ -521,8 +692,8 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
   const renderStep3 = () => (
     <div className="space-y-4 md:space-y-6">
       <div className="text-center mb-4 md:mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Address Information</h2>
-        <p className="text-sm md:text-base text-gray-600">Provide your address details</p>
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Office Address Information</h2>
+        <p className="text-sm md:text-base text-gray-600">Provide your Office address details</p>
       </div>
 
       <div className="bg-gray-50 rounded-lg p-4 md:p-6">
@@ -647,7 +818,7 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
         <div className="bg-gray-50 rounded-lg p-4 md:p-6">
           <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Building className="w-4 h-4 md:w-5 md:h-5 mr-2 text-indigo-600" />
-            Residential Address
+            Current Address
           </h3>
           
           <div className="space-y-4">
@@ -957,14 +1128,14 @@ const ResponsiveVendorRegistrationForm: React.FC = () => {
             <p className="text-sm md:text-base text-gray-600">Complete the form to register as a vendor</p>
           </div>
 
-             {/* Back Button */}
-        <button
-           onClick={() => router.back()}
-          className="mb-6 flex items-center text-gray-600 hover:text-purple-700 transition-all duration-200 group"
-        >
-          <ArrowLeftIcon className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
-          <span className="font-medium">Back</span>
-        </button>
+          <button
+            onClick={() => window.history.back()}
+            className="mb-6 flex items-center text-gray-600 hover:text-purple-700 transition-all duration-200 group"
+          >
+            <ArrowLeftIcon className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+            <span className="font-medium">Back</span>
+          </button>
+          
           {renderStepIndicator()}
 
           <div className="bg-white rounded-2xl shadow-sm p-4 md:p-6 lg:p-8">

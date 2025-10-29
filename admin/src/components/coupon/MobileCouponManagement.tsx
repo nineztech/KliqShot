@@ -238,7 +238,7 @@ export default function MobileCouponManagement({ coupons, setCoupons, onRefresh 
       <div className="admin-card">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Coupon Management</h2>
+            <h2 className="text-base font-bold text-gray-900">Coupon Management</h2>
             <p className="text-gray-600 text-sm">Manage discount coupons</p>
           </div>
           <button 
@@ -408,7 +408,7 @@ export default function MobileCouponManagement({ coupons, setCoupons, onRefresh 
             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
               <MdAttachMoney className="w-6 h-6 text-gray-400" />
             </div>
-            <h3 className="text-base font-medium text-gray-900 mb-2">No coupons created yet</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">No coupons created yet</h3>
             <p className="text-gray-500 text-sm mb-4">Start by creating your first discount coupon</p>
             <button 
               onClick={() => setShowAddModal(true)}
@@ -425,7 +425,7 @@ export default function MobileCouponManagement({ coupons, setCoupons, onRefresh 
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Create New Coupon</h3>
+              <h3 className="text-base font-semibold text-gray-900">Create New Coupon</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -585,7 +585,7 @@ export default function MobileCouponManagement({ coupons, setCoupons, onRefresh 
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Coupon</h3>
+              <h3 className="text-base font-semibold text-gray-900">Edit Coupon</h3>
               <button
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-gray-600"

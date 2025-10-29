@@ -155,7 +155,7 @@ export default function MobileFixedPackageDetailManagement({
               <MdArrowBack className="w-5 h-5 text-gray-600" />
             </button>
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-gray-900 truncate">{localPackageData.name}</h2>
+              <h2 className="text-base font-bold text-gray-900 truncate">{localPackageData.name}</h2>
               <p className="text-xs text-gray-600 truncate">{localPackageData.description}</p>
               <div className="mt-1 flex items-center gap-2 flex-wrap">
                 <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
@@ -267,7 +267,7 @@ export default function MobileFixedPackageDetailManagement({
         <div className="admin-card mt-6">
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-base font-bold text-gray-900">
                 {editingSubPackage ? 'Edit Sub-Package' : 'Add New Sub-Package'}
               </h3>
               <button

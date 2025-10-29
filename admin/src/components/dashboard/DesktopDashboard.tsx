@@ -170,7 +170,7 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
                 className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Booking Trends</h3>
+                  <h3 className="text-base font-bold text-gray-900">Booking Trends</h3>
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                     <span className="text-sm text-gray-600">Bookings</span>
@@ -214,7 +214,7 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
                 transition={{ duration: 0.5, delay: 0.5 }}
                 className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-6">Category Distribution</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-6">Category Distribution</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -263,7 +263,7 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
               className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">User Growth</h3>
+                <h3 className="text-base font-bold text-gray-900">User Growth</h3>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -301,7 +301,7 @@ export default function DesktopDashboard({}: DesktopDashboardProps) {
               transition={{ duration: 0.5, delay: 0.7 }}
               className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
             >
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-6">Recent Activity</h3>
               <div className="space-y-4">
                 {[
                   {

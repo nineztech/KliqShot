@@ -187,7 +187,7 @@ export default function MobileBookingManagement({ bookings, setBookings }: Mobil
       <div className="admin-card p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Bookings</h2>
+            <h2 className="text-base font-bold text-gray-900">Bookings</h2>
             <p className="text-gray-600 text-xs mt-1">Track and manage</p>
           </div>
         </div>
@@ -397,7 +397,7 @@ export default function MobileBookingManagement({ bookings, setBookings }: Mobil
           <div className="bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Booking Details</h3>
+                <h3 className="text-base font-semibold text-gray-900">Booking Details</h3>
                 <p className="text-xs text-gray-600">{selectedBooking.bookingId}</p>
               </div>
               <button

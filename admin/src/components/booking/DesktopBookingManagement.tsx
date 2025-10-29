@@ -432,7 +432,7 @@ export default function DesktopBookingManagement({ bookings, setBookings }: Desk
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Booking Details</h3>
+                <h3 className="text-base font-semibold text-gray-900">Booking Details</h3>
                 <p className="text-sm text-gray-600 mt-1">{selectedBooking.bookingId}</p>
               </div>
               <button

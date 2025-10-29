@@ -5,6 +5,16 @@ import DesktopPhotographerManagement from './DesktopPhotographerManagement';
 import MobilePhotographerManagement from './MobilePhotographerManagement';
 import { useSidebar } from '@/components/sidebar/SidebarContext';
 
+interface FieldVerification {
+  aadharCard?: boolean;
+  panCard?: boolean;
+  mobileNumber?: boolean;
+  email?: boolean;
+  name?: boolean;
+  temporaryAddress?: boolean;
+  permanentAddress?: boolean;
+}
+
 interface Photographer {
   id: string;
   name: string;
@@ -20,6 +30,14 @@ interface Photographer {
   status: 'active' | 'inactive' | 'pending';
   joinDate: string;
   categories: string[];
+  isVerified?: boolean;
+  verifiedAt?: string;
+  fieldVerification?: FieldVerification;
+  // Additional fields for verification
+  aadharCard?: string;
+  panCard?: string;
+  temporaryAddress?: string;
+  permanentAddress?: string;
 }
 
 interface PhotographerManagementProps {

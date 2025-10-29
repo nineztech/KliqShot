@@ -644,7 +644,24 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
               {/* Tab Content */}
               {activeAboutTab === 'about' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-8">
+                {/* Brief Section */}
+                <div>
+                  <h2 className="font-semibold text-gray-900 mb-3">Introduction</h2>
+                  <p className="text-gray-700 leading-relaxed">
+                    {photographer.name} is a premium photography service primarily focused on wedding photography and films, 
+                    also excelling in candid and classic styles. With over {photographer.experience} of experience in wedding 
+                    photography, we have the ability to be hired anywhere in India, located in the {photographer.location} region. 
+                    Our emphasis is on capturing ideal moments, with weddings being our main focus. We specialize in total event 
+                    production, managing everything from conception to follow-up for events like grandiose weddings, corporate 
+                    conferences, or gala dinners. Our work is driven by innovation, technological know-how, and extensive industry 
+                    expertise. We offer flexible, tailored pricing solutions starting from {photographer.price} per hour, with 
+                    customizable packages to suit various needs and budgets.
+                  </p>
+                </div>
+
+                {/* Additional Information Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6">
                 <div>
                   <h2 className="font-semibold text-gray-900 mb-2">Experience</h2>
                   <p className="text-gray-600">{photographer.experience}</p>
@@ -753,6 +770,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                         {showMoreCertificates ? "Show less" : "+3 more"}
                       </button>
                     )}
+                  </div>
                   </div>
                 </div>
               </div>
@@ -939,6 +957,38 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                       <li key={index}>{award}</li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {activeAboutTab === 'about' && (
+                <div className="mt-6">
+                  <h2 className="font-semibold text-gray-900 mb-3">Projects Done</h2>
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Wedding</span>
+                      <span className="font-medium">25</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Maternity</span>
+                      <span className="font-medium">45</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Pre-Wedding</span>
+                      <span className="font-medium">38</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Portrait</span>
+                      <span className="font-medium">52</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Events</span>
+                      <span className="font-medium">30</span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-700">
+                      <span>Family</span>
+                      <span className="font-medium">18</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

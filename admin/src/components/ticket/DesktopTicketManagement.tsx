@@ -362,7 +362,7 @@ export default function DesktopTicketManagement({ tickets, setTickets }: Desktop
       <div className="admin-card">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Ticket Management</h2>
+            <h2 className="text-xl font-bold text-gray-900">Ticket Management</h2>
             <p className="text-gray-600 text-sm mt-1">Track and manage all support tickets from clients and photographers</p>
           </div>
           <div className="flex items-center gap-3">
@@ -521,7 +521,7 @@ export default function DesktopTicketManagement({ tickets, setTickets }: Desktop
         {/* Content - Table */}
         {filteredTickets.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-lg mb-2">No tickets found</div>
+            <div className="text-gray-400 text-sm mb-2">No tickets found</div>
             <p className="text-gray-500 text-sm">
               No {activeSubTab} tickets found for {activeParentTab === 'client' ? 'clients' : 'photographers'}
             </p>
@@ -617,7 +617,7 @@ export default function DesktopTicketManagement({ tickets, setTickets }: Desktop
           <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-semibold text-gray-900">{selectedTicket.ticketId}</h2>
+                <h2 className="text-base font-semibold text-gray-900">{selectedTicket.ticketId}</h2>
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(selectedTicket.status)}`}>
                   {selectedTicket.status.charAt(0).toUpperCase() + selectedTicket.status.slice(1)}
                 </span>
@@ -636,7 +636,7 @@ export default function DesktopTicketManagement({ tickets, setTickets }: Desktop
             <div className="p-6 space-y-6">
               {/* User Information */}
               <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <MdPerson className="w-5 h-5 text-purple-600" />
                   User Information
                 </h3>
@@ -670,7 +670,7 @@ export default function DesktopTicketManagement({ tickets, setTickets }: Desktop
 
               {/* Ticket Details */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <MdInfo className="w-5 h-5 text-purple-600" />
                   Ticket Details
                 </h3>
@@ -703,7 +703,7 @@ export default function DesktopTicketManagement({ tickets, setTickets }: Desktop
 
               {/* Timeline */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <MdCalendarToday className="w-5 h-5 text-purple-600" />
                   Timeline
                 </h3>
@@ -743,7 +743,7 @@ export default function DesktopTicketManagement({ tickets, setTickets }: Desktop
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-gray-900">Assign Ticket</h2>
+              <h2 className="text-base font-semibold text-gray-900">Assign Ticket</h2>
               <button
                 onClick={() => setShowAssignModal(false)}
                 className="text-gray-400 hover:text-gray-600"

@@ -205,7 +205,7 @@ export default function MobileTicketManagement({ tickets, setTickets }: MobileTi
     <div className="max-w-full">
       {/* Header */}
       <div className="mb-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Tickets</h1>
+        <h1 className="text-base font-bold text-gray-900 mb-1">Tickets</h1>
         <p className="text-sm text-gray-600">Manage support tickets</p>
       </div>
 
@@ -363,7 +363,7 @@ export default function MobileTicketManagement({ tickets, setTickets }: MobileTi
             <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-gray-900">{selectedTicket.ticketId}</h2>
+                  <h2 className="text-base font-semibold text-gray-900">{selectedTicket.ticketId}</h2>
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(selectedTicket.status)}`}>
                     {selectedTicket.status.charAt(0).toUpperCase() + selectedTicket.status.slice(1)}
                   </span>
@@ -488,7 +488,7 @@ export default function MobileTicketManagement({ tickets, setTickets }: MobileTi
           <div className="min-h-screen flex items-center justify-center p-4">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
               <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-gray-900">Assign Ticket</h2>
+                <h2 className="text-base font-semibold text-gray-900">Assign Ticket</h2>
                 <button
                   onClick={() => setShowAssignModal(false)}
                   className="text-gray-400 hover:text-gray-600"

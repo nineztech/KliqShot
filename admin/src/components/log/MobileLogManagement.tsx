@@ -88,7 +88,7 @@ export default function MobileLogManagement({ logs, setLogs }: MobileLogManageme
     <div className="max-w-full">
       {/* Header */}
       <div className="mb-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Activity Logs</h1>
+        <h1 className="text-base font-bold text-gray-900 mb-1">Activity Logs</h1>
         <p className="text-sm text-gray-600">Track client interactions</p>
       </div>
 
@@ -196,7 +196,7 @@ export default function MobileLogManagement({ logs, setLogs }: MobileLogManageme
           <div className="min-h-screen flex items-center justify-center p-4">
             <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-gray-900">{selectedLog.logId}</h2>
+                <h2 className="text-base font-semibold text-gray-900">{selectedLog.logId}</h2>
                 <button
                   onClick={() => setShowDetailModal(false)}
                   className="text-gray-400 hover:text-gray-600"

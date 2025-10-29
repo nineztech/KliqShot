@@ -62,7 +62,7 @@ export default function MobilePackageManagement({
       <div className="admin-card">
         {/* Header */}
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-gray-900 mb-3">Package Management</h2>
+          <h2 className="text-base font-bold text-gray-900 mb-3">Package Management</h2>
           <button
             onClick={() => setShowAddModal(true)}
             className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-colors"
@@ -148,7 +148,7 @@ export default function MobilePackageManagement({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50">
           <div className="bg-white rounded-t-lg sm:rounded-lg p-6 w-full sm:max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Add New Package</h3>
+              <h3 className="text-base font-bold text-gray-900">Add New Package</h3>
               <button
                 onClick={() => {
                   setShowAddModal(false);

@@ -99,7 +99,7 @@ export default function DesktopFixedPackageManagement({
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900">{group.name}</h3>
+                  <h3 className="text-base font-bold text-gray-900">{group.name}</h3>
                   <p className="text-sm text-gray-500 mt-1">Click to manage sub-packages</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -165,7 +165,7 @@ export default function DesktopFixedPackageManagement({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 max-w-lg w-full">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">
+              <h3 className="text-base font-bold text-gray-900">
                 {editingGroup ? 'Edit Package Group' : 'Add Package Group'}
               </h3>
               <button

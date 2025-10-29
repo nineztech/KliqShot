@@ -20,7 +20,8 @@ import {
   MdCardGiftcard,
   MdSupportAgent,
   MdHistory,
-  MdSlideshow
+  MdSlideshow,
+  MdExtension
 } from 'react-icons/md';
 import { useSidebar } from './SidebarContext';
 import { useAuth } from '@/components/auth/AuthContext';
@@ -45,6 +46,7 @@ export default function DesktopSidebar({ activeTab, onTabChange }: DesktopSideba
     { id: 'dashboard', label: 'Dashboard', icon: MdHome, href: '/' },
     { id: 'bookings', label: 'Bookings', icon: MdEventNote, href: '/bookings' },
     { id: 'categories', label: 'Categories', icon: MdDashboard, href: '/categories' },
+    { id: 'addons', label: 'Add Ons', icon: MdExtension, href: '/addons' },
     { id: 'photographers', label: 'Kliqchamps', icon: MdCameraAlt, href: '/photographers' },
     { id: 'users', label: 'Clients', icon: MdPeople, href: '/users' },
     { id: 'coupons', label: 'Coupons', icon: MdAttachMoney, href: '/coupons' },

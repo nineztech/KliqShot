@@ -330,7 +330,7 @@ export default function MobileCarouselManagement({
       <div className="admin-card">
         <div className="flex flex-col space-y-2">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Carousel & Content</h2>
+            <h2 className="text-base font-bold text-gray-900">Carousel & Content</h2>
             <p className="text-gray-600 text-xs">Manage carousel, filters, and banners</p>
           </div>
           <button 

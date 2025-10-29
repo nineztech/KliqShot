@@ -75,7 +75,7 @@ export default function MobileFixedPackageManagement({
       <div className="admin-card">
         {/* Header */}
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-gray-900 mb-3">Fixed Package Management</h2>
+          <h2 className="text-base font-bold text-gray-900 mb-3">Fixed Package Management</h2>
           <button
             onClick={() => {
               setEditingGroup(null);
@@ -165,7 +165,7 @@ export default function MobileFixedPackageManagement({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-4 max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-base font-bold text-gray-900">
                 {editingGroup ? 'Edit Package Group' : 'Add Package Group'}
               </h3>
               <button

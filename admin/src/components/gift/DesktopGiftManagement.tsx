@@ -367,7 +367,7 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <MdCardGiftcard className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No gift cards added yet</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">No gift cards added yet</h3>
             <p className="text-gray-500 mb-4">Start by adding your first gift card</p>
             <button 
               onClick={() => setShowAddModal(true)}
@@ -384,7 +384,7 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900">Add New Gift</h3>
+              <h3 className="text-base font-semibold text-gray-900">Add New Gift</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -527,7 +527,7 @@ export default function DesktopGiftManagement({ gifts, setGifts, onRefresh }: De
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900">Edit Gift</h3>
+              <h3 className="text-base font-semibold text-gray-900">Edit Gift</h3>
               <button
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-gray-600"

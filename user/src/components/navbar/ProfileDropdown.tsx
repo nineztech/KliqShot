@@ -116,7 +116,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
         {/* Mobile Profile Dropdown */}
         {showDropdown && (
           <div 
-            className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+            className="absolute top-full right-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
             onMouseEnter={handleProfileHover}
             onMouseLeave={handleProfileLeave}
           >
@@ -381,7 +381,7 @@ export default function ProfileDropdown({ isMobile = false }: ProfileDropdownPro
       {/* Desktop Profile Dropdown */}
       {showDropdown && (
         <div 
-          className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50"
+          className="absolute top-full right-0 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50"
           onMouseEnter={handleProfileHover}
           onMouseLeave={handleProfileLeave}
         >

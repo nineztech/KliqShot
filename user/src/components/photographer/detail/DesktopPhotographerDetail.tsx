@@ -243,6 +243,14 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
       bookingParams.append('package', packageParam);
       bookingParams.append('source', 'buynow');
       
+      // Add selected date and time slots if available
+      if (selectedDate) {
+        bookingParams.append('selectedDate', selectedDate.toISOString());
+      }
+      if (selectedTimeSlots.length > 0) {
+        bookingParams.append('selectedTimeSlots', selectedTimeSlots.join(','));
+      }
+      
       router.push(`/booking?${bookingParams.toString()}`);
       return;
     }
@@ -269,6 +277,14 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
     
     if (finalSubCategory) {
       bookingParams.append('subcategory', finalSubCategory);
+    }
+    
+    // Add selected date and time slots if available
+    if (selectedDate) {
+      bookingParams.append('selectedDate', selectedDate.toISOString());
+    }
+    if (selectedTimeSlots.length > 0) {
+      bookingParams.append('selectedTimeSlots', selectedTimeSlots.join(','));
     }
     
     // Navigate to booking page with parameters

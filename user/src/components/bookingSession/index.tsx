@@ -41,6 +41,22 @@ export default function BookingPage({ bookingData }: BookingPageProps) {
     if (sourceParam) {
       setSource(sourceParam);
     }
+    
+    // Get pre-selected date from URL if available
+    const dateParam = searchParams.get('selectedDate');
+    if (dateParam) {
+      const date = new Date(dateParam);
+      if (!isNaN(date.getTime())) {
+        setSelectedDate(date);
+      }
+    }
+    
+    // Get pre-selected time slots from URL if available
+    const timeSlotsParam = searchParams.get('selectedTimeSlots');
+    if (timeSlotsParam) {
+      const timeSlots = timeSlotsParam.split(',').filter(slot => slot.trim() !== '');
+      setSelectedTimeSlots(timeSlots);
+    }
   }, [searchParams]);
 
   const handleDateSelect = (date: Date) => {

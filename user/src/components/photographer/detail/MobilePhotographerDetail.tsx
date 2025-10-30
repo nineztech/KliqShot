@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon, XMarkIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import { categories, type Category, type SubCategory } from '@/data/categories';
 import { BestInCategory, InspiredByHistory } from '@/components/photographer';
+import BookingCalendar from '@/components/bookingSession/BookingCalendar';
 
 interface Photographer {
   id: number;
@@ -45,6 +46,9 @@ export default function MobilePhotographerDetail({ photographer, category, subca
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('');
   const [showImagePopup, setShowImagePopup] = useState(false);
   const [popupImageIndex, setPopupImageIndex] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
+  const [showAvailabilityCalendar, setShowAvailabilityCalendar] = useState(false);
 
   // Auto-scroll carousel
   useEffect(() => {
@@ -136,6 +140,15 @@ export default function MobilePhotographerDetail({ photographer, category, subca
       bookingParams.append('photographerName', photographer.name);
       bookingParams.append('price', photographer.price);
       bookingParams.append('package', packageParam);
+      bookingParams.append('source', 'buynow');
+      
+      // Add selected date and time slots if available
+      if (selectedDate) {
+        bookingParams.append('selectedDate', selectedDate.toISOString());
+      }
+      if (selectedTimeSlots.length > 0) {
+        bookingParams.append('selectedTimeSlots', selectedTimeSlots.join(','));
+      }
       
       router.push(`/booking?${bookingParams.toString()}`);
       return;
@@ -152,6 +165,7 @@ export default function MobilePhotographerDetail({ photographer, category, subca
     bookingParams.append('photographerId', photographer.id.toString());
     bookingParams.append('photographerName', photographer.name);
     bookingParams.append('price', photographer.price);
+    bookingParams.append('source', 'buynow');
     
     const finalCategory = category || selectedCategory;
     const finalSubCategory = subcategory || selectedSubCategory;
@@ -162,6 +176,14 @@ export default function MobilePhotographerDetail({ photographer, category, subca
     
     if (finalSubCategory) {
       bookingParams.append('subcategory', finalSubCategory);
+    }
+    
+    // Add selected date and time slots if available
+    if (selectedDate) {
+      bookingParams.append('selectedDate', selectedDate.toISOString());
+    }
+    if (selectedTimeSlots.length > 0) {
+      bookingParams.append('selectedTimeSlots', selectedTimeSlots.join(','));
     }
     
     // Navigate to booking page with parameters
@@ -337,7 +359,16 @@ export default function MobilePhotographerDetail({ photographer, category, subca
             </div>
             
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Availability</h3>
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="font-semibold text-gray-900">Availability</h3>
+                <button
+                  onClick={() => setShowAvailabilityCalendar(true)}
+                  className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                  title="View Availability Calendar"
+                >
+                  <CalendarDaysIcon className="w-4 h-4" />
+                </button>
+              </div>
               <p className="text-gray-600 text-sm">{photographer.availability}</p>
             </div>
             
@@ -554,6 +585,62 @@ export default function MobilePhotographerDetail({ photographer, category, subca
                 >
                   Cancel
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Availability Calendar Modal */}
+      {showAvailabilityCalendar && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full">
+            <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between rounded-t-lg">
+              <h2 className="text-lg font-bold text-gray-900">Availability Calendar - {photographer.name}</h2>
+              <button
+                onClick={() => setShowAvailabilityCalendar(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4">
+              {/* Compact Calendar */}
+              <BookingCalendar
+                selectedDate={selectedDate}
+                onDateSelect={setSelectedDate}
+                selectedTimeSlots={selectedTimeSlots}
+                onTimeSlotSelect={(timeSlot) => {
+                  if (selectedTimeSlots.includes(timeSlot)) {
+                    setSelectedTimeSlots(prev => prev.filter(slot => slot !== timeSlot));
+                  } else {
+                    setSelectedTimeSlots(prev => [...prev, timeSlot]);
+                  }
+                }}
+                compact={true}
+              />
+              
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-end space-x-3">
+                  <button
+                    onClick={() => setShowAvailabilityCalendar(false)}
+                    className="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    Close
+                  </button>
+                  {selectedDate && selectedTimeSlots.length > 0 && (
+                    <button
+                      onClick={() => {
+                        setShowAvailabilityCalendar(false);
+                        handleBookNow();
+                      }}
+                      className="px-5 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                    >
+                      Book Selected Time
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

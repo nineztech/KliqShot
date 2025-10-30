@@ -8,7 +8,7 @@ interface MobilePackageManagementProps {
   packages: Package[];
   setPackages: (packages: Package[]) => void;
   onRefresh?: () => void;
-  onConfigurePackage?: (pkg: Package) => void;
+  onConfigurePackage: (pkg: Package) => void;
 }
 
 export default function MobilePackageManagement({ 
@@ -30,7 +30,7 @@ export default function MobilePackageManagement({
       name: formData.name,
       description: formData.description,
       isActive: formData.isActive,
-      categoryPricing: []
+      cityGroups: []
     };
     setPackages([...packages, newPackage]);
     setShowAddModal(false);
@@ -44,9 +44,7 @@ export default function MobilePackageManagement({
   };
 
   const handleConfigurePackage = (pkg: Package) => {
-    if (onConfigurePackage) {
-      onConfigurePackage(pkg);
-    }
+    onConfigurePackage(pkg);
   };
 
   const resetForm = () => {
@@ -100,12 +98,12 @@ export default function MobilePackageManagement({
                 <div className="flex items-center gap-2 text-xs text-gray-600">
                   <MdSettings className="w-4 h-4" />
                   <span>
-                    {pkg.categoryPricing?.length || 0} categories configured
+                    {pkg.cityGroups?.length || 0} city groups configured
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Individual Pricing
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Location-Based Pricing
                   </span>
                 </div>
               </div>
@@ -201,7 +199,7 @@ export default function MobilePackageManagement({
                       onChange={(e) => setFormData({ ...formData, packageType: e.target.value as 'fixed' | 'individual' })}
                       className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Individual Pricing</span>
+                    <span className="ml-2 text-sm text-gray-700">Location-Based Pricing</span>
                   </label>
                   <label className="flex items-center">
                     <input
@@ -231,7 +229,7 @@ export default function MobilePackageManagement({
 
               <div className="p-3 rounded-lg bg-green-50">
                 <p className="text-sm text-green-800">
-                  Individual Pricing: Configure pricing and features for each category separately.
+                  Location-Based Pricing: Configure city groups and set pricing for each category based on location.
                 </p>
               </div>
             </div>

@@ -8,12 +8,14 @@ interface DesktopFixedPackageDetailManagementProps {
   packageData: PackageGroup;
   onBack: () => void;
   onSave: (updatedPackage: PackageGroup) => void;
+  cityGroupName?: string;
 }
 
 export default function DesktopFixedPackageDetailManagement({
   packageData,
   onBack,
-  onSave
+  onSave,
+  cityGroupName
 }: DesktopFixedPackageDetailManagementProps) {
   const [localPackageData, setLocalPackageData] = useState<PackageGroup>(packageData);
   const [showAddSubPackage, setShowAddSubPackage] = useState(false);
@@ -30,6 +32,7 @@ export default function DesktopFixedPackageDetailManagement({
   });
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
+  const [selectedCategorySubcategories, setSelectedCategorySubcategories] = useState<Record<string, string[]>>({});
 
   // Track selected districts from existing package data
   useEffect(() => {
@@ -47,6 +50,33 @@ export default function DesktopFixedPackageDetailManagement({
     { id: '4', name: 'Pre-Wedding Shoot' },
     { id: '5', name: 'Baby Shower' },
   ];
+
+  // Mock subcategories per category - in real app, fetch from API
+  const subCategoriesByCategory: Record<string, { id: string; name: string }[]> = {
+    '1': [
+      { id: '1-1', name: 'Engagement Shoot' },
+      { id: '1-2', name: 'Haldi/Mehendi' },
+      { id: '1-3', name: 'Ceremony Coverage' },
+      { id: '1-4', name: 'Reception Coverage' }
+    ],
+    '2': [
+      { id: '2-1', name: 'Kids Birthday' },
+      { id: '2-2', name: 'Adult Birthday' }
+    ],
+    '3': [
+      { id: '3-1', name: 'Conference' },
+      { id: '3-2', name: 'Product Launch' },
+      { id: '3-3', name: 'Team Event' }
+    ],
+    '4': [
+      { id: '4-1', name: 'Outdoor Shoot' },
+      { id: '4-2', name: 'Studio Shoot' }
+    ],
+    '5': [
+      { id: '5-1', name: 'Indoor' },
+      { id: '5-2', name: 'Outdoor' }
+    ]
+  };
 
   // Mock location data - in real app, fetch from API
   const countries = [
@@ -78,9 +108,14 @@ export default function DesktopFixedPackageDetailManagement({
       return;
     }
 
-    const selectedCategoryNames = subPackageFormData.selectedCategories.map(catId => 
-      categories.find(c => c.id === catId)?.name || ''
-    ).join(', ');
+    const selectedCategoryNames = subPackageFormData.selectedCategories.map(catId => {
+      const catName = categories.find(c => c.id === catId)?.name || '';
+      const selectedSubs = (selectedCategorySubcategories[catId] || [])
+        .map(sid => subCategoriesByCategory[catId]?.find(s => s.id === sid)?.name || '')
+        .filter(Boolean)
+        .join(', ');
+      return selectedSubs ? `${catName} (${selectedSubs})` : catName;
+    }).join(', ');
 
     const newSubPackage: SubPackage = {
       id: Date.now().toString(),
@@ -112,9 +147,14 @@ export default function DesktopFixedPackageDetailManagement({
   const handleUpdateSubPackage = () => {
     if (!editingSubPackage) return;
 
-    const selectedCategoryNames = subPackageFormData.selectedCategories.map(catId => 
-      categories.find(c => c.id === catId)?.name || ''
-    ).join(', ');
+    const selectedCategoryNames = subPackageFormData.selectedCategories.map(catId => {
+      const catName = categories.find(c => c.id === catId)?.name || '';
+      const selectedSubs = (selectedCategorySubcategories[catId] || [])
+        .map(sid => subCategoriesByCategory[catId]?.find(s => s.id === sid)?.name || '')
+        .filter(Boolean)
+        .join(', ');
+      return selectedSubs ? `${catName} (${selectedSubs})` : catName;
+    }).join(', ');
 
     setLocalPackageData(prev => ({
       ...prev,
@@ -157,6 +197,7 @@ export default function DesktopFixedPackageDetailManagement({
       locations: subPackage.locations || [],
       isActive: subPackage.isActive
     });
+    setSelectedCategorySubcategories({});
     setShowAddSubPackage(true);
   };
 
@@ -177,6 +218,7 @@ export default function DesktopFixedPackageDetailManagement({
     });
     setSelectedCountries([]);
     setSelectedStates([]);
+    setSelectedCategorySubcategories({});
   };
 
   const handleCountryToggle = (country: string) => {
@@ -220,6 +262,22 @@ export default function DesktopFixedPackageDetailManagement({
         ? prev.selectedCategories.filter(id => id !== categoryId)
         : [...prev.selectedCategories, categoryId]
     }));
+    setSelectedCategorySubcategories(prev => {
+      const next = { ...prev };
+      if (next[categoryId]) delete next[categoryId];
+      else next[categoryId] = [];
+      return next;
+    });
+  };
+
+  const toggleSubCategorySelection = (categoryId: string, subCategoryId: string) => {
+    setSelectedCategorySubcategories(prev => {
+      const list = prev[categoryId] || [];
+      const updated = list.includes(subCategoryId)
+        ? list.filter(id => id !== subCategoryId)
+        : [...list, subCategoryId];
+      return { ...prev, [categoryId]: updated };
+    });
   };
 
   return (
@@ -236,7 +294,7 @@ export default function DesktopFixedPackageDetailManagement({
             </button>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">{localPackageData.name}</h2>
-              <p className="text-sm text-gray-600">{localPackageData.description}</p>
+              <p className="text-sm text-gray-600">{cityGroupName ? `${cityGroupName} - Sub-Packages` : localPackageData.description}</p>
               <span className={`inline-block mt-1 px-2 py-1 text-xs font-medium rounded-full ${
                 localPackageData.isActive 
                   ? 'bg-green-100 text-green-800' 
@@ -324,10 +382,10 @@ export default function DesktopFixedPackageDetailManagement({
                       <div>
                         <span className="text-gray-500">Locations:</span>
                         <p className="text-gray-900 font-medium">
-                          {subPackage.locations.map((loc, idx) => (
+                          {(subPackage.locations || []).map((loc, idx) => (
                             <span key={idx}>
                               {loc.district}, {loc.state}, {loc.country}
-                              {idx < subPackage.locations.length - 1 && '; '}
+                              {idx < ((subPackage.locations?.length || 0) - 1) && '; '}
                             </span>
                           ))}
                         </p>
@@ -423,103 +481,7 @@ export default function DesktopFixedPackageDetailManagement({
             </div>
           </div>
 
-          {/* Location Selection */}
-          <div className="mt-6 space-y-4">
-            <h4 className="text-sm font-semibold text-gray-900">Location-Based Pricing</h4>
-            
-            {/* Country Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Countries <span className="text-red-500">*</span>
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {countries.map((country) => (
-                  <label key={country} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedCountries.includes(country)}
-                      onChange={() => handleCountryToggle(country)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">{country}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* State Selection */}
-            {selectedCountries.length > 0 && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select States <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {selectedCountries.map((country) =>
-                    states[country as keyof typeof states]?.map((state) => (
-                      <label key={state} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedStates.includes(state)}
-                          onChange={() => handleStateToggle(state)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">{state}</span>
-                      </label>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* District Selection */}
-            {selectedStates.length > 0 && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Districts <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-60 overflow-y-auto">
-                  {selectedStates.map((state) =>
-                    districts[state as keyof typeof districts]?.map((district) => {
-                      const country = Object.keys(states).find(c =>
-                        states[c as keyof typeof states]?.includes(state)
-                      ) || '';
-                      const isSelected = subPackageFormData.locations.some(loc =>
-                        loc.district === district && loc.state === state
-                      );
-                      
-                      return (
-                        <label key={district} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => handleDistrictToggle(district, country, state)}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                          />
-                          <span className="ml-2 text-sm text-gray-700">{district}</span>
-                        </label>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Display Selected Locations */}
-            {subPackageFormData.locations.length > 0 && (
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Selected Locations ({subPackageFormData.locations.length}):
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {subPackageFormData.locations.map((location, idx) => (
-                    <span key={idx} className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                      {location.district}, {location.state}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Category & Subcategory Selection */}
 
           <div className="mt-6">
             <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -539,12 +501,30 @@ export default function DesktopFixedPackageDetailManagement({
               ))}
             </div>
             {subPackageFormData.selectedCategories.length > 0 && (
-              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Selected Categories:</strong> {subPackageFormData.selectedCategories.map(catId => 
-                    categories.find(c => c.id === catId)?.name
-                  ).join(', ')}
-                </p>
+              <div className="mt-4 space-y-4">
+                {subPackageFormData.selectedCategories.map((catId) => (
+                  <div key={catId} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-medium text-blue-900">{categories.find(c => c.id === catId)?.name} - Subcategories</p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                      {(subCategoriesByCategory[catId] || []).map((sub) => (
+                        <label key={sub.id} className="flex items-center p-2 border border-blue-200 rounded hover:bg-blue-100 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={(selectedCategorySubcategories[catId] || []).includes(sub.id)}
+                            onChange={() => toggleSubCategorySelection(catId, sub.id)}
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">{sub.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {(selectedCategorySubcategories[catId] || []).length === 0 && (
+                      <p className="text-xs text-blue-700 mt-2">No subcategories selected</p>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>

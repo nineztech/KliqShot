@@ -19,5 +19,19 @@ export interface PackageGroup {
   description: string;
   isActive: boolean;
   subPackages: SubPackage[];
+  cityGroups?: FixedCityGroup[];
+}
+
+export interface FixedCityGroup {
+  id: string;
+  name: string;
+  description: string;
+  locations: {
+    country: string;
+    state: string;
+    district: string;
+  }[];
+  isActive: boolean;
+  subPackages?: SubPackage[];
 }
 

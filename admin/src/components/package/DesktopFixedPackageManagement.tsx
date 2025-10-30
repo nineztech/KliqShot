@@ -7,7 +7,7 @@ import { PackageGroup } from './FixedPackageTypes';
 interface DesktopFixedPackageManagementProps {
   packageGroups: PackageGroup[];
   setPackageGroups: (groups: PackageGroup[]) => void;
-  onConfigurePackage?: (pkg: PackageGroup) => void;
+  onConfigurePackage: (pkg: PackageGroup) => void;
 }
 
 export default function DesktopFixedPackageManagement({ 
@@ -57,9 +57,7 @@ export default function DesktopFixedPackageManagement({
   };
 
   const handleConfigureGroup = (pkg: PackageGroup) => {
-    if (onConfigurePackage) {
-      onConfigurePackage(pkg);
-    }
+    onConfigurePackage(pkg);
   };
 
   const resetGroupForm = () => {
@@ -100,7 +98,7 @@ export default function DesktopFixedPackageManagement({
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h3 className="text-base font-bold text-gray-900">{group.name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">Click to manage sub-packages</p>
+                  <p className="text-sm text-gray-500 mt-1">Click to configure city groups</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   group.isActive 
@@ -121,9 +119,8 @@ export default function DesktopFixedPackageManagement({
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                    Fixed Pricing
-                  </span>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Fixed Pricing</span>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">City Groups</span>
                 </div>
               </div>
 

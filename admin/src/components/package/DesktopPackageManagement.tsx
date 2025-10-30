@@ -8,7 +8,7 @@ interface DesktopPackageManagementProps {
   packages: Package[];
   setPackages: (packages: Package[]) => void;
   onRefresh?: () => void;
-  onConfigurePackage?: (pkg: Package) => void;
+  onConfigurePackage: (pkg: Package) => void;
 }
 
 export default function DesktopPackageManagement({ 
@@ -30,7 +30,7 @@ export default function DesktopPackageManagement({
       name: formData.name,
       description: formData.description,
       isActive: formData.isActive,
-      categoryPricing: []
+      cityGroups: []
     };
     setPackages([...packages, newPackage]);
     setShowAddModal(false);
@@ -44,9 +44,7 @@ export default function DesktopPackageManagement({
   };
 
   const handleConfigurePackage = (pkg: Package) => {
-    if (onConfigurePackage) {
-      onConfigurePackage(pkg);
-    }
+    onConfigurePackage(pkg);
   };
 
   const resetForm = () => {
@@ -100,12 +98,12 @@ export default function DesktopPackageManagement({
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <MdSettings className="w-4 h-4" />
                   <span>
-                    {pkg.categoryPricing?.length || 0} categories configured
+                    {pkg.cityGroups?.length || 0} city groups configured
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Individual Pricing
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Location-Based Pricing
                   </span>
                 </div>
               </div>
@@ -200,9 +198,9 @@ export default function DesktopPackageManagement({
                 </label>
               </div>
 
-              <div className="p-3 rounded-lg bg-green-50">
-                <p className="text-sm text-green-800">
-                  Individual Pricing: Configure pricing and features for each category and subcategory separately.
+              <div className="p-3 rounded-lg bg-blue-50">
+                <p className="text-sm text-blue-800">
+                  Location-Based Pricing: Configure city groups and set pricing for each category based on location.
                 </p>
               </div>
             </div>

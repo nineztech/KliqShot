@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useCompare } from '@/components/compare/CompareContext';
 import { CheckCircleIcon, XCircleIcon, StarIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
@@ -69,8 +69,8 @@ export default function ComparePage() {
             ))}
 
             {rows.map((row) => (
-              <>
-                <div key={`${row.key}-label`} className="p-3 border-t border-gray-200 bg-gray-50 text-sm font-medium text-gray-700">
+              <React.Fragment key={`row-${row.key}`}>
+                <div className="p-3 border-t border-gray-200 bg-gray-50 text-sm font-medium text-gray-700">
                   {row.label}
                 </div>
                 {columns.map((_, i) => (
@@ -78,7 +78,7 @@ export default function ComparePage() {
                     {row.render(i)}
                   </div>
                 ))}
-              </>
+              </React.Fragment>
             ))}
           </div>
         </div>

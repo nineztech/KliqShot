@@ -334,34 +334,7 @@ export default function PhotographerCard({
             )}
           </button>
 
-          {/* Compare Checkbox */}
-          <label
-            className="absolute top-2 right-12 sm:top-3 sm:right-12 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full border border-gray-200 text-[10px] sm:text-xs flex items-center gap-1 cursor-pointer select-none"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleCompare({
-                id,
-                name,
-                specialty,
-                image,
-                price,
-                rating,
-                reviews,
-                location,
-                experience,
-                category,
-                categories
-              });
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={isCompared(id)}
-              onChange={() => {}}
-              className="w-3 h-3 sm:w-3.5 sm:h-3.5 accent-orange-600"
-            />
-            Compare
-          </label>
+          
           
           {/* Category Badge */}
           <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -507,6 +480,36 @@ export default function PhotographerCard({
              </div>
            </div>
          )}
+
+         {/* Compare (below Recommended) */}
+         <div className="mt-2">
+           <label
+             className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-gray-700 cursor-pointer select-none"
+             onClick={(e) => e.stopPropagation()}
+           >
+             <input
+               type="checkbox"
+               checked={isCompared(id)}
+               onChange={() => {
+                 toggleCompare({
+                   id,
+                   name,
+                   specialty,
+                   image,
+                   price,
+                   rating,
+                   reviews,
+                   location,
+                   experience,
+                   category,
+                   categories
+                 });
+               }}
+               className="w-3 h-3 sm:w-3.5 sm:h-3.5 accent-orange-600"
+             />
+             Compare
+           </label>
+         </div>
        </div>
     </div>
   );

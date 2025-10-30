@@ -16,7 +16,7 @@ export default function DesktopProcessSection() {
     {
       number: "01",
       title: "DISCOVER",
-      description: "Client enters event details, date, and desired style/vision. Our AI suggests a curated list or a single 'Top Match Photographer.'",
+      description: "Tell Us Your Vision: Enter event details, date, and desired style. Get personalized recommendations or explore top matches.'",
       icon: <SparklesIcon className="w-8 h-8 text-white" />,
       gradient: "from-blue-500 to-indigo-600",
       bgGradient: "from-blue-50 to-indigo-50",
@@ -25,7 +25,7 @@ export default function DesktopProcessSection() {
     {
       number: "02", 
       title: "DECIDE",
-      description: "Client explores validated portfolios, relevant experience, transparent packages, and reviews backed by visual proof from past events.",
+      description: "Explore & Compare: View validated portfolios, transparent packages, and authentic customer reviews. Choose with confidence.",
       icon: <DocumentCheckIcon className="w-8 h-8 text-white" />,
       gradient: "from-green-500 to-emerald-600",
       bgGradient: "from-green-50 to-emerald-50",
@@ -34,7 +34,7 @@ export default function DesktopProcessSection() {
     {
       number: "03",
       title: "DEAL (BOOK WITH CONFIDENCE)",
-      description: "Client books seamlessly with a secure, hybrid payment model that protects both parties.",
+      description: "Seamless Booking & Secure Payments: Book photographers instantly with our secure, hybrid payment system protecting both parties.",
       icon: <ShieldCheckIcon className="w-8 h-8 text-white" />,
       gradient: "from-pink-500 to-rose-600",
       bgGradient: "from-pink-50 to-rose-50",

@@ -4,12 +4,14 @@ import React, { useMemo } from 'react';
 import { useCompare } from '@/components/compare/CompareContext';
 import { CheckCircleIcon, XCircleIcon, StarIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
+import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 
 export default function ComparePage() {
   const { selected } = useCompare();
   const router = useRouter();
 
-  const columns = useMemo(() => selected.slice(0, 4), [selected]);
+  const columns = useMemo(() => selected.slice(0, 3), [selected]);
 
   if (columns.length < 2) {
     // If user lands here without enough items, redirect back
@@ -41,31 +43,29 @@ export default function ComparePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Compare Photographers</h1>
           <p className="text-gray-600">Choose the best by comparing up to 4 photographers side by side.</p>
         </div>
 
-        {/* Header cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-          {columns.map((p) => (
-            <div key={p.id} className="bg-white border border-gray-200 rounded-lg p-3">
-              <div className="aspect-[4/3] w-full overflow-hidden rounded-md mb-3">
-                <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="font-semibold text-gray-900 truncate" title={p.name}>{p.name}</div>
-              <div className="text-sm text-gray-600">{p.specialty}</div>
-            </div>
-          ))}
-        </div>
-
         {/* Comparison grid */}
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
           <div className="grid" style={{ gridTemplateColumns: `260px repeat(${columns.length}, minmax(0, 1fr))` }}>
+            {/* Image row aligned with detail columns */}
+            <div className="bg-white p-3 border-b border-gray-200" />
+            {columns.map((p, i) => (
+              <div key={`img-${p.id}`} className={`bg-white p-3 border-b border-gray-200 ${i > 0 ? 'border-l border-gray-200' : ''}`}>
+                <div className="aspect-[4/3] w-full overflow-hidden rounded-md">
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                </div>
+              </div>
+            ))}
+
             <div className="bg-gray-50 p-3 font-semibold text-gray-900 border-b border-gray-200">RFQ Overview</div>
             {columns.map((_, i) => (
-              <div key={i} className="bg-gray-50 p-3 font-semibold text-gray-900 border-b border-gray-200">&nbsp;</div>
+              <div key={i} className={`bg-gray-50 p-3 font-semibold text-gray-900 border-b border-gray-200 ${i > 0 ? 'border-l border-gray-200' : ''}`}>&nbsp;</div>
             ))}
 
             {rows.map((row) => (
@@ -74,7 +74,7 @@ export default function ComparePage() {
                   {row.label}
                 </div>
                 {columns.map((_, i) => (
-                  <div key={`${row.key}-${i}`} className="p-3 border-t border-gray-200 text-sm text-gray-800">
+                  <div key={`${row.key}-${i}`} className={`p-3 border-t border-gray-200 text-sm text-gray-800 ${i > 0 ? 'border-l border-gray-200' : ''}`}>
                     {row.render(i)}
                   </div>
                 ))}
@@ -83,6 +83,7 @@ export default function ComparePage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

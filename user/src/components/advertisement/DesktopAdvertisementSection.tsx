@@ -196,7 +196,7 @@ export default function DesktopAdvertisementSection() {
       <div className="text-center">
         <h2 className="section-title section-title-desktop mb-1">Featured Photographers</h2>
         <p className="section-description section-description-desktop max-w-lg mx-auto">
-          Discover top-rated professional photographers in your area
+          Discover top-rated professional photographers 
         </p>
       </div>
 

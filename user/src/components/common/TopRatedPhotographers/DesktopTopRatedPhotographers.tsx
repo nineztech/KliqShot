@@ -132,7 +132,7 @@ export default function DesktopTopRatedPhotographers({ className = '' }: TopRate
       <div className="mb-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900">Top Rated Photographers</h2>
-          <p className="text-gray-600 mt-1">Highest rated photographers with exceptional reviews</p>
+          <p className="text-gray-600 mt-1">Discover Top-Rated Photographers: Trusted professionals with 5-star reviews, ready to capture your special moments.</p>
         </div>
       </div>
 

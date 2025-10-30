@@ -27,7 +27,7 @@ interface CompareContextValue {
 const CompareContext = createContext<CompareContextValue | null>(null);
 
 const STORAGE_KEY = 'kliqshot.compare.selected';
-const MAX_COMPARE = 4;
+const MAX_COMPARE = 3;
 
 export const CompareProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [selected, setSelected] = useState<ComparablePhotographer[]>([]);

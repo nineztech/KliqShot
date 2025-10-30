@@ -209,11 +209,11 @@ export default function DesktopHeroSection() {
           }`}>
             <h1 className="font-bold mb-0 leading-tight" style={{ fontSize: 'clamp(20px, 4vw, 36px)' }}>
               <span className="block text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
-                Capture Your Perfect Moment
+               Book Verified Photographers, Effortlessly.
               </span>
             </h1>
             <p className="text-white mb-2 md:mb-3 font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" style={{ fontSize: 'clamp(12px, 2.5vw, 16px)' }}>
-              Find and book professional photographers for every occasion
+             Browse portfolios, Compare packages, Request a quote, Reserve your date
             </p>
           </div>
 

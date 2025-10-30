@@ -481,7 +481,7 @@ export default function PhotographerCard({
            </div>
          )}
 
-         {/* Compare (below Recommended) */}
+         {/* Compare (below Recommended)
          <div className="mt-2">
            <label
              className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-gray-700 cursor-pointer select-none"
@@ -509,7 +509,7 @@ export default function PhotographerCard({
              />
              Compare
            </label>
-         </div>
+         </div> */}
        </div>
     </div>
   );

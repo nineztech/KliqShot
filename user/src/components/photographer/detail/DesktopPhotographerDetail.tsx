@@ -67,6 +67,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const [activePortfolioCategory, setActivePortfolioCategory] = useState('Mehndi');
   const [showAllAddons, setShowAllAddons] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [categoryModalAction, setCategoryModalAction] = useState<'book' | 'cart'>('book');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('');
   const [showImagePopup, setShowImagePopup] = useState(false);
@@ -257,6 +258,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
 
     // If no category is selected, show the category selection modal
     if (!category && !selectedCategory) {
+      setCategoryModalAction('book');
       setShowCategoryModal(true);
       return;
     }
@@ -294,8 +296,31 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const handleCategorySelection = () => {
     if (selectedCategory && selectedSubCategory) {
       setShowCategoryModal(false);
-      // Now proceed with booking
-      handleBookNow();
+      if (categoryModalAction === 'cart') {
+        // Navigate to booking with source=cart; actual add to cart occurs on booking page
+        const finalCategory = selectedCategory;
+        const finalSubCategory = selectedSubCategory;
+
+        const bookingParams = new URLSearchParams();
+        bookingParams.append('photographerId', photographer.id.toString());
+        bookingParams.append('photographerName', photographer.name);
+        bookingParams.append('price', photographer.price);
+        bookingParams.append('source', 'cart');
+        bookingParams.append('category', finalCategory);
+        bookingParams.append('subcategory', finalSubCategory);
+
+        if (selectedDate) {
+          bookingParams.append('selectedDate', selectedDate.toISOString());
+        }
+        if (selectedTimeSlots.length > 0) {
+          bookingParams.append('selectedTimeSlots', selectedTimeSlots.join(','));
+        }
+
+        router.push(`/booking?${bookingParams.toString()}`);
+      } else {
+        // Now proceed with booking
+        handleBookNow();
+      }
     }
   };
 
@@ -306,44 +331,57 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
   const handleAddToCart = () => {
     // If package is present, add directly to cart
     if (packageParam) {
-      const cartItem = {
-        id: photographer.id.toString(),
-        name: photographer.name,
-        price: parseInt(photographer.price.replace(/[^\d]/g, '')) || 0,
-        image: photographer.image,
-        photographerId: photographer.id.toString(),
-        photographerName: photographer.name,
-        package: packageParam,
-        timestamp: Date.now(),
-      };
-      addToCart(cartItem);
-      router.push('/cart');
+      // Navigate to booking with source=cart
+      const bookingParams = new URLSearchParams();
+      bookingParams.append('photographerId', photographer.id.toString());
+      bookingParams.append('photographerName', photographer.name);
+      bookingParams.append('price', photographer.price);
+      bookingParams.append('package', packageParam);
+      bookingParams.append('source', 'cart');
+
+      if (selectedDate) {
+        bookingParams.append('selectedDate', selectedDate.toISOString());
+      }
+      if (selectedTimeSlots.length > 0) {
+        bookingParams.append('selectedTimeSlots', selectedTimeSlots.join(','));
+      }
+
+      router.push(`/booking?${bookingParams.toString()}`);
       return;
     }
 
     // If no category is selected, show the category selection modal
     if (!category && !selectedCategory) {
+      setCategoryModalAction('cart');
       setShowCategoryModal(true);
       return;
     }
 
-    // Add to cart with category/subcategory
+    // Navigate to booking with category/subcategory; addition will happen on booking page
     const finalCategory = category || selectedCategory;
     const finalSubCategory = subcategory || selectedSubCategory;
+    // Navigate to booking with source=cart
+    const bookingParams = new URLSearchParams();
+    bookingParams.append('photographerId', photographer.id.toString());
+    bookingParams.append('photographerName', photographer.name);
+    bookingParams.append('price', photographer.price);
+    bookingParams.append('source', 'cart');
 
-    const cartItem = {
-      id: photographer.id.toString(),
-      name: photographer.name,
-      price: parseInt(photographer.price.replace(/[^\d]/g, '')) || 0,
-      image: photographer.image,
-      photographerId: photographer.id.toString(),
-      photographerName: photographer.name,
-      category: finalCategory,
-      subcategory: finalSubCategory,
-      timestamp: Date.now(),
-    };
-    addToCart(cartItem);
-    router.push('/cart');
+    if (finalCategory) {
+      bookingParams.append('category', finalCategory);
+    }
+    if (finalSubCategory) {
+      bookingParams.append('subcategory', finalSubCategory);
+    }
+
+    if (selectedDate) {
+      bookingParams.append('selectedDate', selectedDate.toISOString());
+    }
+    if (selectedTimeSlots.length > 0) {
+      bookingParams.append('selectedTimeSlots', selectedTimeSlots.join(','));
+    }
+
+    router.push(`/booking?${bookingParams.toString()}`);
   };
 
   const handleImageReaction = (imageUrl: string, reaction: 'like' | 'dislike') => {
@@ -1613,7 +1651,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
-                  Continue to Booking
+                  {categoryModalAction === 'cart' ? 'Continue to Add to Cart' : 'Continue to Booking'}
                 </button>
               </div>
             </div>

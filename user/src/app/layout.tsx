@@ -4,6 +4,8 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthContext";
 import { CartProvider } from "@/components/cart/CartContext";
 import { WishlistProvider } from "@/components/wishlist/WishlistContext";
+import { CompareProvider } from "@/components/compare/CompareContext";
+import CompareBar from "@/components/compare/CompareBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,7 +56,10 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              {children}
+              <CompareProvider>
+                {children}
+                <CompareBar />
+              </CompareProvider>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>

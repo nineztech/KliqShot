@@ -1355,7 +1355,7 @@ function BookingSummaryContent() {
                               ₹{addon.price.toLocaleString()}
                               {isSelected && quantity > 1 && (
                                 <span className="text-xs ml-1 text-gray-600 font-normal">each</span>
-                              )}
+                              )} / hour
                             </span>
                           </div>
                           <p className="text-xs text-gray-600 mt-1">{addon.description}</p>

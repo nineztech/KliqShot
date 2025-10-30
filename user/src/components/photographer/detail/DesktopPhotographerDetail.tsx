@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon, ChatBubbleLeftIcon, XMarkIcon, CalendarDaysIcon, HandThumbUpIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, StarIcon as StarSolidIcon, StarIcon as StarOutlineIcon, MapPinIcon, ClockIcon, CameraIcon, HeartIcon, ShareIcon, ChatBubbleLeftIcon, XMarkIcon, CalendarDaysIcon, HandThumbUpIcon, HandThumbDownIcon, TicketIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, HandThumbUpIcon as HandThumbUpSolidIcon, HandThumbDownIcon as HandThumbDownSolidIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Navbar from '@/components/navbar';
@@ -496,6 +496,7 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-8">
+
 
              {/* Portfolio Gallery */}
              <div className="bg-white rounded-lg shadow-sm p-6">
@@ -1391,6 +1392,98 @@ export default function DesktopPhotographerDetail({ photographer, category, subc
                 <p className="text-gray-700 text-sm leading-relaxed mb-4">{photographer.description}</p>
               </div>
               
+              {/* Package Details in Sidebar (sticky) */}
+              {packageParam && (() => {
+                const packageDetailsMap: { [key: string]: { name: string; startingPrice: number; valueProposition: string } } = {
+                  wedding: {
+                    name: 'Wedding',
+                    startingPrice: 150000,
+                    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Marriage Video'
+                  },
+                  'pre-wedding': {
+                    name: 'Pre-Wedding',
+                    startingPrice: 75000,
+                    valueProposition: 'Includes full-day coverage, 2 Photographers, 1 Drone Men, Premium album, Cinematic Video'
+                  },
+                  maternity: {
+                    name: 'Maternity',
+                    startingPrice: 45000,
+                    valueProposition: 'Includes maternity shoot, 1 Photographer, Professional editing, Premium prints, Digital gallery'
+                  },
+                  newborn: {
+                    name: 'New Born',
+                    startingPrice: 35000,
+                    valueProposition: 'Includes newborn shoot, 1 Photographer, Safe props, Professional editing, Premium album'
+                  },
+                  productshoot: {
+                    name: 'Product Shoot',
+                    startingPrice: 25000,
+                    valueProposition: 'Includes product photography, 1 Photographer, Studio setup, Professional editing, High-res images'
+                  },
+                  'real-estate': {
+                    name: 'Real-Estate',
+                    startingPrice: 40000,
+                    valueProposition: 'Includes property photography, 1 Photographer, 1 Drone Men, Professional editing, Virtual tour'
+                  },
+                  headshots: {
+                    name: 'Headshots',
+                    startingPrice: 10000,
+                    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+                  },
+                  housewarming: {
+                    name: 'House Warming',
+                    startingPrice: 8000,
+                    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+                  },
+                  babynaamkaran: {
+                    name: 'Baby Naam Karan',
+                    startingPrice: 12000,
+                    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+                  },
+                  'pre-weddingshoot': {
+                    name: 'Pre-Wedding Shoot',
+                    startingPrice: 25000,
+                    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+                  },
+                  mehendi: {
+                    name: 'Mehendi',
+                    startingPrice: 10000,
+                    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+                  },
+                  corporateevents: {
+                    name: 'Corporate Events',
+                    startingPrice: 18000,
+                    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+                  },
+                  familyportraits: {
+                    name: 'Family Portraits',
+                    startingPrice: 12000,
+                    valueProposition: 'From Experienced Photographer to Unmatched skill for high-end Photography'
+                  }
+                };
+                const packageKey = packageParam.toLowerCase().replace(/\s+/g, '');
+                const packageInfo = packageDetailsMap[packageKey];
+                return packageInfo ? (
+                  <div className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-lg p-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 w-9 h-9 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        <TicketIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <h4 className="font-bold text-gray-900 text-sm">{packageInfo.name} Package</h4>
+                          <span className="inline-flex items-center text-[10px] font-bold text-purple-700 bg-white border border-purple-300 px-1.5 py-0.5 rounded-md">
+                            ALL-INCLUSIVE
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-700 leading-relaxed mb-2">{packageInfo.valueProposition}</p>
+                       
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
               {/* Pricing & Booking */}
               <div className="border-t border-gray-200 pt-4">
                 <div className="text-center mb-4">

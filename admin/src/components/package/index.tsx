@@ -10,6 +10,11 @@ export interface CategoryPricing {
   categoryName: string;
   price?: number;
   features: string[];
+  locations?: {
+    country: string;
+    state: string;
+    district: string;
+  }[];
   subCategories: {
     subCategoryId: string;
     subCategoryName: string;

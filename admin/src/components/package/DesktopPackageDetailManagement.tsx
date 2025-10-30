@@ -29,10 +29,40 @@ export default function DesktopPackageDetailManagement({
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [localPackageData, setLocalPackageData] = useState<Package>(packageData);
   const [loading, setLoading] = useState(true);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<Record<string, string[]>>({});
+  const [selectedStates, setSelectedStates] = useState<Record<string, string[]>>({});
+  const [selectedDistricts, setSelectedDistricts] = useState<Record<string, string[]>>({});
+
+  // Mock location data - in real app, fetch from API
+  const countries = [
+    'India', 'United States', 'United Kingdom', 'Canada', 'Australia'
+  ];
+
+  const states = {
+    'India': ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Gujarat'],
+    'United States': ['California', 'New York', 'Texas', 'Florida', 'Illinois'],
+    'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland'],
+    'Canada': ['Ontario', 'Quebec', 'British Columbia', 'Alberta'],
+    'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia']
+  };
+
+  const districts = {
+    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
+    'Delhi': ['New Delhi', 'Central Delhi', 'North Delhi', 'South Delhi'],
+    'Karnataka': ['Bangalore', 'Mysore', 'Hubli', 'Mangalore'],
+    'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Salem'],
+    'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot']
+  };
 
   // Fetch categories from API or use mock data
   useEffect(() => {
     fetchCategories();
+    // Track selected districts from existing package data
+    const districts = localPackageData.categoryPricing
+      .flatMap(cp => cp.locations?.map(loc => loc.district) || [])
+      .filter((d): d is string => !!d);
+    setSelectedLocations(districts);
   }, []);
 
   const fetchCategories = async () => {
@@ -116,6 +146,65 @@ export default function DesktopPackageDetailManagement({
       categoryPricing: prev.categoryPricing.map(cp =>
         cp.categoryId === categoryId ? { ...cp, price } : cp
       )
+    }));
+  };
+
+  const handleCountryToggle = (categoryId: string, country: string) => {
+    setSelectedCountries(prev => ({
+      ...prev,
+      [categoryId]: prev[categoryId]?.includes(country)
+        ? prev[categoryId].filter(c => c !== country)
+        : [...(prev[categoryId] || []), country]
+    }));
+    // Clear states and districts when country changes
+    setSelectedStates(prev => ({ ...prev, [categoryId]: [] }));
+    setSelectedDistricts(prev => ({ ...prev, [categoryId]: [] }));
+  };
+
+  const handleStateToggle = (categoryId: string, state: string) => {
+    setSelectedStates(prev => ({
+      ...prev,
+      [categoryId]: prev[categoryId]?.includes(state)
+        ? prev[categoryId].filter(s => s !== state)
+        : [...(prev[categoryId] || []), state]
+    }));
+    // Clear districts when state changes
+    setSelectedDistricts(prev => ({ ...prev, [categoryId]: [] }));
+  };
+
+  const handleDistrictToggle = (categoryId: string, district: string, country: string, state: string) => {
+    const currentDistricts = selectedDistricts[categoryId] || [];
+    const isSelected = currentDistricts.includes(district);
+    
+    setSelectedDistricts(prev => ({
+      ...prev,
+      [categoryId]: isSelected
+        ? prev[categoryId].filter(d => d !== district)
+        : [...(prev[categoryId] || []), district]
+    }));
+
+    // Update the locations in the package data
+    setLocalPackageData(prev => ({
+      ...prev,
+      categoryPricing: prev.categoryPricing.map(cp => {
+        if (cp.categoryId === categoryId) {
+          const locations = cp.locations || [];
+          const locationKey = `${country}-${state}-${district}`;
+          
+          if (isSelected) {
+            return {
+              ...cp,
+              locations: locations.filter(loc => `${loc.country}-${loc.state}-${loc.district}` !== locationKey)
+            };
+          } else {
+            return {
+              ...cp,
+              locations: [...locations, { country, state, district }]
+            };
+          }
+        }
+        return cp;
+      })
     }));
   };
 
@@ -344,6 +433,98 @@ export default function DesktopPackageDetailManagement({
                 {/* Category Details */}
                 {isExpanded && (
                   <div className="p-4 space-y-4">
+                    {/* Location Selection */}
+                    <div className="border border-blue-200 bg-blue-50 rounded-lg p-4">
+                      <h5 className="text-sm font-semibold text-gray-900 mb-3">Location-Based Pricing</h5>
+                      
+                      {/* Country Selection */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Select Countries <span className="text-red-500">*</span>
+                        </label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          {countries.map((country) => (
+                            <label key={country} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedCountries[category.id]?.includes(country) || false}
+                                onChange={() => handleCountryToggle(category.id, country)}
+                                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                              />
+                              <span className="ml-2 text-sm text-gray-700">{country}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* State Selection - only show for selected countries */}
+                      {selectedCountries[category.id] && selectedCountries[category.id].length > 0 && (
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Select States <span className="text-red-500">*</span>
+                          </label>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {selectedCountries[category.id].map((country) => 
+                              states[country as keyof typeof states]?.map((state) => (
+                                <label key={state} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedStates[category.id]?.includes(state) || false}
+                                    onChange={() => handleStateToggle(category.id, state)}
+                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                  />
+                                  <span className="ml-2 text-sm text-gray-700">{state} ({country})</span>
+                                </label>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* District Selection - only show for selected states */}
+                      {selectedStates[category.id] && selectedStates[category.id].length > 0 && (
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Select Districts <span className="text-red-500">*</span>
+                          </label>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-60 overflow-y-auto">
+                            {selectedStates[category.id].map((state) => 
+                              districts[state as keyof typeof districts]?.map((district) => (
+                                <label key={district} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={categoryPricing?.locations?.some(loc => loc.district === district && loc.state === state) || false}
+                                    onChange={() => {
+                                      // Find the country for this state
+                                      const country = Object.keys(states).find(c => 
+                                        states[c as keyof typeof states]?.includes(state)
+                                      ) || '';
+                                      handleDistrictToggle(category.id, district, country, state);
+                                    }}
+                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                  />
+                                  <span className="ml-2 text-sm text-gray-700">{district}</span>
+                                </label>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Display Selected Locations */}
+                      {categoryPricing?.locations && categoryPricing.locations.length > 0 && (
+                        <div className="mt-4 space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">Selected Locations ({categoryPricing.locations.length}):</label>
+                          <div className="flex flex-wrap gap-2">
+                            {categoryPricing.locations.map((location, idx) => (
+                              <span key={idx} className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                                {location.district}, {location.state}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Subcategories */}
                     {category.subCategories && category.subCategories.length > 0 && (

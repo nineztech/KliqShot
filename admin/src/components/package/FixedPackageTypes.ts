@@ -5,6 +5,11 @@ export interface SubPackage {
   categoryName: string;
   duration: string; // e.g., "2 hours", "1 day", etc.
   totalPrice: number;
+  locations?: {
+    country: string;
+    state: string;
+    district: string;
+  }[];
   isActive: boolean;
 }
 

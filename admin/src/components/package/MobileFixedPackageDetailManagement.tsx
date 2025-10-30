@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MdArrowBack, MdAdd, MdDelete, MdSave, MdEdit, MdClose } from 'react-icons/md';
 import { PackageGroup, SubPackage } from './FixedPackageTypes';
 
@@ -18,14 +18,26 @@ export default function MobileFixedPackageDetailManagement({
   const [localPackageData, setLocalPackageData] = useState<PackageGroup>(packageData);
   const [showAddSubPackage, setShowAddSubPackage] = useState(false);
   const [editingSubPackage, setEditingSubPackage] = useState<SubPackage | null>(null);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
 
   const [subPackageFormData, setSubPackageFormData] = useState({
     name: '',
     selectedCategories: [] as string[],
     duration: '',
     totalPrice: 0,
+    locations: [] as { country: string; state: string; district: string }[],
     isActive: true
   });
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedStates, setSelectedStates] = useState<string[]>([]);
+
+  // Track selected districts from existing package data
+  useEffect(() => {
+    const districts = localPackageData.subPackages
+      .flatMap(sp => sp.locations?.map(loc => loc.district) || [])
+      .filter((d): d is string => !!d);
+    setSelectedLocations(districts);
+  }, [localPackageData]);
 
   // Mock categories - in real app, fetch from API
   const categories = [
@@ -35,6 +47,27 @@ export default function MobileFixedPackageDetailManagement({
     { id: '4', name: 'Pre-Wedding Shoot' },
     { id: '5', name: 'Baby Shower' },
   ];
+
+  // Mock location data - in real app, fetch from API
+  const countries = [
+    'India', 'United States', 'United Kingdom', 'Canada', 'Australia'
+  ];
+
+  const states = {
+    'India': ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Gujarat'],
+    'United States': ['California', 'New York', 'Texas', 'Florida', 'Illinois'],
+    'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland'],
+    'Canada': ['Ontario', 'Quebec', 'British Columbia', 'Alberta'],
+    'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia']
+  };
+
+  const districts = {
+    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
+    'Delhi': ['New Delhi', 'Central Delhi', 'North Delhi', 'South Delhi'],
+    'Karnataka': ['Bangalore', 'Mysore', 'Hubli', 'Mangalore'],
+    'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Salem'],
+    'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot']
+  };
 
   const handleSave = () => {
     onSave(localPackageData);
@@ -56,6 +89,7 @@ export default function MobileFixedPackageDetailManagement({
       categoryName: selectedCategoryNames,
       duration: subPackageFormData.duration,
       totalPrice: subPackageFormData.totalPrice,
+      locations: subPackageFormData.locations,
       isActive: subPackageFormData.isActive
     };
 
@@ -63,6 +97,11 @@ export default function MobileFixedPackageDetailManagement({
       ...prev,
       subPackages: [...prev.subPackages, newSubPackage]
     }));
+
+    // Track the selected district
+    if (subPackageFormData.location.district && !selectedLocations.includes(subPackageFormData.location.district)) {
+      setSelectedLocations([...selectedLocations, subPackageFormData.location.district]);
+    }
 
     setShowAddSubPackage(false);
     resetSubPackageForm();
@@ -86,6 +125,7 @@ export default function MobileFixedPackageDetailManagement({
               categoryName: selectedCategoryNames,
               duration: subPackageFormData.duration,
               totalPrice: subPackageFormData.totalPrice,
+              locations: subPackageFormData.locations,
               isActive: subPackageFormData.isActive
             }
           : sp
@@ -112,6 +152,7 @@ export default function MobileFixedPackageDetailManagement({
       selectedCategories: subPackage.categoryId ? [subPackage.categoryId] : [],
       duration: subPackage.duration,
       totalPrice: subPackage.totalPrice,
+      locations: subPackage.locations || [],
       isActive: subPackage.isActive
     });
     setShowAddSubPackage(true);
@@ -129,8 +170,45 @@ export default function MobileFixedPackageDetailManagement({
       selectedCategories: [],
       duration: '',
       totalPrice: 0,
+      locations: [],
       isActive: true
     });
+    setSelectedCountries([]);
+    setSelectedStates([]);
+  };
+
+  const handleCountryToggle = (country: string) => {
+    setSelectedCountries(prev => 
+      prev.includes(country) ? prev.filter(c => c !== country) : [...prev, country]
+    );
+    setSelectedStates([]);
+  };
+
+  const handleStateToggle = (state: string) => {
+    setSelectedStates(prev =>
+      prev.includes(state) ? prev.filter(s => s !== state) : [...prev, state]
+    );
+  };
+
+  const handleDistrictToggle = (district: string, country: string, state: string) => {
+    const locationKey = `${country}-${state}-${district}`;
+    const exists = subPackageFormData.locations.some(loc => 
+      `${loc.country}-${loc.state}-${loc.district}` === locationKey
+    );
+
+    if (exists) {
+      setSubPackageFormData({
+        ...subPackageFormData,
+        locations: subPackageFormData.locations.filter(loc => 
+          `${loc.country}-${loc.state}-${loc.district}` !== locationKey
+        )
+      });
+    } else {
+      setSubPackageFormData({
+        ...subPackageFormData,
+        locations: [...subPackageFormData.locations, { country, state, district }]
+      });
+    }
   };
 
   const toggleCategorySelection = (categoryId: string) => {
@@ -242,6 +320,19 @@ export default function MobileFixedPackageDetailManagement({
                       <span className="text-gray-500">Category:</span>
                       <p className="text-gray-900 font-medium">{subPackage.categoryName}</p>
                     </div>
+                    {subPackage.locations && subPackage.locations.length > 0 && (
+                      <div>
+                        <span className="text-gray-500">Locations:</span>
+                        <p className="text-gray-900 font-medium text-xs">
+                          {subPackage.locations.map((loc, idx) => (
+                            <span key={idx}>
+                              {loc.district}, {loc.state}, {loc.country}
+                              {idx < subPackage.locations.length - 1 && '; '}
+                            </span>
+                          ))}
+                        </p>
+                      </div>
+                    )}
                     <div>
                       <span className="text-gray-500">Duration:</span>
                       <p className="text-gray-900 font-medium">{subPackage.duration}</p>
@@ -331,6 +422,104 @@ export default function MobileFixedPackageDetailManagement({
                   Active Package
                 </label>
               </div>
+            </div>
+
+            {/* Location Selection */}
+            <div className="mt-6 space-y-4">
+              <h4 className="text-sm font-semibold text-gray-900">Location-Based Pricing</h4>
+              
+              {/* Country Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Countries <span className="text-red-500">*</span>
+                </label>
+                <div className="space-y-1">
+                  {countries.map((country) => (
+                    <label key={country} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedCountries.includes(country)}
+                        onChange={() => handleCountryToggle(country)}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{country}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* State Selection */}
+              {selectedCountries.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select States <span className="text-red-500">*</span>
+                  </label>
+                  <div className="space-y-1 max-h-40 overflow-y-auto">
+                    {selectedCountries.map((country) =>
+                      states[country as keyof typeof states]?.map((state) => (
+                        <label key={state} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={selectedStates.includes(state)}
+                            onChange={() => handleStateToggle(state)}
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">{state}</span>
+                        </label>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* District Selection */}
+              {selectedStates.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Districts <span className="text-red-500">*</span>
+                  </label>
+                  <div className="space-y-1 max-h-60 overflow-y-auto">
+                    {selectedStates.map((state) =>
+                      districts[state as keyof typeof districts]?.map((district) => {
+                        const country = Object.keys(states).find(c =>
+                          states[c as keyof typeof states]?.includes(state)
+                        ) || '';
+                        const isSelected = subPackageFormData.locations.some(loc =>
+                          loc.district === district && loc.state === state
+                        );
+                        
+                        return (
+                          <label key={district} className="flex items-center p-2 border border-gray-200 rounded hover:bg-blue-100 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => handleDistrictToggle(district, country, state)}
+                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            />
+                            <span className="ml-2 text-sm text-gray-700">{district}</span>
+                          </label>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Display Selected Locations */}
+              {subPackageFormData.locations.length > 0 && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Selected ({subPackageFormData.locations.length}):
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {subPackageFormData.locations.map((location, idx) => (
+                      <span key={idx} className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                        {location.district}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="mt-6">

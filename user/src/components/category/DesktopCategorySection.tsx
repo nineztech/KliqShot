@@ -251,11 +251,11 @@ export default function DesktopCategorySection() {
               {/* Swiper Container */}
               <div
                 ref={fixedPackagesRef}
-                className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+                className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 py-2"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {fixedPackages.map((pkg, index) => (
-                  <div key={index} className="flex-shrink-0 w-[380px]">
+                  <div key={index} className="flex-shrink-0 w-[380px] py-2">
                     <CategoryCard
                       title={pkg.name}
                       description={pkg.valueProposition}
@@ -301,11 +301,11 @@ export default function DesktopCategorySection() {
               {/* Swiper Container */}
               <div
                 ref={customPackagesRef}
-                className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+                className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 py-2"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {popularSubcategories.map((subcategory, index) => (
-                  <div key={index} className="flex-shrink-0 w-[380px]">
+                  <div key={index} className="flex-shrink-0 w-[380px] py-2">
                     <CategoryCard
                       title={subcategory.name}
                       description={subcategory.valueProposition}
@@ -345,20 +345,21 @@ export default function DesktopCategorySection() {
       <CategoryFilter onFilterChange={handleFilterChange} />
 
       <div className="px-4 mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2">
           {subcategoryCards.map((subcategory, index) => (
-              <CategoryCard
-                key={index}
-                title={subcategory.title}
-                description={subcategory.description}
-                imageUrl={subcategory.imageUrl}
-                icon={subcategory.icon}
-                photographerCount={subcategory.photographerCount}
-                category={subcategory.category}
-                subcategoryId={subcategory.subcategoryId}
-                subcategories={subcategory.subcategories}
-                onClick={() => handleCategoryClick(subcategory.title)}
-              />
+              <div key={index} className="py-2">
+                <CategoryCard
+                  title={subcategory.title}
+                  description={subcategory.description}
+                  imageUrl={subcategory.imageUrl}
+                  icon={subcategory.icon}
+                  photographerCount={subcategory.photographerCount}
+                  category={subcategory.category}
+                  subcategoryId={subcategory.subcategoryId}
+                  subcategories={subcategory.subcategories}
+                  onClick={() => handleCategoryClick(subcategory.title)}
+                />
+              </div>
           ))}
         </div>
       </div>

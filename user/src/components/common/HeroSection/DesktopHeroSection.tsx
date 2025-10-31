@@ -209,7 +209,7 @@ export default function DesktopHeroSection() {
           }`}>
             <h1 className="font-bold mb-0 leading-tight" style={{ fontSize: 'clamp(20px, 4vw, 36px)' }}>
               <span className="block text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
-               Book Verified Photographers, Effortlessly.
+              Capture Your Perfect Moment
               </span>
             </h1>
             <p className="text-white mb-2 md:mb-3 font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" style={{ fontSize: 'clamp(12px, 2.5vw, 16px)' }}>
@@ -265,7 +265,7 @@ export default function DesktopHeroSection() {
                 {/* Search Button */}
                 <button
                   onClick={handleSearch}
-                  className="px-5 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(59,130,246,0.5)] shadow-lg whitespace-nowrap"
+                  className="px-5 py-1 bg-purple-700 text-white text-sm font-semibold rounded-md hover:bg-purple-800 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(126,34,206,0.5)] shadow-lg whitespace-nowrap"
                 >
                   Search Now
                 </button>

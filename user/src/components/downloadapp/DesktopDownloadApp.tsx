@@ -81,7 +81,7 @@ const DesktopDownloadApp: React.FC = () => {
             </div>
             <button
               onClick={handleGetAppLink}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition-colors duration-200 shadow-sm"
+              className="bg-purple-700 hover:bg-purple-800 text-white font-semibold px-6 py-2 rounded-md transition-colors duration-200 shadow-sm"
             >
               GET APP LINK
             </button>

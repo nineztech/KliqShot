@@ -21,7 +21,7 @@ export default function CompareBar() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[1000]">
-      <div className="mx-auto max-w-7xl px-3 pb-2">
+      <div className="mx-auto max-w-full px-3 pb-2">
         <div className="bg-neutral-900/90 backdrop-blur border border-neutral-800 shadow-2xl p-3 flex items-center gap-3">
           <div className="flex-1 overflow-x-auto">
             <div className="flex items-center gap-2 min-h-[56px]">

@@ -365,6 +365,31 @@ export default function PhotographerCard({
            <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">
                <div className="flex items-center gap-1 sm:gap-2">
+                 <label
+                   className="inline-flex items-center cursor-pointer select-none flex-shrink-0"
+                   onClick={(e) => e.stopPropagation()}
+                 >
+                   <input
+                     type="checkbox"
+                     checked={isCompared(id)}
+                     onChange={() => {
+                       toggleCompare({
+                         id,
+                         name,
+                         specialty,
+                         image,
+                         price,
+                         rating,
+                         reviews,
+                         location,
+                         experience,
+                         category,
+                         categories
+                       });
+                     }}
+                     className="w-3 h-3 sm:w-3.5 sm:h-3.5 accent-orange-600"
+                   />
+                 </label>
                  <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 truncate">
                    {name}
                  </h3>
@@ -464,52 +489,22 @@ export default function PhotographerCard({
        {/* Category Tags */}
          <CategoryTags categories={categories || []} />
          
-         {/* Recommended Features */}
-         {recommendedFeatures.length > 0 && (
-           <div className="mt-1.5 sm:mt-2">
-             <span className="text-[9px] sm:text-[10px] text-gray-500 font-medium">Recommended for</span>
-             <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-1">
-               {recommendedFeatures.map((feature, index) => (
-                 <span
-                   key={index}
-                   className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200 transition-all duration-200 hover:bg-gray-200"
-                 >
-                   {feature}
-                 </span>
-               ))}
-             </div>
-           </div>
-         )}
-
-         {/* Compare (below Recommended)
-         <div className="mt-2">
-           <label
-             className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-gray-700 cursor-pointer select-none"
-             onClick={(e) => e.stopPropagation()}
-           >
-             <input
-               type="checkbox"
-               checked={isCompared(id)}
-               onChange={() => {
-                 toggleCompare({
-                   id,
-                   name,
-                   specialty,
-                   image,
-                   price,
-                   rating,
-                   reviews,
-                   location,
-                   experience,
-                   category,
-                   categories
-                 });
-               }}
-               className="w-3 h-3 sm:w-3.5 sm:h-3.5 accent-orange-600"
-             />
-             Compare
-           </label>
-         </div> */}
+          {/* Recommended Features */}
+          {recommendedFeatures.length > 0 && (
+            <div className="mt-1.5 sm:mt-2">
+              <span className="text-[9px] sm:text-[10px] text-gray-500 font-medium">Recommended for</span>
+              <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-1">
+                {recommendedFeatures.map((feature, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200 transition-all duration-200 hover:bg-gray-200"
+                  >
+                    {feature}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
        </div>
     </div>
   );

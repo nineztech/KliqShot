@@ -13,6 +13,12 @@ import {
 
 export default function DesktopSEOSection() {
   const features = [
+     {
+      icon: <UsersIcon className="w-8 h-8 text-white" />,
+      title: "10,000+ Happy Customers",
+      description: "Join thousands of satisfied customers who trust our platform",
+      gradient: "from-blue-400 to-indigo-600"
+    },
     {
       icon: <ShieldCheckIcon className="w-8 h-8 text-white" />,
       title: "Verified Photographers",
@@ -20,22 +26,16 @@ export default function DesktopSEOSection() {
       gradient: "from-green-400 to-emerald-600"
     },
     {
-      icon: <StarIcon className="w-8 h-8 text-white" />,
-      title: "5-Star Reviews",
-      description: "Read genuine reviews from thousands of satisfied customers",
-      gradient: "from-yellow-400 to-orange-500"
-    },
-    {
-      icon: <UsersIcon className="w-8 h-8 text-white" />,
-      title: "10,000+ Happy Customers",
-      description: "Join thousands of satisfied customers who trust our platform",
-      gradient: "from-blue-400 to-indigo-600"
-    },
-    {
       icon: <ClockIcon className="w-8 h-8 text-white" />,
       title: "24/7 Support",
       description: "Get help whenever you need it with our round-the-clock support",
       gradient: "from-purple-400 to-pink-600"
+    },
+    {
+      icon: <StarIcon className="w-8 h-8 text-white" />,
+      title: "5-Star Reviews",
+      description: "Read genuine reviews from thousands of satisfied customers",
+      gradient: "from-yellow-400 to-orange-500"
     }
   ];
 

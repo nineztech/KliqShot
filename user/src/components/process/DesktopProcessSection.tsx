@@ -36,8 +36,8 @@ export default function DesktopProcessSection() {
       title: "DEAL (BOOK WITH CONFIDENCE)",
       description: "Seamless Booking & Secure Payments: Book photographers instantly with our secure, hybrid payment system protecting both parties.",
       icon: <ShieldCheckIcon className="w-8 h-8 text-white" />,
-      gradient: "from-pink-500 to-rose-600",
-      bgGradient: "from-pink-50 to-rose-50",
+      gradient: "from-purple-400 to-pink-600",
+      bgGradient: "from-purple-50 to-pink-50",
       borderColor: "border-pink-200"
     }
   ];
@@ -99,7 +99,7 @@ export default function DesktopProcessSection() {
       
       {/* Call to Action */}
       <div className="mt-12 text-center">
-        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
+        <div className="inline-flex items-center space-x-2 bg-purple-700 hover:bg-purple-800 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
           <span className="font-semibold">Get Started Today</span>
           <ArrowRightIcon className="w-5 h-5" />
         </div>

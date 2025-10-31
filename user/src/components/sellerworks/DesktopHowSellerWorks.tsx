@@ -26,9 +26,9 @@ export default function DesktopHowSellerWorks() {
       title: "Showcase Your Work",
       description: "Upload your best photography portfolio and let your work speak for itself",
       icon: <PhotoIcon className="w-8 h-8 text-white" />,
-      gradient: "from-purple-500 to-pink-600",
-      bgGradient: "from-purple-50 to-pink-50",
-      borderColor: "border-purple-200"
+      gradient: "from-green-500 to-emerald-600",
+      bgGradient: "from-green-50 to-emerald-50",
+      borderColor: "border-green-200"
     },
     {
       number: "03",
@@ -39,15 +39,16 @@ export default function DesktopHowSellerWorks() {
       bgGradient: "from-orange-50 to-red-50",
       borderColor: "border-orange-200"
     },
-    {
+     {
       number: "04",
-      title: "Earn Money",
+      title: "Grow Your Buissness",
       description: "Complete shoots, deliver stunning photos, and grow your photography business",
       icon: <CurrencyDollarIcon className="w-8 h-8 text-white" />,
-      gradient: "from-green-500 to-emerald-600",
-      bgGradient: "from-green-50 to-emerald-50",
-      borderColor: "border-green-200"
+      gradient: "from-purple-500 to-pink-600",
+      bgGradient: "from-purple-50 to-pink-50",
+      borderColor: "border-purple-200"
     }
+  
   ];
 
   return (

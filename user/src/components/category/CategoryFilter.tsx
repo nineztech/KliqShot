@@ -61,7 +61,7 @@ export default function CategoryFilter({ onFilterChange }: CategoryFilterProps) 
               onClick={() => handleFilterClick(filter.id, filter.isMoreButton)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                 filter.isMoreButton
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-purple-700 text-white hover:bg-purple-800'
                   : isActive
                   ? 'bg-gray-900 text-white shadow-md'
                   : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'

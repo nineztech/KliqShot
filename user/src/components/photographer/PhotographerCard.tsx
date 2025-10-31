@@ -337,7 +337,7 @@ export default function PhotographerCard({
           
           
           {/* Category Badge */}
-          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-purple-600/90 backdrop-blur-sm text-white text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <CameraIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 inline mr-0.5 sm:mr-1" />
             {specialty}
           </div>

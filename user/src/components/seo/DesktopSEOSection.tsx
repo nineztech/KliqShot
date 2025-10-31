@@ -133,7 +133,7 @@ export default function DesktopSEOSection() {
             <h3 className="feature-title feature-title-desktop text-gray-800">KliqShot Services</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-white to-blue-50 p-6 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center mb-3">
                 <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mr-3"></div>
                 <h4 className="font-semibold text-gray-900">Professional Photography Booking Platform</h4>

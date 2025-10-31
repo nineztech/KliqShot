@@ -380,7 +380,7 @@ export default function DesktopNavbar({ showSearchBar = true }: DesktopNavbarPro
             <div className="flex-shrink-0 flex items-center">
               <button
                 onClick={() => router.push('/')}
-                className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 hover:opacity-80 transition-opacity duration-200"
+                className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 hover:opacity-80 transition-opacity duration-200"
               >
                 <Image
                   src="/main Logo.png"

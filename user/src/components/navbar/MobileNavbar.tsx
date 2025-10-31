@@ -114,7 +114,7 @@ export default function MobileNavbar({ showSearchBar = true }: MobileNavbarProps
           <div className="flex items-center">
             <button
               onClick={() => router.push('/')}
-              className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 hover:opacity-80 transition-opacity duration-200"
+              className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 hover:opacity-80 transition-opacity duration-200"
             >
               <Image
                 src="/main Logo.png"

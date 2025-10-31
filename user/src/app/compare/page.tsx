@@ -291,7 +291,7 @@ export default function ComparePage() {
             </button>
             <h1 className="text-2xl font-bold text-gray-900">Compare Photographers</h1>
           </div>
-          <p className="text-gray-600 mt-2">Choose the best by comparing up to 4 photographers side by side.</p>
+          <p className="text-gray-600 mt-2">Choose the best by comparing up to 3 photographers side by side.</p>
         </div>
 
         {/* Comparison grid */}

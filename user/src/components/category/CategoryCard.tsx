@@ -82,7 +82,7 @@ export default function CategoryCard({
           <img
             src={imageUrl}
             alt={title}
-            className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
+            className="w-full h-full object-cover object-center"
             loading="lazy"
           />
         </div>
@@ -162,7 +162,7 @@ export default function CategoryCard({
           <img
             src={imageUrl}
             alt={title}
-            className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
+            className="w-full h-full object-cover object-center"
             loading="lazy"
           />
         ) : (

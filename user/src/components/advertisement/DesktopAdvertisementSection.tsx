@@ -192,15 +192,17 @@ export default function DesktopAdvertisementSection() {
   };
 
   return (
-    <div className="px-4">
-      <div className="text-center">
-        <h2 className="section-title section-title-desktop mb-1">Featured Photographers</h2>
-        <p className="section-description section-description-desktop max-w-lg mx-auto">
-          Discover top-rated professional photographers 
-        </p>
+    <div className="bg-white rounded-lg shadow-sm p-6 relative">
+      <div className="mb-6">
+        <div className="text-center">
+          <h2 className="section-title section-title-desktop mb-1">Featured Photographers</h2>
+          <p className="section-description section-description-desktop max-w-lg mx-auto">
+            Discover top-rated professional photographers 
+          </p>
+        </div>
       </div>
 
-      <div className="mt-6 relative">
+      <div className="relative">
         {/* Navigation Buttons */}
         <button
           onClick={() => scroll('left')}

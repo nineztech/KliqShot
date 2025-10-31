@@ -155,11 +155,11 @@ export default function DesktopTopRatedPhotographers({ className = '' }: TopRate
 
         <div
           ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth"
+          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {topRatedPhotographers.map((photographer) => (
-            <div key={photographer.id} className="flex-none w-[calc(25%-18px)]">
+            <div key={photographer.id} className="flex-none w-[calc(25%-12px)]">
               <PhotographerCard
                 id={photographer.id}
                 name={photographer.name}

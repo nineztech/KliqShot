@@ -298,7 +298,7 @@ export default function PhotographerCard({
 
   return (
     <div 
-      className="bg-white border border-gray-200 rounded-lg sm:rounded-xl hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group"
+      className="bg-white border border-gray-200 hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group"
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -310,7 +310,7 @@ export default function PhotographerCard({
             <img
               src={portfolioImages[currentImageIndex]}
               alt={`${name} portfolio ${currentImageIndex + 1}`}
-              className="w-full h-full object-cover object-center transition-all duration-700 ease-in-out group-hover:scale-110"
+              className="w-full h-full object-cover object-center transition-all duration-700 ease-in-out"
             />
           
             {/* Gradient Overlay */}
